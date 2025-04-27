@@ -60,7 +60,7 @@ You can help out the radio-browser.info community by [adding the missing station
 <details>
 <summary>📜️ Credit</summary>
 
-Base app Michatec.
+Base app Michatec & TRANSISTOR.
 </details>
 
 <div align="right">
