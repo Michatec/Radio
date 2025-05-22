@@ -544,7 +544,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             val dateFormat = SimpleDateFormat("_yyyy-MM-dd'T'HH_mm", Locale.US)
             timeStamp = dateFormat.format(Date())
 
-            putExtra(Intent.EXTRA_TITLE, "URL_Radio$timeStamp.zip")
+            putExtra(Intent.EXTRA_TITLE, "Radio$timeStamp.zip")
         }
         // file gets saved in the ActivityResult
         try {

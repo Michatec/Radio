@@ -104,7 +104,7 @@ class PlayerService : MediaLibraryService() {
 
 
     /* Overrides onTaskRemoved from Service */
-    override fun onTaskRemoved(rootIntent: Intent) {
+    override fun onTaskRemoved(rootIntent: Intent?) {
         if (!player.playWhenReady) {
             stopSelf()
         }
