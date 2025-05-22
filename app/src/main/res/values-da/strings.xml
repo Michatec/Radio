@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Appnavn -->
+    <!-- Tilgængelighedsbeskrivelser -->
+    <string name="descr_app_icon">App-ikon i form af en gammel radio</string>
+    <string name="descr_card_small_play_button">Afspil/Stop</string>
+    <string name="descr_card_starred_station">Favoritstation</string>
+    <string name="descr_card_station_image_change">Skift stationsbillede</string>
+    <string name="descr_card_station_image">Stationsbillede</string>
+    <string name="descr_expanded_player_metadata_copy_button">Kopiér oplysninger om den aktuelle afspilning</string>
+    <string name="descr_expanded_player_metadata_next_button">Næste metadataelement, der afspilles nu</string>
+    <string name="descr_expanded_player_metadata_previous_button">Forrige metadataelement, der afspilles</string>
+    <string name="descr_expanded_player_sleep_timer_cancel_button">Annuller soveur</string>
+    <string name="descr_expanded_player_sleep_timer_remaining_time">Resterende tid på soveuret</string>
+    <string name="descr_expanded_player_sleep_timer_start_button">Start soveur</string>
+    <string name="descr_player_playback_button">Afspil/Pause</string>
+    <string name="descr_player_station_image">Stationsbillede</string>
+    <!-- Dialoger -->
+    <string name="dialog_add_station_title">Tilføj station</string>
+    <string name="dialog_edit_station_name">Stationsnavn</string>
+    <string name="dialog_edit_stream_uri">Streamadresse</string>
+    <string name="dialog_error_message_default">Der opstod en fejl</string>
+    <string name="dialog_error_message_no_network">Opret forbindelse til internettet.</string>
+    <string name="dialog_error_title_no_network">Offline</string>
+    <string name="dialog_find_station_button_add">Tilføj</string>
+    <string name="dialog_find_station_hint">Navn eller streamadresse</string>
+    <string name="dialog_find_station_no_results">Ingen resultater fundet.</string>
+    <string name="dialog_find_station_title">Find station</string>
+    <string name="dialog_generic_button_cancel">Annuller</string>
+    <string name="dialog_generic_button_okay">OK</string>
+    <string name="dialog_generic_details_button">Vis detaljer</string>
+    <string name="dialog_opml_import_details_default">Ingen detaljer tilgængelige</string>
+    <string name="dialog_restore_collection_replace_existing">Vil du erstatte din nuværende stationssamling med den fra backup'en?</string>
+    <string name="dialog_yes_no_message_remove_station">Fjern denne station?</string>
+    <string name="dialog_yes_no_message_update_station_images">Download den nyeste version af alle stationsbilleder?</string>
+    <string name="dialog_yes_no_positive_button_default">Ja</string>
+    <string name="dialog_yes_no_positive_button_remove_station">Fjern</string>
+    <string name="dialog_yes_no_positive_button_update_covers">Opdater</string>
+    <!-- Fragment -->
+    <string name="fragment_settings_title">Indstillinger</string>
+    <!-- Notifikation -->
+    <string name="notification_now_playing_channel_name">Afspilningskontrol</string>
+    <string name="notification_play">Afspil</string>
+    <string name="notification_stop">Stop</string>
+    <string name="notification_skip_to_previous">Forrige</string>
+    <string name="notification_skip_to_next">Næste</string>
+    <!-- Onboarding -->
+    <string name="onboarding_app_description">Fordyb dig i lyden du elsker!</string>
+    <string name="onboarding_app_get_started">Kom i gang</string>
+    <!-- Afspiller -->
+    <string name="player_sheet_h2_station_metadata">Spiller nu</string>
+    <string name="player_sheet_h2_stream_url">Streamadresse</string>
+    <!-- Indstillinger -->
+    <string name="pref_advanced_title">Avanceret</string>
+    <string name="pref_app_version_summary">Version</string>
+    <string name="pref_app_version_title">App-version</string>
+    <string name="pref_backup_import_export_title">Importer &amp; eksporter</string>
+    <string name="pref_buffer_size_summary_disabled">Standardbufferstørrelse bruges til at afspille radiostreams.</string>
+    <string name="pref_buffer_size_summary_enabled">Større buffer aktiveret. Det kan tage længere tid at starte afspilningen.</string>
+    <string name="pref_buffer_size_title">Brug større buffer</string>
+    <string name="pref_edit_station_stream_summary_disabled">Redigering af stream-links er deaktiveret.</string>
+    <string name="pref_edit_station_stream_summary_enabled">Redigering af stream-links er aktiveret. Sørg for at angive en korrekt streamadresse.</string>
+    <string name="pref_edit_station_summary_disabled">Redigering af stationsoplysninger er deaktiveret.</string>
+    <string name="pref_edit_station_summary_enabled">Redigering er aktiveret. Langt tryk for at redigere.</string>
+    <string name="pref_edit_station_title">Rediger station</string>
+    <string name="pref_general_title">Generelt</string>
+    <string name="pref_license_title">Denne app er open source</string>
+    <string name="pref_license_summary">Licenseret under MIT-licensen</string>
+    <string name="pref_links_title">Links</string>
+    <string name="pref_m3u_export_summary">Gem stationer som M3U-playlister til brug i andre afspillere.</string>
+    <string name="pref_m3u_export_title">Eksportér M3U-playliste</string>
+    <string name="pref_maintenance_title">Vedligeholdelse</string>
+    <string name="pref_pls_export_summary">Gem stationer som PLS-playlister til brug i andre afspillere.</string>
+    <string name="pref_pls_export_title">Eksportér PLS-playliste</string>
+    <string name="pref_station_export_summary">Gem hele stationssamlingen inkl. billeder på enheden.</string>
+    <string name="pref_station_export_title">Eksportér stationer</string>
+    <string name="pref_station_restore_summary">Gendan stationssamling fra backup. Eksisterende stationer erstattes.</string>
+    <string name="pref_station_restore_title">Importer stationer</string>
+    <string name="pref_theme_selection_mode_dark">Mørkt tema</string>
+    <string name="pref_theme_selection_mode_device_default">Systemstandard</string>
+    <string name="pref_theme_selection_mode_light">Lyst tema</string>
+    <string name="pref_theme_selection_summary">Aktuelt:</string>
+    <string name="pref_theme_selection_title">App-tema</string>
+    <string name="pref_update_station_images_summary">Download nyeste stationsbilleder.</string>
+    <string name="pref_update_station_images_title">Opdater stationsbilleder</string>
+    <!-- App-genveje -->
+    <string name="shortcut_last_station_disabled_message">Genvej til seneste station er deaktiveret.</string>
+    <string name="shortcut_last_station_long_label">Afspil seneste station</string>
+    <string name="shortcut_last_station_short_label">Seneste station</string>
+    <!-- Toasts -->
+    <string name="toastalert_failed_picking_media">Valg af billede mislykkedes.</string>
+    <string name="toastmessage_backed_up">blev sikkerhedskopieret.</string>
+    <string name="toastmessage_connection_failed">Forbindelse kunne ikke oprettes eller gendannes.</string>
+    <string name="toastmessage_copied_to_clipboard">Kopieret til udklipsholder</string>
+    <string name="toastmessage_error_download_error">Fejl under download</string>
+    <string name="toastmessage_error_restart_playback_failed">Kunne ikke starte eller genstarte afspilning</string>
+    <string name="toastmessage_install_file_helper">Installer en filhåndtering</string>
+    <string name="toastmessage_preview_playback_failed">Forhåndsvisning kunne ikke afspilles.</string>
+    <string name="toastmessage_preview_playback_started">Forhåndsvisning startet.</string>
+    <string name="toastmessage_restored">Stationer blev gendannet.</string>
+    <string name="toastmessage_save_m3u">Stationer gemt som M3U…</string>
+    <string name="toastmessage_save_pls">Stationer gemt som PLS…</string>
+    <string name="toastmessage_shortcut_created">Genvej tilføjet til startskærmen</string>
+    <string name="toastmessage_shortcut_not_created">Kunne ikke tilføje genvej. Enheden forhindrer det.</string>
+    <string name="toastmessage_sleep_timer_unable_to_start">Start afspilning først</string>
+    <string name="toastmessage_station_duplicate">Denne station findes allerede</string>
+    <string name="toastmessage_station_not_valid">Denne station findes ikke</string>
+    <string name="toastmessage_updating_collection">Opdaterer alle stationer</string>
+    <string name="toastmessage_updating_station_images">Opdaterer alle stationsbilleder</string>
+    <!-- Snackbars -->
+    <string name="snackbar_show">Vis</string>
+    <string name="snackbar_update_available">er tilgængelig!</string>
+</resources>
