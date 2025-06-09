@@ -13,7 +13,7 @@ android {
         versionCode 129
         versionName '12.9'
         resourceConfigurations += ['en', 'de', 'el', 'nl', 'pl', 'ru','uk', 'ja', 'da', 'fr']
-        setProperty('archivesBaseName', 'Radio-')
+        setProperty('archivesBaseName', 'Radio')
     }
 
     compileOptions {
