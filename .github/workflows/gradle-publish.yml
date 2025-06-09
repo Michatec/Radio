@@ -44,6 +44,9 @@ jobs:
       - name: Build unsigned APK
         run: ./gradlew --no-daemon assembleRelease
 
+      - name: Check APK path
+        run: ls -R app/build/outputs/apk
+
       - name: Sign APK
         env:
           SIGN_CERT: ${{ secrets.SIGN_CERT }}
