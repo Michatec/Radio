@@ -4,7 +4,7 @@ on: [workflow_dispatch]
 
 env:
   ANDROID_HOME: /usr/local/lib/android/sdk/
-  APK_PATH: app/build/outputs/apk/release/app-release-unsigned.apk
+  APK_PATH: app/build/outputs/apk/release/Radio-release-unsigned.apk
   APKSIGNER: /usr/local/lib/android/sdk/build-tools/34.0.0/apksigner
 
 jobs:
