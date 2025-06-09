@@ -52,6 +52,11 @@ jobs:
           ${{ env.APKSIGNER }} sign --key key.der --cert cert.der app-release.apk
           rm cert.der key.der
           
+      - name: Zipalign APK
+        run: |
+          /usr/local/lib/android/sdk/build-tools/34.0.0/zipalign -v -p 4 app-release.apk app-release-aligned.apk
+          mv app-release-aligned.apk app-release.apk
+      
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
