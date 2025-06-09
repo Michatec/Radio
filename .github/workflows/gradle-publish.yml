@@ -1,6 +1,9 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Build and publish APK
-on: [workflow_dispatch]
+on:
+  push:
+    tags:
+      - '*'
 
 env:
   ANDROID_HOME: /usr/local/lib/android/sdk/
