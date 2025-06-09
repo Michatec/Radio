@@ -46,19 +46,12 @@ jobs:
           SIGN_CERT: ${{ secrets.SIGN_CERT }}
           SIGN_KEY: ${{ secrets.SIGN_KEY }}
         run: |
-          # Copy APK file to app-release.apk
+          echo "$SIGN_CERT" | base64 -d > cert.der
+          echo "$SIGN_KEY" | base64 -d > key.der
           mv ${{ env.APK_PATH }} app-release.apk
-          # Decode certificate
-          echo -e $SIGN_CERT > cert.b64
-          base64 -d cert.b64 | tr -d '\n' > cert.der
-          # Decode key
-          echo -e $SIGN_KEY > key.b64
-          base64 -d key.b64 | tr -d '\n' > key.der
-          # Sign APK file with private key
           ${{ env.APKSIGNER }} sign --key key.der --cert cert.der app-release.apk
-          # Remove key files
-          rm cert.b64 key.b64 cert.der key.der
-
+          rm cert.der key.der
+          
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
