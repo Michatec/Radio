@@ -3,7 +3,7 @@ name: Build and publish APK
 on:
   push:
     tags:
-      - '*'
+      - 'b*'
 
 env:
   ANDROID_HOME: /usr/local/lib/android/sdk/
