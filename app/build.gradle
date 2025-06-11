@@ -11,8 +11,8 @@ android {
         minSdk 28
         //noinspection OldTargetApi
         targetSdk 35
-        versionCode 13
-        versionName '130'
+        versionCode 130
+        versionName '13'
         resourceConfigurations += ['en', 'de', 'el', 'nl', 'pl', 'ru','uk', 'ja', 'da', 'fr']
         setProperty('archivesBaseName', 'Radio')
     }
