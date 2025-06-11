@@ -296,6 +296,7 @@ class CollectionAdapter(
 
 
     /* Shows / hides the edit view for a station */
+    @SuppressLint("NotifyDataSetChanged")
     private fun toggleEditViews(position: Int, stationUuid: String) {
         when (stationUuid) {
             // CASE: this station's edit view is already expanded

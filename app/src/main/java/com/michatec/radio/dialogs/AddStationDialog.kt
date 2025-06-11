@@ -42,10 +42,6 @@ class AddStationDialog (
     }
 
 
-    /* Define log tag */
-    private val TAG = AddStationDialog::class.java.simpleName
-
-
     /* Main class variables */
     private lateinit var dialog: AlertDialog
     private lateinit var stationSearchResultList: RecyclerView

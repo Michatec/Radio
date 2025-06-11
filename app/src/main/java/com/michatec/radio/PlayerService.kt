@@ -637,22 +637,6 @@ class PlayerService : MediaLibraryService() {
 
 
     /*
-    * Defines the listener for changes in shared preferences
-    */
-    private val sharedPreferenceChangeListener =
-        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-            when (key) {
-                Keys.PREF_LARGE_BUFFER_SIZE -> {
-                    bufferSizeMultiplier = PreferencesHelper.loadBufferSizeMultiplier()
-                    if (!player.isPlaying && !player.isLoading) {
-                        initializePlayer()
-                    }
-                }
-            }
-        }
-
-
-    /*
      * Custom AnalyticsListener that enables AudioFX equalizer integration
      */
     private val analyticsListener = object : AnalyticsListener {

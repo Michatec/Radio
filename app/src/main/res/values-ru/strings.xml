@@ -98,7 +98,7 @@
     <string name="toastmessage_preview_playback_started">Было запущено воспроизведение предварительного просмотра.</string>
     <string name="toastmessage_restored">Станции были успешно восстановлены.</string>
     <string name="toastmessage_save_m3u">Сохранение радиостанций как M3U…</string>
-    <string name="toastmessage_save_pls">Сохранение радиостанций в формате PLS...</string>
+    <string name="toastmessage_save_pls">Сохранение радиостанций в формате PLS</string>
     <string name="toastmessage_shortcut_created">Ярлык создан.</string>
     <string name="toastmessage_shortcut_not_created">Ярлык не создан. Устройство не позволяет создавать ярлыки.</string>
     <string name="toastmessage_sleep_timer_unable_to_start">Пожалуйста, запустите сперва воспроизведение.</string>

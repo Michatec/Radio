@@ -73,27 +73,15 @@ object ShortcutHelper {
     ): IconCompat {
         val stationImageBitmap: Bitmap =
             ImageHelper.getScaledStationImage(context, stationImage.toUri(), 192)
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            IconCompat.createWithAdaptiveBitmap(
-                ImageHelper.createSquareImage(
-                    context,
-                    stationImageBitmap,
-                    stationImageColor,
-                    192,
-                    true
-                )
-            )
-        } else {
-            IconCompat.createWithAdaptiveBitmap(
-                ImageHelper.createSquareImage(
-                    context,
-                    stationImageBitmap,
-                    stationImageColor,
-                    192,
-                    false
-                )
-            )
-        }
-    }
 
+        return IconCompat.createWithAdaptiveBitmap(
+            ImageHelper.createSquareImage(
+                context,
+                stationImageBitmap,
+                stationImageColor,
+                192,
+                true
+            )
+        )
+    }
 }

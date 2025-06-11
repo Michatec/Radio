@@ -62,20 +62,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         (activity as AppCompatActivity).supportActionBar?.show()
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.fragment_settings_title)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // above Android Oreo
-            (activity as AppCompatActivity).window.navigationBarColor = getColor(requireContext(), android.R.attr.colorBackground)
-        } else {
-            val nightMode = AppCompatDelegate.getDefaultNightMode()
-            if (nightMode == AppCompatDelegate.MODE_NIGHT_YES) {
-                // night mode is active, set navigation bar color to a suitable color for night mode
-                (activity as AppCompatActivity).window.navigationBarColor = getColor(requireContext(), android.R.attr.colorBackground)
-            } else {
-                // night mode is not active, set navigation bar color to a suitable color for day mode
-                (activity as AppCompatActivity).window.navigationBarColor = ContextCompat.getColor(requireContext(), android.R.color.black)
-            }
-        }
+        (activity as AppCompatActivity).window.navigationBarColor = getColor(requireContext(), android.R.attr.colorBackground)
     }
 
     /* Overrides onCreatePreferences from PreferenceFragmentCompat */

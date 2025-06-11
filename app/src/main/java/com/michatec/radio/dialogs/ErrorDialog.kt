@@ -46,9 +46,9 @@ class ErrorDialog {
         // get views
         val inflater: LayoutInflater = LayoutInflater.from(context)
         val view: View = inflater.inflate(R.layout.dialog_generic_with_details, null)
-        val errorMessageView: TextView = view.findViewById(R.id.dialog_message) as TextView
-        val errorDetailsLinkView: TextView = view.findViewById(R.id.dialog_details_link) as TextView
-        val errorDetailsView: TextView = view.findViewById(R.id.dialog_details) as TextView
+        val errorMessageView: TextView = view.findViewById(R.id.dialog_message)
+        val errorDetailsLinkView: TextView = view.findViewById(R.id.dialog_details_link)
+        val errorDetailsView: TextView = view.findViewById(R.id.dialog_details)
 
         // set dialog view
         builder.setView(view)

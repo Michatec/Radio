@@ -15,7 +15,9 @@
 package com.michatec.radio.helpers
 
 import android.util.Log
+import androidx.annotation.OptIn
 import androidx.media3.common.Metadata
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.extractor.metadata.icy.IcyHeaders
 import androidx.media3.extractor.metadata.icy.IcyInfo
 import com.michatec.radio.Keys
@@ -33,6 +35,7 @@ object AudioHelper {
 
 
     /* Extract audio stream metadata */
+    @OptIn(UnstableApi::class)
     fun getMetadataString(metadata: Metadata): String {
         var metadataString = String()
         for (i in 0 until metadata.length()) {

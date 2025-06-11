@@ -25,8 +25,6 @@ import com.michatec.radio.helpers.PreferencesHelper.initPreferences
  */
 class Radio : Application() {
 
-    /* Define log tag */
-    private val TAG: String = Radio::class.java.simpleName
 
     /* Implements onCreate */
     override fun onCreate() {
