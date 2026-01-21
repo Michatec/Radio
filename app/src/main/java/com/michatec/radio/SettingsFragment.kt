@@ -62,7 +62,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         (activity as AppCompatActivity).supportActionBar?.show()
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.fragment_settings_title)
-        (activity as AppCompatActivity).window.navigationBarColor = getColor(requireContext(), android.R.attr.colorBackground)
+        requireActivity().window.navigationBarColor = getColor(requireContext(), android.R.attr.colorBackground)
     }
 
     /* Overrides onCreatePreferences from PreferenceFragmentCompat */

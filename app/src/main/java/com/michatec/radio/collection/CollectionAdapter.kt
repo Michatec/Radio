@@ -264,12 +264,12 @@ class CollectionAdapter(
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
         stationViewHolder.cancelButton.setOnClickListener {
-            val position: Int = stationViewHolder.adapterPosition
+            val position: Int = stationViewHolder.bindingAdapterPosition
             toggleEditViews(position, station.uuid)
             UiHelper.hideSoftKeyboard(context, stationViewHolder.stationNameEditView)
         }
         stationViewHolder.saveButton.setOnClickListener {
-            val position: Int = stationViewHolder.adapterPosition
+            val position: Int = stationViewHolder.bindingAdapterPosition
             toggleEditViews(position, station.uuid)
             saveStation(
                 station,
@@ -280,15 +280,15 @@ class CollectionAdapter(
             UiHelper.hideSoftKeyboard(context, stationViewHolder.stationNameEditView)
         }
         stationViewHolder.placeOnHomeScreenButton.setOnClickListener {
-            val position: Int = stationViewHolder.adapterPosition
+            val position: Int = stationViewHolder.bindingAdapterPosition
             ShortcutHelper.placeShortcut(context, station)
             toggleEditViews(position, station.uuid)
             UiHelper.hideSoftKeyboard(context, stationViewHolder.stationNameEditView)
         }
         stationViewHolder.stationImageChangeView.setOnClickListener {
-            val position: Int = stationViewHolder.adapterPosition
+            val position: Int = stationViewHolder.bindingAdapterPosition
             collectionAdapterListener.onChangeImageButtonTapped(station.uuid)
-            stationViewHolder.adapterPosition
+            stationViewHolder.bindingAdapterPosition
             toggleEditViews(position, station.uuid)
             UiHelper.hideSoftKeyboard(context, stationViewHolder.stationNameEditView)
         }
@@ -378,7 +378,7 @@ class CollectionAdapter(
         }
         stationViewHolder.playButtonView.setOnLongClickListener {
             if (editStationsEnabled) {
-                val position: Int = stationViewHolder.adapterPosition
+                val position: Int = stationViewHolder.bindingAdapterPosition
                 toggleEditViews(position, station.uuid)
                 return@setOnLongClickListener true
             } else {
@@ -387,7 +387,7 @@ class CollectionAdapter(
         }
         stationViewHolder.stationNameView.setOnLongClickListener {
             if (editStationsEnabled) {
-                val position: Int = stationViewHolder.adapterPosition
+                val position: Int = stationViewHolder.bindingAdapterPosition
                 toggleEditViews(position, station.uuid)
                 return@setOnLongClickListener true
             } else {
@@ -396,7 +396,7 @@ class CollectionAdapter(
         }
         stationViewHolder.stationStarredView.setOnLongClickListener {
             if (editStationsEnabled) {
-                val position: Int = stationViewHolder.adapterPosition
+                val position: Int = stationViewHolder.bindingAdapterPosition
                 toggleEditViews(position, station.uuid)
                 return@setOnLongClickListener true
             } else {
@@ -405,7 +405,7 @@ class CollectionAdapter(
         }
         stationViewHolder.stationImageView.setOnLongClickListener {
             if (editStationsEnabled) {
-                val position: Int = stationViewHolder.adapterPosition
+                val position: Int = stationViewHolder.bindingAdapterPosition
                 toggleEditViews(position, station.uuid)
                 return@setOnLongClickListener true
             } else {
@@ -471,7 +471,7 @@ class CollectionAdapter(
 
         } else if (holder is StationViewHolder) {
             // get station from position
-            collection.stations[holder.getAdapterPosition()]
+            collection.stations[holder.bindingAdapterPosition]
 
             for (data in payloads) {
                 when (data as Int) {

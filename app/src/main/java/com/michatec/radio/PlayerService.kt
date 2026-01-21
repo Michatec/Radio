@@ -397,75 +397,6 @@ class PlayerService : MediaLibraryService() {
             return super.onCustomCommand(session, controller, customCommand, args)
         }
 
-        override fun onPlayerCommandRequest(
-            session: MediaSession,
-            controller: MediaSession.ControllerInfo,
-            playerCommand: Int
-        ): Int {
-            // playerCommand = one of COMMAND_PLAY_PAUSE, COMMAND_PREPARE, COMMAND_STOP, COMMAND_SEEK_TO_DEFAULT_POSITION, COMMAND_SEEK_IN_CURRENT_MEDIA_ITEM, COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM, COMMAND_SEEK_TO_PREVIOUS, COMMAND_SEEK_TO_NEXT_MEDIA_ITEM, COMMAND_SEEK_TO_NEXT, COMMAND_SEEK_TO_MEDIA_ITEM, COMMAND_SEEK_BACK, COMMAND_SEEK_FORWARD, COMMAND_SET_SPEED_AND_PITCH, COMMAND_SET_SHUFFLE_MODE, COMMAND_SET_REPEAT_MODE, COMMAND_GET_CURRENT_MEDIA_ITEM, COMMAND_GET_TIMELINE, COMMAND_GET_MEDIA_ITEMS_METADATA, COMMAND_SET_MEDIA_ITEMS_METADATA, COMMAND_CHANGE_MEDIA_ITEMS, COMMAND_GET_AUDIO_ATTRIBUTES, COMMAND_GET_VOLUME, COMMAND_GET_DEVICE_VOLUME, COMMAND_SET_VOLUME, COMMAND_SET_DEVICE_VOLUME, COMMAND_ADJUST_DEVICE_VOLUME, COMMAND_SET_VIDEO_SURFACE, COMMAND_GET_TEXT, COMMAND_SET_TRACK_SELECTION_PARAMETERS or COMMAND_GET_TRACK_INFOS. */
-            // emulate headphone buttons
-            // start/pause: adb shell input keyevent 85
-            // next: adb shell input keyevent 87
-            // prev: adb shell input keyevent 88
-            when (playerCommand) {
-                Player.COMMAND_SEEK_TO_NEXT -> {
-                    player.addMediaItem(
-                        CollectionHelper.getNextMediaItem(
-                            this@PlayerService,
-                            collection,
-                            player.currentMediaItem?.mediaId ?: String()
-                        )
-                    )
-                    player.prepare()
-                    player.play()
-                    return SessionResult.RESULT_SUCCESS
-                }
-                Player.COMMAND_SEEK_TO_PREVIOUS -> {
-                    player.addMediaItem(
-                        CollectionHelper.getPreviousMediaItem(
-                            this@PlayerService,
-                            collection,
-                            player.currentMediaItem?.mediaId ?: String()
-                        )
-                    )
-                    player.prepare()
-                    player.play()
-                    return SessionResult.RESULT_SUCCESS
-                }
-                Player.COMMAND_PREPARE -> {
-                    return if (playLastStation) {
-                        // special case: system requested media resumption (see also onGetLibraryRoot)
-                        player.addMediaItem(CollectionHelper.getRecent(this@PlayerService, collection))
-                        player.prepare()
-                        playLastStation = false
-                        SessionResult.RESULT_SUCCESS
-                    } else {
-                        super.onPlayerCommandRequest(session, controller, playerCommand)
-                    }
-                }
-                Player.COMMAND_PLAY_PAUSE -> {
-                    return if (player.isPlaying) {
-                        super.onPlayerCommandRequest(session, controller, playerCommand)
-                    } else {
-                        // seek to the start of the "live window"
-                        player.seekTo(0)
-                        SessionResult.RESULT_SUCCESS
-                    }
-                }
-//                Player.COMMAND_PLAY_PAUSE -> {
-//                    // override pause with stop, to prevent unnecessary buffering
-//                    if (player.isPlaying) {
-//                        player.stop()
-//                        return SessionResult.RESULT_INFO_SKIPPED
-//                    } else {
-//                       return super.onPlayerCommandRequest(session, controller, playerCommand)
-//                    }
-//                }
-                else -> {
-                    return super.onPlayerCommandRequest(session, controller, playerCommand)
-                }
-            }
-        }
     }
 
 
@@ -480,21 +411,21 @@ class PlayerService : MediaLibraryService() {
             customLayout: ImmutableList<CommandButton>,
             showPauseButton: Boolean
         ): ImmutableList<CommandButton> {
-            val seekToPreviousCommandButton = CommandButton.Builder().apply {
-                setPlayerCommand(Player.COMMAND_SEEK_TO_PREVIOUS)
-                setIconResId(R.drawable.ic_notification_skip_to_previous_36dp)
-                setEnabled(true)
-            }.build()
-            val playCommandButton = CommandButton.Builder().apply {
-                setPlayerCommand(Player.COMMAND_PLAY_PAUSE)
-                setIconResId(if (player.isPlaying) R.drawable.ic_notification_stop_36dp else R.drawable.ic_notification_play_36dp)
-                setEnabled(true)
-            }.build()
-            val seekToNextCommandButton = CommandButton.Builder().apply {
-                setPlayerCommand(Player.COMMAND_SEEK_TO_NEXT)
-                setIconResId(R.drawable.ic_notification_skip_to_next_36dp)
-                setEnabled(true)
-            }.build()
+            val seekToPreviousCommandButton = CommandButton.Builder()
+                .setPlayerCommand(Player.COMMAND_SEEK_TO_PREVIOUS)
+                .setIconResId(R.drawable.ic_notification_skip_to_previous_36dp)
+                .setEnabled(true)
+                .build()
+            val playCommandButton = CommandButton.Builder()
+                .setPlayerCommand(Player.COMMAND_PLAY_PAUSE)
+                .setIconResId(if (player.isPlaying) R.drawable.ic_notification_stop_36dp else R.drawable.ic_notification_play_36dp)
+                .setEnabled(true)
+                .build()
+            val seekToNextCommandButton = CommandButton.Builder()
+                .setPlayerCommand(Player.COMMAND_SEEK_TO_NEXT)
+                .setIconResId(R.drawable.ic_notification_skip_to_next_36dp)
+                .setEnabled(true)
+                .build()
             val commandButtons: MutableList<CommandButton> = mutableListOf(
                 seekToPreviousCommandButton,
                 playCommandButton,
@@ -544,19 +475,19 @@ class PlayerService : MediaLibraryService() {
                 when (player.playbackState) {
                     // player is able to immediately play from its current position
                     Player.STATE_READY -> {
-                        // todo
+                        stopSelf()
                     }
                     // buffering - data needs to be loaded
                     Player.STATE_BUFFERING -> {
-                        // todo
+                        stopSelf()
                     }
                     // player finished playing all media
                     Player.STATE_ENDED -> {
-                        // todo
+                        stopSelf()
                     }
                     // initial state or player is stopped or playback failed
                     Player.STATE_IDLE -> {
-                        // todo
+                        stopSelf()
                     }
                 }
             }
@@ -585,7 +516,10 @@ class PlayerService : MediaLibraryService() {
         override fun onPlayerError(error: PlaybackException) {
             super.onPlayerError(error)
             Log.d(TAG, "PlayerError occurred: ${error.errorCodeName}")
-            // todo: test if playback needs to be restarted
+            if (error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED || error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT) {
+                player.prepare()
+                player.play()
+            }
         }
 
 

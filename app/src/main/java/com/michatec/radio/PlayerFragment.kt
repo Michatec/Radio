@@ -182,7 +182,7 @@ class PlayerFragment : Fragment(),
         (activity as AppCompatActivity).supportActionBar?.hide()
 
         // set the same background color of the player sheet for the navigation bar
-        (activity as AppCompatActivity).window.navigationBarColor = ContextCompat.getColor(requireActivity(), R.color.player_sheet_background)
+        requireActivity().window.navigationBarColor = ContextCompat.getColor(requireActivity(), R.color.player_sheet_background)
 
         // associate the ItemTouchHelper with the RecyclerView
         itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback())
@@ -211,14 +211,14 @@ class PlayerFragment : Fragment(),
         }
 
         override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-            val fromPosition = viewHolder.adapterPosition
-            val toPosition = target.adapterPosition
+            val fromPosition = viewHolder.bindingAdapterPosition
+            val toPosition = target.bindingAdapterPosition
             collectionAdapter.onItemMove(fromPosition, toPosition)
             return true
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            val position = viewHolder.adapterPosition
+            val position = viewHolder.bindingAdapterPosition
             collectionAdapter.onItemDismiss(position)
         }
 
@@ -435,15 +435,15 @@ class PlayerFragment : Fragment(),
         val swipeToDeleteHandler = object : UiHelper.SwipeToDeleteCallback(activity as Context) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 // ask user
-                val adapterPosition: Int = viewHolder.adapterPosition
+                val bindingAdapterPosition: Int = viewHolder.bindingAdapterPosition
                 val dialogMessage =
-                    "${getString(R.string.dialog_yes_no_message_remove_station)}\n\n- ${collection.stations[adapterPosition].name}"
+                    "${getString(R.string.dialog_yes_no_message_remove_station)}\n\n- ${collection.stations[bindingAdapterPosition].name}"
                 YesNoDialog(this@PlayerFragment as YesNoDialog.YesNoDialogListener).show(
                     context = activity as Context,
                     type = Keys.DIALOG_REMOVE_STATION,
                     messageString = dialogMessage,
                     yesButton = R.string.dialog_yes_no_positive_button_remove_station,
-                    payload = adapterPosition
+                    payload = bindingAdapterPosition
                 )
             }
         }
@@ -455,8 +455,8 @@ class PlayerFragment : Fragment(),
             object : UiHelper.SwipeToMarkStarredCallback(activity as Context) {
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     // mark card starred
-                    val adapterPosition: Int = viewHolder.adapterPosition
-                    collectionAdapter.toggleStarredStation(activity as Context, adapterPosition)
+                    val bindingAdapterPosition: Int = viewHolder.bindingAdapterPosition
+                    collectionAdapter.toggleStarredStation(activity as Context, bindingAdapterPosition)
                 }
             }
         val swipeToMarkStarredItemTouchHelper = ItemTouchHelper(swipeToMarkStarredHandler)
@@ -500,22 +500,6 @@ class PlayerFragment : Fragment(),
         }
 
     }
-
-
-//    /* Sets up the general playback controls - Note: station specific controls and views are updated in updatePlayerViews() */
-//    // it is probably okay to suppress this warning - the OnTouchListener on the time played view does only toggle the time duration / remaining display
-//    private fun setupPlaybackControls() {
-//
-//        // main play/pause button
-//        layout.playButtonView.setOnClickListener {
-//            onPlayButtonTapped(playerState.stationUuid, playerState.playbackState)
-//            //onPlayButtonTapped(playerState.stationUuid, playerController.getPlaybackState().state) // todo remove
-//        }
-//
-//        // register a callback to stay in sync
-//        playerController.registerCallback(mediaControllerCallback)
-//    }
-
 
     /* Sets up the player */
     private fun updatePlayerViews() {
@@ -591,7 +575,7 @@ class PlayerFragment : Fragment(),
     /* Handles ACTION_SHOW_PLAYER request from notification */
     private fun handleShowPlayer() {
         Log.i(TAG, "Tap on notification registered.")
-        // todo implement
+        layout.showPlayer(requireActivity())
     }
 
 
@@ -804,7 +788,7 @@ class PlayerFragment : Fragment(),
                         .setAction(R.string.snackbar_show) {
                             val releaseurl = getString(R.string.snackbar_url_app_home_page)
                             val i = Intent(Intent.ACTION_VIEW)
-                            i.data = Uri.parse(releaseurl)
+                            i.data = releaseurl.toUri()
                             // Not sure that does anything
                             i.putExtra("SOURCE", "SELF")
                             startActivity(i)
@@ -823,9 +807,5 @@ class PlayerFragment : Fragment(),
         request.tag = TAG
         queue.add(request)
     }
-
-    /*
-     * End of declaration
-     */
 }
 

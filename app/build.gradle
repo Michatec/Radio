@@ -1,20 +1,27 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-parcelize'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-parcelize'
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        variant.outputs.forEach { output ->
+            output.outputFileName.set("Radio.apk")
+        }
+    }
+}
 
 android {
     namespace 'com.michatec.radio'
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId 'com.michatec.radio'
         minSdk 28
-        //noinspection OldTargetApi
-        targetSdk 35
-        versionCode 130
-        versionName '13'
+        targetSdk 36
+        versionCode 140
+        versionName '14'
         resourceConfigurations += ['en', 'de', 'el', 'nl', 'pl', 'ru','uk', 'ja', 'da', 'fr']
-        setProperty('archivesBaseName', 'Radio')
     }
 
     compileOptions {

@@ -106,7 +106,7 @@ class SearchResultAdapter(
         }
 
         // mark selected if necessary
-        val isSelected = selectedPosition == holder.adapterPosition
+        val isSelected = selectedPosition == holder.bindingAdapterPosition
         searchResultViewHolder.searchResultLayout.isSelected = isSelected
 
         // toggle text scrolling (marquee) if necessary
@@ -121,7 +121,7 @@ class SearchResultAdapter(
         searchResultViewHolder.searchResultLayout.setOnClickListener {
             // move marked position
             val previousSelectedPosition = selectedPosition
-            selectedPosition = holder.adapterPosition
+            selectedPosition = holder.bindingAdapterPosition
             notifyItemChanged(previousSelectedPosition)
             notifyItemChanged(selectedPosition)
 
@@ -133,7 +133,7 @@ class SearchResultAdapter(
                 resetSelection(false)
             } else {
                 // get the selected station from searchResults
-                val selectedStation = searchResults[holder.adapterPosition]
+                val selectedStation = searchResults[holder.bindingAdapterPosition]
                 // perform pre-playback here
                 performPrePlayback(searchResultViewHolder.searchResultLayout.context, selectedStation.getStreamUri())
                 // hand over station
