@@ -651,7 +651,7 @@ class CollectionAdapter(
     /*
      * Inner class: ViewHolder for the Add New Station action
      */
-    private inner class AddNewViewHolder(listItemAddNewLayout: View) :
+    private class AddNewViewHolder(listItemAddNewLayout: View) :
         RecyclerView.ViewHolder(listItemAddNewLayout) {
         val addNewStationView: ExtendedFloatingActionButton =
             listItemAddNewLayout.findViewById(R.id.card_add_new_station)
@@ -666,7 +666,7 @@ class CollectionAdapter(
     /*
      * Inner class: ViewHolder for a station
      */
-    private inner class StationViewHolder(stationCardLayout: View) :
+    private class StationViewHolder(stationCardLayout: View) :
         RecyclerView.ViewHolder(stationCardLayout) {
         val stationCardView: CardView = stationCardLayout.findViewById(R.id.station_card)
         val stationImageView: ImageView = stationCardLayout.findViewById(R.id.station_icon)

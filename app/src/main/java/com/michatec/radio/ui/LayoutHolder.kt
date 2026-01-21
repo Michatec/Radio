@@ -359,7 +359,7 @@ data class LayoutHolder(var rootView: View) {
     /* Shows player */
     fun showPlayer(context: Context): Boolean {
         UiHelper.setViewMargins(context, recyclerView, 0, 0, 0, Keys.BOTTOM_SHEET_PEEK_HEIGHT)
-        if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN && onboardingLayout.visibility == View.GONE) {
+        if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN && onboardingLayout.isGone) {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
         return true
@@ -440,7 +440,7 @@ data class LayoutHolder(var rootView: View) {
     /*
      * Inner class: Custom LinearLayoutManager
      */
-    private inner class CustomLayoutManager(context: Context) :
+    private class CustomLayoutManager(context: Context) :
         LinearLayoutManager(context, VERTICAL, false) {
         override fun supportsPredictiveItemAnimations(): Boolean {
             return true

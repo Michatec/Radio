@@ -288,32 +288,6 @@ object CollectionHelper {
     }
 
 
-    /* Gets MediaIem for next station within collection */
-    fun getNextMediaItem(context: Context, collection: Collection, stationUuid: String): MediaItem {
-        val currentStationPosition: Int = getStationPosition(collection, stationUuid)
-        return if (collection.stations.isEmpty() || currentStationPosition == -1) {
-            buildMediaItem(context, Station())
-        } else if (currentStationPosition < collection.stations.size -1) {
-            buildMediaItem(context, collection.stations[currentStationPosition + 1])
-        } else {
-            buildMediaItem(context, collection.stations.first())
-        }
-    }
-
-
-    /* Gets MediaIem for previous station within collection */
-    fun getPreviousMediaItem(context: Context, collection: Collection, stationUuid: String): MediaItem {
-        val currentStationPosition: Int = getStationPosition(collection, stationUuid)
-        return if (collection.stations.isEmpty() || currentStationPosition == -1) {
-            buildMediaItem(context, Station())
-        } else if (currentStationPosition > 0) {
-            buildMediaItem(context, collection.stations[currentStationPosition - 1])
-        } else {
-            buildMediaItem(context, collection.stations.last())
-        }
-    }
-
-
     /* Get the position from collection for given UUID */
     fun getStationPosition(collection: Collection, stationUuid: String): Int {
         collection.stations.forEachIndexed { stationId, station ->
@@ -561,7 +535,7 @@ object CollectionHelper {
     fun exportCollectionM3u(context: Context, collection: Collection) {
         Log.v(TAG, "Exporting collection of stations as M3U")
         // export collection as M3U - launch = fire & forget (no return value from save collection)
-        if (collection.stations.size > 0) {
+        if (collection.stations.isNotEmpty()) {
             CoroutineScope(IO).launch {
                 FileHelper.backupCollectionAsM3uSuspended(
                     context,
@@ -603,7 +577,7 @@ object CollectionHelper {
     fun exportCollectionPls(context: Context, collection: Collection) {
         Log.v(TAG, "Exporting collection of stations as PLS")
         // export collection as PLS - launch = fire & forget (no return value from save collection)
-        if (collection.stations.size > 0) {
+        if (collection.stations.isNotEmpty()) {
             CoroutineScope(IO).launch {
                 FileHelper.backupCollectionAsPlsSuspended(
                     context,

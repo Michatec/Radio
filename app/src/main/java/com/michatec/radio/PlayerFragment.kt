@@ -183,7 +183,6 @@ class PlayerFragment : Fragment(),
 
         // set the same background color of the player sheet for the navigation bar
         requireActivity().window.navigationBarColor = ContextCompat.getColor(requireActivity(), R.color.player_sheet_background)
-
         // associate the ItemTouchHelper with the RecyclerView
         itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback())
         itemTouchHelper?.attachToRecyclerView(layout.recyclerView)
@@ -536,7 +535,7 @@ class PlayerFragment : Fragment(),
     private fun requestSleepTimerUpdate() {
         val resultFuture: ListenableFuture<SessionResult>? =
             controller?.requestSleepTimerRemaining()
-        resultFuture?.addListener(Runnable {
+        resultFuture?.addListener({
             val timeRemaining: Long = resultFuture.get().extras.getLong(Keys.EXTRA_SLEEP_TIMER_REMAINING)
             layout.updateSleepTimer(activity as Context, timeRemaining)
         }, MoreExecutors.directExecutor())
@@ -546,7 +545,7 @@ class PlayerFragment : Fragment(),
     /* Requests an update of the metadata history from the player service */
     private fun requestMetadataUpdate() {
         val resultFuture: ListenableFuture<SessionResult>? = controller?.requestMetadataHistory()
-        resultFuture?.addListener(Runnable {
+        resultFuture?.addListener({
             val metadata: ArrayList<String>? = resultFuture.get().extras.getStringArrayList(Keys.EXTRA_METADATA_HISTORY)
             layout.updateMetadata(metadata?.toMutableList())
         }, MoreExecutors.directExecutor())
@@ -808,4 +807,3 @@ class PlayerFragment : Fragment(),
         queue.add(request)
     }
 }
-
