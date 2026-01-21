@@ -8,7 +8,7 @@ on:
 
 env:
   ANDROID_HOME: /usr/local/lib/android/sdk/
-  APK_PATH: app/build/outputs/apk/release/Radio-release-unsigned.apk
+  APK_PATH: app/build/outputs/apk/release/Radio.apk
   APKSIGNER: /usr/local/lib/android/sdk/build-tools/34.0.0/apksigner
 
 jobs:
