@@ -2,7 +2,7 @@
 <paths>
     <external-files-path
         name="my_images"
-        path="Android/data/com.michatec.urlradio/files/Pictures" />
+        path="Android/data/com.michatec.radio/files/Pictures" />
     <external-path
         name="external_files"
         path="." />
