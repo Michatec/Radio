@@ -10,7 +10,7 @@
         android:shortcutShortLabel="@string/shortcut_last_station_short_label">
 
         <intent
-            android:action="com.jamal2367.urlradio.action.START"
+            android:action="com.michatec.radio.action.START"
             android:targetClass="com.michatec.radio.MainActivity"
             android:targetPackage="com.michatec.radio">
             <extra
