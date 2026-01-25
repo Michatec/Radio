@@ -24,6 +24,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -193,6 +194,8 @@ class CollectionAdapter(
                 setStationImage(stationViewHolder, station)
                 setStationButtons(stationViewHolder, station)
                 setEditViews(stationViewHolder, station)
+                setPlaybackProgress(stationViewHolder, station)
+                setDownloadProgress(stationViewHolder, station)
 
                 // show / hide edit views
                 when (expandedStationPosition) {
@@ -245,6 +248,28 @@ class CollectionAdapter(
     /* Sets the station name view */
     private fun setStationName(stationViewHolder: StationViewHolder, station: Station) {
         stationViewHolder.stationNameView.text = station.name
+    }
+
+
+    /* Sets the playback progress view */
+    private fun setPlaybackProgress(stationViewHolder: StationViewHolder, station: Station) {
+        if (station.bufferingProgress > 0) {
+            stationViewHolder.bufferingProgress.progress = station.bufferingProgress
+            stationViewHolder.bufferingProgress.isVisible = true
+        } else {
+            stationViewHolder.bufferingProgress.isGone = true
+        }
+    }
+
+
+    /* Sets the download progress view */
+    private fun setDownloadProgress(stationViewHolder: StationViewHolder, station: Station) {
+        if (station.downloadProgress > 0) {
+            stationViewHolder.downloadProgress.progress = station.downloadProgress
+            stationViewHolder.downloadProgress.isVisible = true
+        } else {
+            stationViewHolder.downloadProgress.isGone = true
+        }
     }
 
 
@@ -486,10 +511,10 @@ class CollectionAdapter(
                         setStationButtons(holder, station)
                     }
                     Keys.HOLDER_UPDATE_PLAYBACK_PROGRESS -> {
-                        // todo implement
+                        setPlaybackProgress(holder, station)
                     }
                     Keys.HOLDER_UPDATE_DOWNLOAD_STATE -> {
-                        // todo implement
+                        setDownloadProgress(holder, station)
                     }
                 }
             }
@@ -576,21 +601,6 @@ class CollectionAdapter(
     }
 
 
-//    /* Initiates update of a station's information */ // todo move to CollectionHelper
-//    private fun updateStation(context: Context, station: Station) {
-//        if (station.radioBrowserStationUuid.isNotEmpty()) {
-//            // get updated station from radio browser - results are handled by onRadioBrowserSearchResults
-//            val radioBrowserSearch: RadioBrowserSearch = RadioBrowserSearch(context, this)
-//            radioBrowserSearch.searchStation(context, station.radioBrowserStationUuid, Keys.SEARCH_TYPE_BY_UUID)
-//        } else if (station.remoteStationLocation.isNotEmpty()) {
-//            // download playlist // todo check content type detection is necessary here
-//            DownloadHelper.downloadPlaylists(context, arrayOf(station.remoteStationLocation))
-//        } else {
-//            Log.w(TAG, "Unable to update station: ${station.name}.")
-//        }
-//    }
-
-
     /* Determines if position is last */
     private fun isPositionFooter(position: Int): Boolean {
         return position == collection.stations.size
@@ -601,7 +611,7 @@ class CollectionAdapter(
     @SuppressLint("NotifyDataSetChanged")
     private fun updateRecyclerView(oldCollection: Collection, newCollection: Collection) {
         collection = newCollection
-        if (oldCollection.stations.size == 0 && newCollection.stations.size > 0) {
+        if (oldCollection.stations.isEmpty() && newCollection.stations.isNotEmpty()) {
             // data set has been initialized - redraw the whole list
             notifyDataSetChanged()
         } else {
@@ -673,6 +683,8 @@ class CollectionAdapter(
         val stationImageView: ImageView = stationCardLayout.findViewById(R.id.station_icon)
         val stationNameView: TextView = stationCardLayout.findViewById(R.id.station_name)
         val stationStarredView: ImageView = stationCardLayout.findViewById(R.id.starred_icon)
+        val bufferingProgress: ProgressBar = stationCardLayout.findViewById(R.id.buffering_progress)
+        val downloadProgress: ProgressBar = stationCardLayout.findViewById(R.id.download_progress)
 
         //        val menuButtonView: ImageView = stationCardLayout.findViewById(R.id.menu_button)
         val playButtonView: ImageView = stationCardLayout.findViewById(R.id.playback_button)

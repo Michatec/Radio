@@ -48,7 +48,9 @@ data class Station(
     @Expose var radioBrowserStationUuid: String = String(),
     @Expose var radioBrowserChangeUuid: String = String(),
     @Expose var bitrate: Int = 0,
-    @Expose var codec: String = String()
+    @Expose var codec: String = String(),
+    @Expose var bufferingProgress: Int = 0,
+    @Expose var downloadProgress: Int = 0
 ) : Parcelable {
 
 
@@ -79,6 +81,12 @@ data class Station(
     }
 
 
+    /* Getter for media type */
+    fun getMediaType(): String {
+        return streamContent
+    }
+
+
     /* Creates a deep copy of a Station */
     fun deepCopy(): Station {
         return Station(
@@ -101,7 +109,9 @@ data class Station(
             radioBrowserStationUuid = radioBrowserStationUuid,
             radioBrowserChangeUuid = radioBrowserChangeUuid,
             bitrate = bitrate,
-            codec = codec
+            codec = codec,
+            bufferingProgress = bufferingProgress,
+            downloadProgress = downloadProgress
         )
     }
 }

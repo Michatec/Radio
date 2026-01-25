@@ -417,16 +417,14 @@ object FileHelper {
 
     /* Reads InputStream from file uri and returns it as String */
     private fun readTextFileFromFile(context: Context): String {
-        // todo read https://commonsware.com/blog/2016/03/15/how-consume-content-uri.html
-        // https://developer.android.com/training/secure-file-sharing/retrieve-info
-
         // check if file exists
         val file = File(context.getExternalFilesDir(Keys.FOLDER_COLLECTION), Keys.COLLECTION_FILE)
         if (!file.exists() || !file.canRead()) {
             return String()
         }
         // read until last line reached
-        val stream: InputStream = file.inputStream()
+        val uri = Uri.fromFile(file)
+        val stream: InputStream = context.contentResolver.openInputStream(uri) ?: return String()
         val reader = BufferedReader(InputStreamReader(stream))
         val builder: StringBuilder = StringBuilder()
         reader.forEachLine {

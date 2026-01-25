@@ -688,7 +688,6 @@ object CollectionHelper {
 
     /* Creates a MediaItem with MediaMetadata for a single radio station - used to prepare player */
     fun buildMediaItem(context: Context, station: Station): MediaItem {
-        // todo implement HLS MediaItems
         // put uri in RequestMetadata - credit: https://stackoverflow.com/a/70103460
         val requestMetadata = MediaItem.RequestMetadata.Builder().apply {
             setMediaUri(station.getStreamUri().toUri())
@@ -713,7 +712,7 @@ object CollectionHelper {
             setMediaId(station.uuid)
             setRequestMetadata(requestMetadata)
             setMediaMetadata(mediaMetadata)
-            //setMimeType(station.getMediaType())
+            setMimeType(station.getMediaType())
             setUri(station.getStreamUri().toUri())
         }.build()
     }

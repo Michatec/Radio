@@ -41,18 +41,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // house-keeping: determine if edit stations is enabled by default todo: remove in 2023
-        if (PreferencesHelper.isHouseKeepingNecessary()) {
-            // house-keeping 1: remove hard coded default image
-            ImportHelper.removeDefaultStationImageUris(this)
-            // house-keeping 2: if existing user detected, enable Edit Stations by default
-            if (PreferencesHelper.loadCollectionSize() != -1) {
-                // existing user detected - enable Edit Stations by default
-                PreferencesHelper.saveEditStationsEnabled(true)
-            }
-            PreferencesHelper.saveHouseKeepingNecessaryState()
-        }
-
         // set up views
         setContentView(R.layout.activity_main)
 

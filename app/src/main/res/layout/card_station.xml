@@ -31,6 +31,21 @@
             app:shapeAppearanceOverlay="@style/RoundedCorners"
             app:srcCompat="@drawable/ic_default_station_image_72dp" />
 
+        <ProgressBar
+            android:id="@+id/download_progress"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:progressTint="@color/player_button_background"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/station_icon"
+            app:layout_constraintStart_toStartOf="@+id/station_icon"
+            app:layout_constraintTop_toTopOf="@+id/station_icon"
+            tools:visibility="visible" />
+
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/change_image_view"
             android:layout_width="0dp"
@@ -154,6 +169,21 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/save_button"
             app:layout_constraintTop_toTopOf="@+id/save_button" />
+
+        <ProgressBar
+            android:id="@+id/buffering_progress"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
+            android:progressTint="@color/player_button_background"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/default_edit_views"
