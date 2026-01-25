@@ -471,18 +471,19 @@ class CollectionAdapter(
 
         } else if (holder is StationViewHolder) {
             // get station from position
-            collection.stations[holder.bindingAdapterPosition]
+            val station: Station = collection.stations[holder.bindingAdapterPosition]
 
             for (data in payloads) {
                 when (data as Int) {
                     Keys.HOLDER_UPDATE_COVER -> {
-                        // todo implement
+                        setStationImage(holder, station)
+                        setStarredIcon(holder, station)
                     }
                     Keys.HOLDER_UPDATE_NAME -> {
-                        // todo implement
+                        setStationName(holder, station)
                     }
                     Keys.HOLDER_UPDATE_PLAYBACK_STATE -> {
-                        // todo implement
+                        setStationButtons(holder, station)
                     }
                     Keys.HOLDER_UPDATE_PLAYBACK_PROGRESS -> {
                         // todo implement

@@ -20,6 +20,8 @@ import androidx.media3.common.Metadata
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.extractor.metadata.icy.IcyHeaders
 import androidx.media3.extractor.metadata.icy.IcyInfo
+import androidx.media3.extractor.metadata.id3.Id3Frame
+import androidx.media3.extractor.metadata.id3.TextInformationFrame
 import com.michatec.radio.Keys
 import kotlin.math.min
 
@@ -37,28 +39,51 @@ object AudioHelper {
     /* Extract audio stream metadata */
     @OptIn(UnstableApi::class)
     fun getMetadataString(metadata: Metadata): String {
-        var metadataString = String()
+        var title = ""
+        var artist = ""
+        var album = ""
         for (i in 0 until metadata.length()) {
             // extract IceCast metadata
             when (val entry = metadata.get(i)) {
                 is IcyInfo -> {
-                    metadataString = entry.title.toString()
+                    title = entry.title.toString()
                 }
 
                 is IcyHeaders -> {
                     Log.i(TAG, "icyHeaders:" + entry.name + " - " + entry.genre)
                 }
 
+                is Id3Frame -> {
+                    when (entry) {
+                        is TextInformationFrame -> {
+                            when (entry.id) {
+                                "TIT2" -> title = entry.values.getOrNull(0) ?: "" // Title
+                                "TPE1" -> artist = entry.values.getOrNull(0) ?: "" // Artist
+                                "TALB" -> album = entry.values.getOrNull(0) ?: "" // Album
+                            }
+                        }
+                        else -> {
+                            Log.d(TAG, "Unhandled ID3 frame: ${entry.javaClass.simpleName}")
+                        }
+                    }
+                }
+
                 else -> {
                     Log.w(TAG, "Unsupported metadata received (type = ${entry.javaClass.simpleName})")
                 }
             }
-            // TODO implement HLS metadata extraction (Id3Frame / PrivFrame)
-            // https://exoplayer.dev/doc/reference/com/google/android/exoplayer2/metadata/Metadata.Entry.html
+        }
+        // Build metadata string
+        var metadataString = title
+        if (artist.isNotEmpty() && title.isNotEmpty()) {
+            metadataString = "$artist - $title"
+        }
+        if (album.isNotEmpty() && metadataString.isNotEmpty()) {
+            metadataString += " ($album)"
         }
         // ensure a max length of the metadata string
         if (metadataString.isNotEmpty()) {
-            metadataString = metadataString.substring(0, min(metadataString.length, Keys.DEFAULT_MAX_LENGTH_OF_METADATA_ENTRY))
+            metadataString = metadataString.take(min(metadataString.length, Keys.DEFAULT_MAX_LENGTH_OF_METADATA_ENTRY))
         }
         return metadataString
     }
