@@ -19,8 +19,8 @@ android {
         applicationId 'com.michatec.radio'
         minSdk 28
         targetSdk 36
-        versionCode 140
-        versionName '14'
+        versionCode 141
+        versionName '14.1'
         resourceConfigurations += ['en', 'de', 'el', 'nl', 'pl', 'ru','uk', 'ja', 'da', 'fr']
     }
 
