@@ -71,21 +71,3 @@ jobs:
         with:
           name: app-release
           path: app-release.apk
-
-  publish:
-    runs-on: ubuntu-latest
-    needs: build
-    permissions:
-      contents: write
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v7
-        with:
-          name: app-release
-          path: app-release.apk
-
-      - name: Create release
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "app-release.apk"
-          draft: true
