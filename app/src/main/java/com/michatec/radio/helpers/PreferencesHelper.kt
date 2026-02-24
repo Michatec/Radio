@@ -213,20 +213,6 @@ object PreferencesHelper {
     }
 
 
-    /* Checks if housekeeping work needs to be done - used usually in DownloadWorker "REQUEST_UPDATE_COLLECTION" */
-    fun isHouseKeepingNecessary(): Boolean {
-        return sharedPreferences.getBoolean(Keys.PREF_ONE_TIME_HOUSEKEEPING_NECESSARY, true)
-    }
-
-
-    /* Saves state of housekeeping */
-    fun saveHouseKeepingNecessaryState(state: Boolean = false) {
-        sharedPreferences.edit {
-            putBoolean(Keys.PREF_ONE_TIME_HOUSEKEEPING_NECESSARY, state)
-        }
-    }
-
-
     /* Load currently selected app theme */
     fun loadThemeSelection(): String {
         return sharedPreferences.getString(
@@ -240,15 +226,6 @@ object PreferencesHelper {
     fun loadEditStationsEnabled(): Boolean {
         return sharedPreferences.getBoolean(Keys.PREF_EDIT_STATIONS, true)
     }
-
-
-    /* Saves value of the option: Edit Stations (only needed for migration) */
-    fun saveEditStationsEnabled(enabled: Boolean = false) {
-        sharedPreferences.edit {
-            putBoolean(Keys.PREF_EDIT_STATIONS, enabled)
-        }
-    }
-
 
     /* Loads value of the option: Edit Station Streams */
     fun loadEditStreamUrisEnabled(): Boolean {
@@ -276,7 +253,7 @@ object PreferencesHelper {
     fun downloadOverMobile(): Boolean {
         return sharedPreferences.getBoolean(
             Keys.PREF_DOWNLOAD_OVER_MOBILE,
-            Keys.DEFAULT_DOWNLOAD_OVER_MOBILE
+            false
         )
     }
 

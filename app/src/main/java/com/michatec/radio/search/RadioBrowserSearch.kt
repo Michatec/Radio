@@ -129,7 +129,7 @@ class RadioBrowserSearch(private var radioBrowserSearchListener: RadioBrowserSea
 
 
     /* Listens for (positive) server responses to search requests */
-    private val responseListener: Response.Listener<JSONArray> = Response.Listener<JSONArray> { response ->
+    private val responseListener: Response.Listener<JSONArray> = Response.Listener { response ->
         if (response != null) {
             radioBrowserSearchListener.onRadioBrowserSearchResults(createRadioBrowserResult(response.toString()))
         }
