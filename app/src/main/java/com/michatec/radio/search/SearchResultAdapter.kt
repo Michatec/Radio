@@ -18,7 +18,6 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -240,7 +239,7 @@ class SearchResultAdapter(
     /*
      * Inner class: ViewHolder for a radio station search result
      */
-    private inner class SearchResultViewHolder(var searchResultLayout: View) :
+    private class SearchResultViewHolder(var searchResultLayout: View) :
         RecyclerView.ViewHolder(searchResultLayout) {
         val nameView: MaterialTextView = searchResultLayout.findViewById(R.id.station_name)
         val streamView: MaterialTextView = searchResultLayout.findViewById(R.id.station_url)

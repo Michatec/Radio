@@ -58,7 +58,7 @@
             </intent-filter>
 
             <!-- react to playlist-links based on file extension -->
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -73,7 +73,7 @@
             </intent-filter>
 
             <!-- react to playlist-links based on mimetype -->
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -81,7 +81,8 @@
 
                 <data android:scheme="http" />
                 <data android:scheme="https" />
-                <data android:host="*" />
+                <data android:host="*"
+                    tools:ignore="AppLinkUrlError" />
                 <data android:mimeType="audio/x-scpls" />
                 <data android:mimeType="audio/mpegurl" />
                 <data android:mimeType="audio/x-mpegurl" />

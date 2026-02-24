@@ -25,6 +25,7 @@ import com.michatec.radio.R
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
+import androidx.core.graphics.createBitmap
 
 
 /*
@@ -98,7 +99,7 @@ object ImageHelper {
         }
 
         // create empty bitmap and canvas
-        val outputImage: Bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+        val outputImage: Bitmap = createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val imageCanvas = Canvas(outputImage)
 
         // draw square background
