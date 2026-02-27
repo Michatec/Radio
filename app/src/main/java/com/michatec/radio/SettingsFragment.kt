@@ -116,16 +116,21 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         }
 
 
-//        // set up "Update Stations" preference
-//        val preferenceUpdateCollection: Preference = Preference(activity as Context)
-//        preferenceUpdateCollection.title = getString(R.string.pref_update_collection_title)
-//        preferenceUpdateCollection.setIcon(R.drawable.ic_refresh_24dp)
-//        preferenceUpdateCollection.summary = getString(R.string.pref_update_collection_summary)
-//        preferenceUpdateCollection.setOnPreferenceClickListener {
-//            // show dialog
-//            YesNoDialog(this).show(context = activity as Context, type = Keys.DIALOG_UPDATE_COLLECTION, message = R.string.dialog_yes_no_message_update_collection, yesButton = R.string.dialog_yes_no_positive_button_update_collection)
-//            return@setOnPreferenceClickListener true
-//        }
+        // set up "Update Stations" preference
+        val preferenceUpdateCollection = Preference(activity as Context)
+        preferenceUpdateCollection.title = getString(R.string.pref_update_collection_title)
+        preferenceUpdateCollection.setIcon(R.drawable.ic_refresh_24dp)
+        preferenceUpdateCollection.summary = getString(R.string.pref_update_collection_summary)
+        preferenceUpdateCollection.setOnPreferenceClickListener {
+            // show dialog
+            YesNoDialog(this).show(
+                context = activity as Context,
+                type = Keys.DIALOG_UPDATE_COLLECTION,
+                message = R.string.dialog_yes_no_message_update_collection,
+                yesButton = R.string.dialog_yes_no_positive_button_update_collection,
+            )
+            return@setOnPreferenceClickListener true
+        }
 
 
         // set up "M3U Export" preference
@@ -299,7 +304,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         screen.addPreference(preferenceThemeSelection)
         screen.addPreference(preferenceCategoryMaintenance)
         screen.addPreference(preferenceUpdateStationImages)
-//        screen.addPreference(preferenceUpdateCollection)
+        screen.addPreference(preferenceUpdateCollection)
         screen.addPreference(preferenceCategoryImportExport)
         screen.addPreference(preferenceM3uExport)
         screen.addPreference(preferencePlsExport)

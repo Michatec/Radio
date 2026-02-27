@@ -51,6 +51,10 @@
     <string name="player_sheet_h2_station_metadata">Momentan läuft</string>
     <string name="player_sheet_h2_stream_url">Streaming-Adresse</string>
     <!-- Settings -->
+    <string name="pref_update_collection_title">Senderinformationnen aktualisieren</string>
+    <string name="pref_update_collection_summary">Die neueste Version aller Senderinformationen herunterladen.</string>
+    <string name="dialog_yes_no_message_update_collection">Die neueste Version aller Senderinformationen herunterladen?</string>
+    <string name="dialog_yes_no_positive_button_update_collection">Aktualisieren</string>
     <string name="pref_advanced_title">Erweitert</string>
     <string name="pref_app_version_summary">Version</string>
     <string name="pref_app_version_title">App-Version</string>
