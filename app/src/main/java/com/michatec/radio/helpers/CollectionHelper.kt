@@ -644,48 +644,6 @@ object CollectionHelper {
         LocalBroadcastManager.getInstance(context).sendBroadcast(collectionChangedIntent)
     }
 
-
-    //    /* Creates MediaMetadata for a single station - used in media session*/
-//    fun buildStationMediaMetadata(context: Context, station: Station, metadata: String): MediaMetadataCompat {
-//        return MediaMetadataCompat.Builder().apply {
-//            putString(MediaMetadataCompat.METADATA_KEY_ARTIST, station.name)
-//            putString(MediaMetadataCompat.METADATA_KEY_TITLE, metadata)
-//            putString(MediaMetadataCompat.METADATA_KEY_ALBUM, context.getString(R.string.app_name))
-//            putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, station.getStreamUri())
-//            putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, ImageHelper.getScaledStationImage(context, station.image, Keys.SIZE_COVER_LOCK_SCREEN))
-//            //putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, station.image)
-//        }.build()
-//    }
-//
-//
-//    /* Creates MediaItem for a station - used by collection provider */
-//    fun buildStationMediaMetaItem(context: Context, station: Station): MediaBrowserCompat.MediaItem {
-//        val mediaDescriptionBuilder = MediaDescriptionCompat.Builder()
-//        mediaDescriptionBuilder.setMediaId(station.uuid)
-//        mediaDescriptionBuilder.setTitle(station.name)
-//        mediaDescriptionBuilder.setIconBitmap(ImageHelper.getScaledStationImage(context, station.image, Keys.SIZE_COVER_LOCK_SCREEN))
-//        // mediaDescriptionBuilder.setIconUri(station.image.toUri())
-//        return MediaBrowserCompat.MediaItem(mediaDescriptionBuilder.build(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
-//    }
-//
-//
-//    /* Creates description for a station - used in MediaSessionConnector */
-//    fun buildStationMediaDescription(context: Context, station: Station, metadata: String): MediaDescriptionCompat {
-//        val coverBitmap: Bitmap = ImageHelper.getScaledStationImage(context, station.image, Keys.SIZE_COVER_LOCK_SCREEN)
-//        val extras: Bundle = Bundle()
-//        extras.putParcelable(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, coverBitmap)
-//        extras.putParcelable(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, coverBitmap)
-//        return MediaDescriptionCompat.Builder().apply {
-//            setMediaId(station.uuid)
-//            setIconBitmap(coverBitmap)
-//            setIconUri(station.image.toUri())
-//            setTitle(metadata)
-//            setSubtitle(station.name)
-//            setExtras(extras)
-//        }.build()
-//    }
-
-
     /* Creates a MediaItem with MediaMetadata for a single radio station - used to prepare player */
     fun buildMediaItem(context: Context, station: Station): MediaItem {
         // put uri in RequestMetadata - credit: https://stackoverflow.com/a/70103460

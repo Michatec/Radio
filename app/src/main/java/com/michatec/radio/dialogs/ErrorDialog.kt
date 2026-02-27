@@ -19,6 +19,7 @@ import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -81,8 +82,7 @@ class ErrorDialog {
 
         // add okay button
         builder.setPositiveButton(R.string.dialog_generic_button_okay) { _, _ ->
-            // listen for click on okay button
-            // do nothing
+            Toast.makeText(context, R.string.dialog_generic_button_okay, Toast.LENGTH_SHORT).show()
         }
 
         // display error dialog

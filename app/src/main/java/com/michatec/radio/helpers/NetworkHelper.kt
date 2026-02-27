@@ -120,7 +120,7 @@ object NetworkHelper {
                     InetAddress.getAllByName(Keys.RADIO_BROWSER_API_BASE)
                 // select a random address
                 serverAddressList[Random().nextInt(serverAddressList.size)].canonicalHostName
-            } catch (e: UnknownHostException) {
+            } catch (_: UnknownHostException) {
                 Keys.RADIO_BROWSER_API_DEFAULT
             }
             PreferencesHelper.saveRadioBrowserApiAddress(serverAddress)

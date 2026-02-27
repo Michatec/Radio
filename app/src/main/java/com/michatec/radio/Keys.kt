@@ -60,7 +60,6 @@ object Keys {
 
     // preferences
     const val PREF_RADIO_BROWSER_API: String = "RADIO_BROWSER_API"
-    const val PREF_ONE_TIME_HOUSEKEEPING_NECESSARY: String = "ONE_TIME_HOUSEKEEPING_NECESSARY_VERSIONCODE_95" // increment to current app version code to trigger housekeeping that runs only once
     const val PREF_THEME_SELECTION: String = "THEME_SELECTION"
     const val PREF_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
     const val PREF_COLLECTION_SIZE: String = "COLLECTION_SIZE"
@@ -138,7 +137,7 @@ object Keys {
     const val FOLDER_AUDIO: String = "audio"
     const val FOLDER_IMAGES: String = "images"
     const val FOLDER_TEMP: String = "temp"
-    const val URLRADIO_LEGACY_FOLDER_COLLECTION: String = "Collection"
+    const val RADIO_LEGACY_FOLDER_COLLECTION: String = "Collection"
 
     // file names and extensions
     const val COLLECTION_FILE: String = "collection.json"

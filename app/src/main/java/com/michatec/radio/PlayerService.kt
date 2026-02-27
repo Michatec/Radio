@@ -280,19 +280,8 @@ class PlayerService : MediaLibraryService() {
             val updatedMediaItems: List<MediaItem> =
                 mediaItems.map { mediaItem ->
                     CollectionHelper.getItem(this@PlayerService, collection, mediaItem.mediaId)
-//                    if (mediaItem.requestMetadata.searchQuery != null)
-//                        getMediaItemFromSearchQuery(mediaItem.requestMetadata.searchQuery!!)
-//                    else MediaItemTree.getItem(mediaItem.mediaId) ?: mediaItem
                 }
             return Futures.immediateFuture(updatedMediaItems)
-
-
-//            val updatedMediaItems = mediaItems.map { mediaItem ->
-//                mediaItem.buildUpon().apply {
-//                    setUri(mediaItem.requestMetadata.mediaUri)
-//                }.build()
-//            }
-//            return Futures.immediateFuture(updatedMediaItems)
         }
 
 
@@ -498,15 +487,10 @@ class PlayerService : MediaLibraryService() {
             if (!playWhenReady) {
                 when (reason) {
                     Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM -> {
-                        // playback reached end: stop / end playback
+                        stopSelf()
                     }
                     else -> {
-                        // playback has been paused by user or OS: update media session and save state
-                        // PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST or
-                        // PLAY_WHEN_READY_CHANGE_REASON_AUDIO_FOCUS_LOSS or
-                        // PLAY_WHEN_READY_CHANGE_REASON_AUDIO_BECOMING_NOISY or
-                        // PLAY_WHEN_READY_CHANGE_REASON_REMOTE
-                        // handlePlaybackChange(PlaybackStateCompat.STATE_PAUSED)
+                        stopSelf()
                     }
                 }
             }
@@ -585,7 +569,6 @@ class PlayerService : MediaLibraryService() {
             intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
             intent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
             sendBroadcast(intent)
-            // note: remember to broadcast AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION, when not needed anymore
         }
     }
 }

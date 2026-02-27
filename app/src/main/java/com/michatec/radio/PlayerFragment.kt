@@ -265,7 +265,7 @@ class PlayerFragment : Fragment(),
         // handle navigation arguments
         handleNavigationArguments()
 //        // handle start intent - if started via tap on rss link
-//        handleStartIntent()
+        handleStartIntent()
         // start watching for changes in shared preferences
         PreferencesHelper.registerPreferenceChangeListener(this as SharedPreferences.OnSharedPreferenceChangeListener)
     }
@@ -636,16 +636,16 @@ class PlayerFragment : Fragment(),
         collectionViewModel.collectionLiveData.observe(this) {
             // update collection
             collection = it
-////            // updates current station in player views
-////            playerState = PreferencesHelper.loadPlayerState()
+            // updates current station in player views
+            playerState = PreferencesHelper.loadPlayerState()
 //            // get station
-//            val station: Station = CollectionHelper.getStation(collection, playerState.stationUuid)
+            val station: Station = CollectionHelper.getStation(collection, playerState.stationUuid)
 //            // update player views
-//            layout.updatePlayerViews(activity as Context, station, playerState.isPlaying)
-////            // handle start intent
-////            handleStartIntent()
-////            // handle navigation arguments
-////            handleNavigationArguments()
+            layout.updatePlayerViews(activity as Context, station, playerState.isPlaying)
+            // handle start intent
+            handleStartIntent()
+            // handle navigation arguments
+            handleNavigationArguments()
         }
         collectionViewModel.collectionSizeLiveData.observe(this) {
             // size of collection changed

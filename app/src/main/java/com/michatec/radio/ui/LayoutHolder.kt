@@ -313,18 +313,6 @@ data class LayoutHolder(var rootView: View) {
         isBuffering = buffering
     }
 
-
-    /* Toggles visibility of player depending on playback state - hiding it when playback is stopped (not paused or playing) */
-//    fun togglePlayerVisibility(context: Context, playbackState: Int): Boolean {
-//        when (playbackState) {
-//            PlaybackStateCompat.STATE_STOPPED -> return hidePlayer(context)
-//            PlaybackStateCompat.STATE_NONE -> return hidePlayer(context)
-//            PlaybackStateCompat.STATE_ERROR -> return hidePlayer(context)
-//            else -> return showPlayer(context)
-//        }
-//    }
-
-
     /* Toggles visibility of the download progress indicator */
     fun toggleDownloadProgressIndicator() {
         when (PreferencesHelper.loadActiveDownloads()) {
