@@ -60,6 +60,16 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    /* Overrides onResume from AppCompatActivity */
+    override fun onResume() {
+        try {
+            super.onResume()
+        } catch (_: ClassCastException) {
+            // Do nothing
+        }
+    }
+
+
     /* Overrides onSupportNavigateUp from AppCompatActivity */
     override fun onSupportNavigateUp(): Boolean {
         // Taken from: https://developer.android.com/guide/navigation/navigation-ui#action_bar
