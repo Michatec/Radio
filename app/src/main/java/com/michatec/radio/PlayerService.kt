@@ -400,19 +400,19 @@ class PlayerService : MediaLibraryService() {
             customLayout: ImmutableList<CommandButton>,
             showPauseButton: Boolean
         ): ImmutableList<CommandButton> {
-            val seekToPreviousCommandButton = CommandButton.Builder()
+            val seekToPreviousCommandButton = CommandButton.Builder(CommandButton.ICON_UNDEFINED)
                 .setPlayerCommand(Player.COMMAND_SEEK_TO_PREVIOUS)
-                .setIconResId(R.drawable.ic_notification_skip_to_previous_36dp)
+                .setCustomIconResId(R.drawable.ic_notification_skip_to_previous_36dp)
                 .setEnabled(true)
                 .build()
-            val playCommandButton = CommandButton.Builder()
+            val playCommandButton = CommandButton.Builder(CommandButton.ICON_UNDEFINED)
                 .setPlayerCommand(Player.COMMAND_PLAY_PAUSE)
-                .setIconResId(if (player.isPlaying) R.drawable.ic_notification_stop_36dp else R.drawable.ic_notification_play_36dp)
+                .setCustomIconResId(if (player.isPlaying) R.drawable.ic_notification_stop_36dp else R.drawable.ic_notification_play_36dp)
                 .setEnabled(true)
                 .build()
-            val seekToNextCommandButton = CommandButton.Builder()
+            val seekToNextCommandButton = CommandButton.Builder(CommandButton.ICON_UNDEFINED)
                 .setPlayerCommand(Player.COMMAND_SEEK_TO_NEXT)
-                .setIconResId(R.drawable.ic_notification_skip_to_next_36dp)
+                .setCustomIconResId(R.drawable.ic_notification_skip_to_next_36dp)
                 .setEnabled(true)
                 .build()
             val commandButtons: MutableList<CommandButton> = mutableListOf(
