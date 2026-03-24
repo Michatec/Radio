@@ -39,6 +39,9 @@ class MainActivity : AppCompatActivity() {
     /* Overrides onCreate from AppCompatActivity */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Free Android
+        FreeDroidWarn.showWarningOnUpgrade(this, BuildConfig.VERSION_CODE);
 
         // set up views
         setContentView(R.layout.activity_main)
