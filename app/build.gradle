@@ -72,6 +72,8 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.9.7'
     implementation 'androidx.work:work-runtime-ktx:2.11.1'
 
+    implementation 'com.github.woheller69:FreeDroidWarn:V1.+'
+	
     // Volley HTTP request //
     implementation 'com.android.volley:volley:1.2.1'
     implementation 'androidx.compose.material3:material3:1.4.0'
