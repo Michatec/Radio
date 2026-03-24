@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:targetApi="tiramisu">
+        tools:targetApi="33">
 
         <!-- ANDROID AUTO SUPPORT -->
         <!--  https://developer.android.com/training/auto/audio/ -->
@@ -58,6 +58,7 @@
             </intent-filter>
 
             <!-- react to playlist-links based on file extension -->
+            <!-- This is intended as an App Link for specific extensions -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -66,14 +67,16 @@
 
                 <data android:scheme="http" />
                 <data android:scheme="https" />
-                <data android:host="*" />
+                <data android:host="*"
+                    tools:ignore="AppLinkUrlError" />
                 <data android:pathPattern=".*\\.m3u" />
                 <data android:pathPattern=".*\\.m3u8" />
                 <data android:pathPattern=".*\\.pls" />
             </intent-filter>
 
             <!-- react to playlist-links based on mimetype -->
-            <intent-filter android:autoVerify="true">
+            <!-- Note: MIME types prevent strict App Link verification, but are kept as requested -->
+            <intent-filter android:autoVerify="false">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.BROWSABLE" />
