@@ -1,0 +1,42 @@
+[versions]
+activityKtx = "1.13.0"
+agp = "9.1.0"
+coreKtx = "1.18.0"
+freedroidwarn = "V1.10"
+gradleToolchainsFoojayResolverConvention = "1.0.0"
+gson = "2.13.2"
+kotlin = "2.3.20"
+material = "1.13.0"
+material3 = "1.4.0"
+media = "1.7.1"
+media3 = "1.9.3"
+navigation = "2.9.7"
+paletteKtx = "1.0.0"
+preferenceKtx = "1.2.1"
+volley = "1.2.1"
+workRuntimeKtx = "2.11.1"
+
+[libraries]
+activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+freedroidwarn = { group = "com.github.woheller69", name = "FreeDroidWarn", version.ref = "freedroidwarn" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+media = { group = "androidx.media", name = "media", version.ref = "media" }
+media3-datasource-okhttp = { group = "androidx.media3", name = "media3-datasource-okhttp", version.ref = "media3" }
+media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
+media3-exoplayer-hls = { group = "androidx.media3", name = "media3-exoplayer-hls", version.ref = "media3" }
+media3-session = { group = "androidx.media3", name = "media3-session", version.ref = "media3" }
+navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
+navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
+palette-ktx = { group = "androidx.palette", name = "palette-ktx", version.ref = "paletteKtx" }
+preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preferenceKtx" }
+volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
+work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+foojay = { id = "org.gradle.toolchains.foojay-resolver-convention", version.ref = "gradleToolchainsFoojayResolverConvention" }
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

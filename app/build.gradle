@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application'
+    alias libs.plugins.android.application
     id 'kotlin-parcelize'
 }
 
@@ -19,8 +19,8 @@ android {
         applicationId 'com.michatec.radio'
         minSdk 28
         targetSdk 36
-        versionCode 142
-        versionName '14.2'
+        versionCode 143
+        versionName '14.3'
         resourceConfigurations += ['en', 'de', 'el', 'nl', 'pl', 'ru','uk', 'ja', 'da', 'fr']
     }
 
@@ -55,26 +55,26 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Google Stuff //
-    implementation 'com.google.android.material:material:1.13.0'
-    implementation 'com.google.code.gson:gson:2.13.2'
+    implementation libs.material
+    implementation libs.gson
 
     // AndroidX Stuff //
-    implementation 'androidx.core:core-ktx:1.18.0'
-    implementation 'androidx.activity:activity-ktx:1.13.0'
-    implementation 'androidx.palette:palette-ktx:1.0.0'
-    implementation 'androidx.preference:preference-ktx:1.2.1'
-    implementation 'androidx.media:media:1.7.1'
-    implementation 'androidx.media3:media3-exoplayer:1.9.3'
-    implementation 'androidx.media3:media3-exoplayer-hls:1.9.3'
-    implementation 'androidx.media3:media3-session:1.9.3'
-    implementation 'androidx.media3:media3-datasource-okhttp:1.9.3'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.9.7'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.9.7'
-    implementation 'androidx.work:work-runtime-ktx:2.11.1'
+    implementation libs.core.ktx
+    implementation libs.activity.ktx
+    implementation libs.palette.ktx
+    implementation libs.preference.ktx
+    implementation libs.media
+    implementation libs.media3.exoplayer
+    implementation libs.media3.exoplayer.hls
+    implementation libs.media3.session
+    implementation libs.media3.datasource.okhttp
+    implementation libs.navigation.fragment.ktx
+    implementation libs.navigation.ui.ktx
+    implementation libs.work.runtime.ktx
 
-    implementation 'com.github.woheller69:FreeDroidWarn:V1.10'
+    implementation libs.freedroidwarn
 	
     // Volley HTTP request //
-    implementation 'com.android.volley:volley:1.2.1'
-    implementation 'androidx.compose.material3:material3:1.4.0'
+    implementation libs.volley
+    implementation libs.material3
 }
