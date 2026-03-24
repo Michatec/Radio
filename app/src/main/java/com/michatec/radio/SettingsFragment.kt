@@ -28,7 +28,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
-import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.preference.*
 import com.google.android.material.snackbar.Snackbar
@@ -427,9 +426,9 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             val sourceUri: Uri? = result.data?.data
             if (sourceUri != null) {
                 // open and import OPML in player fragment
-                val bundle: Bundle = bundleOf(
-                    Keys.ARG_RESTORE_COLLECTION to "$sourceUri"
-                )
+                val bundle = Bundle().apply {
+                    putString(Keys.ARG_RESTORE_COLLECTION, "$sourceUri")
+                }
                 this.findNavController().navigate(R.id.player_destination, bundle)
             }
         }
@@ -445,7 +444,9 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
                 Snackbar.LENGTH_LONG
             ).show()
             // update collection in player screen
-            val bundle: Bundle = bundleOf(Keys.ARG_UPDATE_COLLECTION to true)
+            val bundle = Bundle().apply {
+                putBoolean(Keys.ARG_UPDATE_COLLECTION, true)
+            }
             this.findNavController().navigate(R.id.player_destination, bundle)
         } else {
             ErrorDialog().show(
@@ -466,9 +467,9 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
                 Snackbar.LENGTH_LONG
             ).show()
             // update collection in player screen
-            val bundle: Bundle = bundleOf(
-                Keys.ARG_UPDATE_IMAGES to true
-            )
+            val bundle = Bundle().apply {
+                putBoolean(Keys.ARG_UPDATE_IMAGES, true)
+            }
             this.findNavController().navigate(R.id.player_destination, bundle)
         } else {
             ErrorDialog().show(

@@ -78,7 +78,6 @@ object Keys {
     // default const values
     const val DEFAULT_SIZE_OF_METADATA_HISTORY: Int = 25
     const val DEFAULT_MAX_LENGTH_OF_METADATA_ENTRY: Int = 127
-    const val DEFAULT_DOWNLOAD_OVER_MOBILE: Boolean = false
     const val ACTIVE_DOWNLOADS_EMPTY: String = "zero"
     const val DEFAULT_MAX_RECONNECTION_COUNT: Int = 30
     const val LARGE_BUFFER_SIZE_MULTIPLIER: Int = 8
@@ -148,9 +147,6 @@ object Keys {
     // server addresses
     const val RADIO_BROWSER_API_BASE: String = "all.api.radio-browser.info"
     const val RADIO_BROWSER_API_DEFAULT: String = "de1.api.radio-browser.info"
-
-    // locations
-    const val LOCATION_DEFAULT_STATION_IMAGE: String = "android.resource://com.michatec.radio/drawable/ic_default_station_image_24dp"
 
     // sizes (in dp)
     const val SIZE_STATION_IMAGE_CARD: Int = 72

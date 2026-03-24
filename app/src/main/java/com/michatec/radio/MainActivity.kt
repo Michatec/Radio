@@ -25,7 +25,7 @@ import androidx.navigation.ui.navigateUp
 import com.michatec.radio.helpers.AppThemeHelper
 import com.michatec.radio.helpers.FileHelper
 import com.michatec.radio.helpers.PreferencesHelper
-import org.woheller69.freeDroidWarn.FreeDroidWarn;
+import org.woheller69.freeDroidWarn.FreeDroidWarn
 
 /*
  * MainActivity class
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         
         // Free Android
-        FreeDroidWarn.showWarningOnUpgrade(this, BuildConfig.VERSION_CODE);
+        FreeDroidWarn.showWarningOnUpgrade(this, BuildConfig.VERSION_CODE)
 
         // set up views
         setContentView(R.layout.activity_main)

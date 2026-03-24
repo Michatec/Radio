@@ -33,7 +33,6 @@ import kotlinx.coroutines.Dispatchers.IO
 import java.io.*
 import java.util.*
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 
 /*
@@ -292,7 +291,7 @@ object FileHelper {
         collection: Collection,
         lastUpdate: Date
     ) {
-        return suspendCoroutine { cont ->
+        return suspendCancellableCoroutine { cont ->
             cont.resume(saveCollection(context, collection, lastUpdate))
         }
     }
@@ -311,7 +310,7 @@ object FileHelper {
         originalFileUri: Uri,
         targetFileUri: Uri
     ): Boolean {
-        return suspendCoroutine { cont ->
+        return suspendCancellableCoroutine { cont ->
             cont.resume(copyFile(context, originalFileUri, targetFileUri))
         }
     }
@@ -319,7 +318,7 @@ object FileHelper {
 
     /* Suspend function: Exports collection of stations as M3U file - local backup copy */
     suspend fun backupCollectionAsM3uSuspended(context: Context, collection: Collection) {
-        return suspendCoroutine { cont ->
+        return suspendCancellableCoroutine { cont ->
             Log.v(TAG, "Backing up collection as M3U - Thread: ${Thread.currentThread().name}")
             // create M3U string
             val m3uString: String = CollectionHelper.createM3uString(collection)
@@ -338,7 +337,7 @@ object FileHelper {
 
     /* Suspend function: Exports collection of stations as PLS file - local backup copy */
     suspend fun backupCollectionAsPlsSuspended(context: Context, collection: Collection) {
-        return suspendCoroutine { cont ->
+        return suspendCancellableCoroutine { cont ->
             Log.v(TAG, "Backing up collection as PLS - Thread: ${Thread.currentThread().name}")
             // create PLS string
             val plsString: String = CollectionHelper.createPlsString(collection)

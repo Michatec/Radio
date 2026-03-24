@@ -16,7 +16,6 @@ package com.michatec.radio.extensions
 
 import android.content.Context
 import android.os.Bundle
-import androidx.core.os.bundleOf
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
@@ -71,8 +70,11 @@ fun MediaController.play(context: Context, station: Station) {
 
 /* Starts playback with of a stream url */
 fun MediaController.playStreamDirectly(streamUri: String) {
+    val bundle = Bundle().apply {
+        putString(Keys.KEY_STREAM_URI, streamUri)
+    }
     sendCustomCommand(
         SessionCommand(Keys.CMD_PLAY_STREAM, Bundle.EMPTY),
-        bundleOf(Pair(Keys.KEY_STREAM_URI, streamUri))
+        bundle
     )
 }

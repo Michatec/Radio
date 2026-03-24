@@ -34,9 +34,4 @@ class Radio : Application() {
         AppThemeHelper.setTheme(PreferencesHelper.loadThemeSelection())
     }
 
-    /* Implements onTerminate */
-    override fun onTerminate() {
-        super.onTerminate()
-    }
-
 }

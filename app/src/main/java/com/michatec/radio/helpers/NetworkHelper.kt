@@ -19,13 +19,13 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.util.Log
 import com.michatec.radio.Keys
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.net.HttpURLConnection
 import java.net.InetAddress
 import java.net.URL
 import java.net.UnknownHostException
 import java.util.*
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 
 /*
@@ -105,7 +105,7 @@ object NetworkHelper {
 
     /* Suspend function: Detects content type (mime type) from given URL string - async using coroutine */
     suspend fun detectContentTypeSuspended(urlString: String): ContentType {
-        return suspendCoroutine { cont ->
+        return suspendCancellableCoroutine { cont ->
             cont.resume(detectContentType(urlString))
         }
     }
@@ -113,7 +113,7 @@ object NetworkHelper {
 
     /* Suspend function: Gets a random radio-browser.info api address - async using coroutine */
     suspend fun getRadioBrowserServerSuspended(): String {
-        return suspendCoroutine { cont ->
+        return suspendCancellableCoroutine { cont ->
             val serverAddress: String = try {
                 // get all available radio browser servers
                 val serverAddressList: Array<InetAddress> =
