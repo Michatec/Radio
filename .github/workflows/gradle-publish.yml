@@ -38,7 +38,7 @@ jobs:
         ## It is not necessary to check for cache hit as it
         ## will not download Android SDK again
         #if: steps.cache-android-sdk.outputs.cache-hit != 'true'
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
         with:
           packages: ''
 
