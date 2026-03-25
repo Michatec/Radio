@@ -3,8 +3,10 @@ name: Build and publish APK
 on:
   workflow_dispatch:
   push:
-    tags:
-      - 'b*'
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    
 
 env:
   ANDROID_HOME: /usr/local/lib/android/sdk/
