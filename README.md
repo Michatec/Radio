@@ -21,6 +21,8 @@ Since the developers of this app do not agree to this requirement, this app will
 <a href="https://github.com/woheller69/FreeDroidWarn">ℹ️ More Information</a>
 </details>
 
+----------------------------------------
+
 <details>
 <summary>⚙️ Install Radio</summary>
 <br>
