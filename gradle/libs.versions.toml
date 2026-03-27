@@ -14,7 +14,7 @@ navigation = "2.9.7"
 paletteKtx = "1.0.0"
 preferenceKtx = "1.2.1"
 volley = "1.2.1"
-workRuntimeKtx = "2.11.1"
+workRuntimeKtx = "2.11.2"
 
 [libraries]
 activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
