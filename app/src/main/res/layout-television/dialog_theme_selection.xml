@@ -28,7 +28,7 @@
             android:textSize="20sp"
             android:padding="12dp"
             android:button="@null"
-            android:drawableStart="?android:attr/listChoiceIndicatorSingle"
+            android:drawableEnd="?android:attr/listChoiceIndicatorSingle"
             android:drawablePadding="16dp"
             android:focusable="true"
             android:clickable="true" />
@@ -41,7 +41,7 @@
             android:textSize="20sp"
             android:padding="12dp"
             android:button="@null"
-            android:drawableStart="?android:attr/listChoiceIndicatorSingle"
+            android:drawableEnd="?android:attr/listChoiceIndicatorSingle"
             android:drawablePadding="16dp"
             android:focusable="true"
             android:clickable="true" />
@@ -54,7 +54,7 @@
             android:textSize="20sp"
             android:padding="12dp"
             android:button="@null"
-            android:drawableStart="?android:attr/listChoiceIndicatorSingle"
+            android:drawableEnd="?android:attr/listChoiceIndicatorSingle"
             android:drawablePadding="16dp"
             android:focusable="true"
             android:clickable="true" />

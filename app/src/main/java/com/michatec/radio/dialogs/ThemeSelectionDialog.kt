@@ -26,6 +26,28 @@ class ThemeSelectionDialog(private var themeSelectionDialogListener: ThemeSelect
     private lateinit var dialog: AlertDialog
 
 
+    /* Update radio buttons to reflect current theme */
+    private fun updateRadioButtons(
+        context: Context,
+        radioFollowSystem: RadioButton,
+        radioLight: RadioButton,
+        radioDark: RadioButton
+    ) {
+        val currentTheme = AppThemeHelper.getCurrentTheme(context)
+        when (currentTheme) {
+            context.getString(R.string.pref_theme_selection_mode_device_default) -> {
+                radioFollowSystem.isChecked = true
+            }
+            context.getString(R.string.pref_theme_selection_mode_light) -> {
+                radioLight.isChecked = true
+            }
+            context.getString(R.string.pref_theme_selection_mode_dark) -> {
+                radioDark.isChecked = true
+            }
+        }
+    }
+
+
     /* Construct and show dialog */
     fun show(context: Context) {
         // prepare dialog builder
@@ -65,31 +87,16 @@ class ThemeSelectionDialog(private var themeSelectionDialogListener: ThemeSelect
             }
             // apply theme immediately
             AppThemeHelper.setTheme(selectedTheme)
+            // update radio buttons to reflect new theme
+            updateRadioButtons(context, radioFollowSystem, radioLight, radioDark)
+            // notify listener
+            themeSelectionDialogListener.onThemeSelectionDialog(true, selectedTheme)
+            // dismiss dialog
+            dialog.dismiss()
         }
 
         // set custom view
         builder.setView(view)
-
-        // add OK button
-        builder.setPositiveButton(R.string.dialog_generic_button_okay) { dialog, _ ->
-            // get selected theme
-            val selectedTheme = when (radioGroup.checkedRadioButtonId) {
-                R.id.radio_theme_follow_system -> Keys.STATE_THEME_FOLLOW_SYSTEM
-                R.id.radio_theme_light -> Keys.STATE_THEME_LIGHT_MODE
-                R.id.radio_theme_dark -> Keys.STATE_THEME_DARK_MODE
-                else -> Keys.STATE_THEME_FOLLOW_SYSTEM
-            }
-            // notify listener
-            themeSelectionDialogListener.onThemeSelectionDialog(true, selectedTheme)
-            dialog.dismiss()
-        }
-
-        // add cancel button
-        builder.setNegativeButton(R.string.dialog_generic_button_cancel) { dialog, _ ->
-            // notify listener
-            themeSelectionDialogListener.onThemeSelectionDialog(false, Keys.STATE_THEME_FOLLOW_SYSTEM)
-            dialog.dismiss()
-        }
 
         // handle outside-click as cancel
         builder.setOnCancelListener {
