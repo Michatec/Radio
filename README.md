@@ -80,7 +80,7 @@ When **Edit Stations** is enabled:
 - Press **1** or **Back** to close the editing area
 
 **General TV** Controls:
-- Press **0** to remove the selected radio station
+- Press **0** or **DEL** to remove the selected radio station
 
 </details>
 
