@@ -27,9 +27,6 @@
             android:text="@string/pref_theme_selection_mode_device_default"
             android:textSize="20sp"
             android:padding="12dp"
-            android:button="@null"
-            android:drawableEnd="?android:attr/listChoiceIndicatorSingle"
-            android:drawablePadding="16dp"
             android:focusable="true"
             android:clickable="true" />
 
@@ -40,9 +37,6 @@
             android:text="@string/pref_theme_selection_mode_light"
             android:textSize="20sp"
             android:padding="12dp"
-            android:button="@null"
-            android:drawableEnd="?android:attr/listChoiceIndicatorSingle"
-            android:drawablePadding="16dp"
             android:focusable="true"
             android:clickable="true" />
 
@@ -53,9 +47,6 @@
             android:text="@string/pref_theme_selection_mode_dark"
             android:textSize="20sp"
             android:padding="12dp"
-            android:button="@null"
-            android:drawableEnd="?android:attr/listChoiceIndicatorSingle"
-            android:drawablePadding="16dp"
             android:focusable="true"
             android:clickable="true" />
 
