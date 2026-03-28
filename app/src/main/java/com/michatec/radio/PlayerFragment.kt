@@ -462,7 +462,7 @@ class PlayerFragment : Fragment(),
         swipeToMarkStarredItemTouchHelper.attachToRecyclerView(layout.recyclerView)
 
         // set up sleep timer start button
-        layout.sheetSleepTimerStartButtonView.setOnClickListener {
+        layout.sheetSleepTimerStartButtonView?.setOnClickListener {
             when (controller?.isPlaying) {
                 true -> {
                     val timePicker = MaterialTimePicker.Builder()
@@ -492,10 +492,26 @@ class PlayerFragment : Fragment(),
         }
 
         // set up sleep timer cancel button
-        layout.sheetSleepTimerCancelButtonView.setOnClickListener {
+        layout.sheetSleepTimerCancelButtonView?.setOnClickListener {
             playerState.sleepTimerRunning = false
             controller?.cancelSleepTimer()
             togglePeriodicSleepTimerUpdateRequest()
+        }
+
+        // set up TV station navigation
+        layout.playerPrevButtonView?.setOnClickListener {
+            val currentPosition = CollectionHelper.getStationPosition(collection, playerState.stationUuid)
+            if (currentPosition > 0) {
+                val prevStation = collection.stations[currentPosition - 1]
+                onPlayButtonTapped(prevStation.uuid)
+            }
+        }
+        layout.playerNextButtonView?.setOnClickListener {
+            val currentPosition = CollectionHelper.getStationPosition(collection, playerState.stationUuid)
+            if (currentPosition < collection.stations.size - 1) {
+                val nextStation = collection.stations[currentPosition + 1]
+                onPlayButtonTapped(nextStation.uuid)
+            }
         }
 
     }
@@ -740,6 +756,7 @@ class PlayerFragment : Fragment(),
                 layout.showBufferingIndicator(buffering = false)
             } else {
                 // playback is paused or stopped
+                layout.updateSleepTimer(activity as Context, 0L)
                 // check if buffering (playback is not active but playWhenReady is true)
                 if (controller?.playWhenReady == true) {
                     // playback is buffering, show the buffering indicator

@@ -16,7 +16,9 @@ package com.michatec.radio.dialogs
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.widget.Button
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isGone
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -45,6 +47,8 @@ class AddStationDialog (
     /* Main class variables */
     private lateinit var dialog: AlertDialog
     private lateinit var stationSearchResultList: RecyclerView
+    private var customPositiveButton: Button? = null
+    private var customNegativeButton: Button? = null
     private lateinit var searchResultAdapter: SearchResultAdapter
     private var station: Station = Station()
 
@@ -73,6 +77,10 @@ class AddStationDialog (
         // set up list of search results
         setupRecyclerView(context)
 
+        // find custom buttons (for TV layout)
+        customPositiveButton = view.findViewById(R.id.dialog_positive_button)
+        customNegativeButton = view.findViewById(R.id.dialog_negative_button)
+
         // add okay ("Add") button
         builder.setPositiveButton(R.string.dialog_find_station_button_add) { _, _ ->
             // listen for click on add button
@@ -88,6 +96,17 @@ class AddStationDialog (
             searchResultAdapter.stopPrePlayback()
         }
 
+        // set up custom buttons if they exist (TV layout)
+        customPositiveButton?.setOnClickListener {
+            listener.onAddStationDialog(station)
+            searchResultAdapter.stopPrePlayback()
+            dialog.dismiss()
+        }
+        customNegativeButton?.setOnClickListener {
+            searchResultAdapter.stopPrePlayback()
+            dialog.dismiss()
+        }
+
         // set dialog view
         builder.setView(view)
 
@@ -95,8 +114,16 @@ class AddStationDialog (
         dialog = builder.create()
         dialog.show()
 
-        // initially disable "Add" button
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+        // handle button visibility and state
+        if (customPositiveButton != null) {
+            // hide default buttons if custom ones are used
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isGone = true
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).isGone = true
+            customPositiveButton?.isEnabled = false
+        } else {
+            // initially disable default "Add" button
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+        }
     }
 
 
@@ -117,12 +144,14 @@ class AddStationDialog (
     /* Implement activateAddButton to enable the "Add" button */
     override fun activateAddButton() {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+        customPositiveButton?.isEnabled = true
     }
 
 
     /* Implement deactivateAddButton to disable the "Add" button */
     override fun deactivateAddButton() {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+        customPositiveButton?.isEnabled = false
     }
 
 

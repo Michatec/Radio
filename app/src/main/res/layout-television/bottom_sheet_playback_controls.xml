@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_player_sheet_background"
+    android:padding="24dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/station_icon"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:background="@drawable/shape_cover_small"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/RoundedCorners"
+        app:srcCompat="@drawable/ic_default_station_image_72dp" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/player_station_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
+        android:textColor="@color/player_sheet_text_main"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/player_play_button"
+        app:layout_constraintStart_toEndOf="@+id/station_icon"
+        app:layout_constraintTop_toTopOf="@+id/station_icon"
+        tools:text="Station Name" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/player_station_metadata"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+        android:textColor="@color/player_sheet_text_main"
+        app:layout_constraintEnd_toEndOf="@+id/player_station_name"
+        app:layout_constraintStart_toStartOf="@+id/player_station_name"
+        app:layout_constraintTop_toBottomOf="@+id/player_station_name"
+        tools:text="Metadata Info" />
+
+    <ImageButton
+        android:id="@+id/player_play_button"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/selector_play_button"
+        android:focusable="true"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="@+id/station_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/station_icon"
+        app:srcCompat="@drawable/ic_player_play_symbol_42dp" />
+
+    <LinearLayout
+        android:id="@+id/detailed_controls_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/station_icon">
+
+        <ImageButton
+            android:id="@+id/sheet_previous_metadata_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/selector_generic_button_focus"
+            android:focusable="true"
+            app:srcCompat="@drawable/ic_chevron_left_24dp" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/sheet_metadata_history"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="16dp"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            android:textColor="@color/player_sheet_text_main"
+            tools:text="Metadata History" />
+
+        <ImageButton
+            android:id="@+id/sheet_next_metadata_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/selector_generic_button_focus"
+            android:focusable="true"
+            app:srcCompat="@drawable/ic_chevron_right_24dp" />
+
+        <ImageButton
+            android:id="@+id/copy_station_metadata_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/selector_generic_button_focus"
+            android:focusable="true"
+            app:srcCompat="@drawable/ic_copy_content_24dp" />
+
+        <ImageButton
+            android:id="@+id/sleep_timer_start_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/selector_generic_button_focus"
+            android:focusable="true"
+            app:srcCompat="@drawable/ic_sleep_timer_24dp" />
+
+        <ImageButton
+            android:id="@+id/sleep_timer_cancel_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/selector_generic_button_focus"
+            android:focusable="true"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_clear_24dp" />
+
+    </LinearLayout>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/sleep_timer_remaining_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+        android:textColor="@color/player_sheet_text_main"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailed_controls_row"
+        tools:text="15:00" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

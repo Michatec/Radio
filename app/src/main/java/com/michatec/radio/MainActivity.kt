@@ -15,7 +15,11 @@
 package com.michatec.radio
 
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.NavHostFragment
@@ -38,6 +42,7 @@ class MainActivity : AppCompatActivity() {
 
     /* Overrides onCreate from AppCompatActivity */
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         
         // Free Android
@@ -57,6 +62,15 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration)
         supportActionBar?.hide()
+
+        // TV-specific loading logic
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)) {
+            Handler(Looper.getMainLooper()).postDelayed({
+                findViewById<View>(R.id.loading_layout)?.visibility = View.GONE
+            }, 1500)
+        } else {
+            findViewById<View>(R.id.loading_layout)?.visibility = View.GONE
+        }
 
         // register listener for changes in shared preferences
         PreferencesHelper.registerPreferenceChangeListener(sharedPreferenceChangeListener)

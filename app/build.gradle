@@ -19,8 +19,8 @@ android {
         applicationId 'com.michatec.radio'
         minSdk 28
         targetSdk 36
-        versionCode 143
-        versionName '14.3'
+        versionCode 144
+        versionName '14.4'
         resourceConfigurations += ['en', 'de', 'el', 'nl', 'pl', 'ru','uk', 'ja', 'da', 'fr']
     }
 
@@ -71,6 +71,7 @@ dependencies {
     implementation libs.navigation.fragment.ktx
     implementation libs.navigation.ui.ktx
     implementation libs.work.runtime.ktx
+    implementation libs.leanback
 
     implementation libs.freedroidwarn
 	

@@ -210,12 +210,9 @@ class PlayerService : MediaLibraryService() {
     /* Cancels sleep timer */
     private fun cancelSleepTimer() {
         if (this::sleepTimer.isInitialized) {
-            if (manuallyCancelledSleepTimer) {
-                sleepTimerTimeRemaining = 0L
-                sleepTimer.cancel()
-            }
-            manuallyCancelledSleepTimer = false
+            sleepTimer.cancel()
         }
+        sleepTimerTimeRemaining = 0L
         // store timer state
         PreferencesHelper.saveSleepTimerRunning(isRunning = false)
     }

@@ -19,6 +19,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,8 +63,8 @@ class CollectionAdapter(
     /* Main class variables */
     private lateinit var collectionViewModel: CollectionViewModel
     private var collection: Collection = Collection()
-    private var editStationsEnabled: Boolean = PreferencesHelper.loadEditStationsEnabled()
-    private var editStationStreamsEnabled: Boolean = PreferencesHelper.loadEditStreamUrisEnabled()
+    private var editStationsEnabled: Boolean = PreferencesHelper.loadEditStationsEnabled(context)
+    private var editStationStreamsEnabled: Boolean = PreferencesHelper.loadEditStreamUrisEnabled(context)
     private var expandedStationUuid: String = PreferencesHelper.loadStationListStreamUuid()
     private var expandedStationPosition: Int = -1
     var isExpandedForEdit: Boolean = false
@@ -214,6 +215,8 @@ class CollectionAdapter(
                             stationViewHolder.stationNameEditView.imeOptions =
                                 EditorInfo.IME_ACTION_DONE
                         }
+                        // Allow internal focus
+                        stationViewHolder.stationCardView.descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
                     }
                     // hide edit views
                     else -> {
@@ -222,6 +225,8 @@ class CollectionAdapter(
                         stationViewHolder.stationStarredView.isVisible = station.starred
                         stationViewHolder.editViews.isGone = true
                         stationViewHolder.stationUriEditView.isGone = true
+                        // Block internal focus
+                        stationViewHolder.stationCardView.descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
                     }
                 }
             }
@@ -387,6 +392,7 @@ class CollectionAdapter(
             false -> stationViewHolder.playButtonView.visibility = View.INVISIBLE
         }
         stationViewHolder.stationCardView.setOnClickListener {
+            if (expandedStationPosition == stationViewHolder.bindingAdapterPosition) return@setOnClickListener
             collectionAdapterListener.onPlayButtonTapped(station.uuid)
         }
         stationViewHolder.playButtonView.setOnClickListener {
@@ -401,6 +407,29 @@ class CollectionAdapter(
         stationViewHolder.stationImageView.setOnClickListener {
             collectionAdapterListener.onPlayButtonTapped(station.uuid)
         }
+
+        // TV improvement: Allow opening edit view with DPAD_LEFT
+        stationViewHolder.stationCardView.setOnKeyListener { _, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN) {
+                when (keyCode) {
+                    KeyEvent.KEYCODE_DPAD_LEFT -> {
+                        if (editStationsEnabled && expandedStationPosition != stationViewHolder.bindingAdapterPosition) {
+                            val position: Int = stationViewHolder.bindingAdapterPosition
+                            toggleEditViews(position, station.uuid)
+                            return@setOnKeyListener true
+                        }
+                    }
+                    KeyEvent.KEYCODE_BACK -> {
+                        if (expandedStationPosition == stationViewHolder.bindingAdapterPosition) {
+                            toggleEditViews(stationViewHolder.bindingAdapterPosition, station.uuid)
+                            return@setOnKeyListener true
+                        }
+                    }
+                }
+            }
+            false
+        }
+
         stationViewHolder.playButtonView.setOnLongClickListener {
             if (editStationsEnabled) {
                 val position: Int = stationViewHolder.bindingAdapterPosition
@@ -649,9 +678,9 @@ class CollectionAdapter(
         SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
             when (key) {
                 Keys.PREF_EDIT_STATIONS -> editStationsEnabled =
-                    PreferencesHelper.loadEditStationsEnabled()
+                    PreferencesHelper.loadEditStationsEnabled(context)
                 Keys.PREF_EDIT_STREAMS_URIS -> editStationStreamsEnabled =
-                    PreferencesHelper.loadEditStreamUrisEnabled()
+                    PreferencesHelper.loadEditStreamUrisEnabled(context)
             }
         }
     /*

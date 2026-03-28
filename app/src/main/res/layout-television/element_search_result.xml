@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:focusable="true"
+    android:clickable="true"
+    android:nextFocusRight="@+id/dialog_positive_button"
+    android:background="@drawable/selector_search_result_item">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/station_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+            android:textColor="@color/text_default"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Station Name" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/station_url"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+            android:textColor="@color/text_lightweight"
+            app:layout_constraintEnd_toEndOf="@+id/station_name"
+            app:layout_constraintStart_toStartOf="@+id/station_name"
+            app:layout_constraintTop_toBottomOf="@+id/station_name"
+            tools:text="http://stream.url" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/station_bitrate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+            android:textColor="@color/text_lightweight"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/station_url"
+            app:layout_constraintStart_toStartOf="@+id/station_url"
+            app:layout_constraintTop_toBottomOf="@+id/station_url"
+            tools:text="128 kbps" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

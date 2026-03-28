@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
     <!-- DAY THEME COLORS -->
 
@@ -16,6 +15,7 @@
     <!-- list -->
     <color name="list_card_background">#FFFEFBFF</color>
     <color name="list_card_stroke_background">#FFC0C6DD</color>
+    <color name="list_card_stroke_focused">#FF495D92</color>
     <color name="list_card_cover_background">#FFE7E0EC</color>
     <color name="list_card_delete_background">#FFB3261E</color>
     <color name="list_card_delete_icon">#FFFFFFFF</color>

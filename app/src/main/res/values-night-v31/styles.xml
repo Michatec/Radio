@@ -39,6 +39,7 @@
         <item name="colorSurface">@color/player_sheet_background</item>
         <item name="materialAlertDialogBodyTextStyle">@style/TextAppearance.MaterialComponents.Body1</item>
         <item name="android:backgroundDimAmount">0.64</item>
+        <item name="colorControlActivated">#FFDAE2FF</item>
     </style>
 
     <style name="ThemeOverlay.App.TimePicker" parent="ThemeOverlay.MaterialComponents.TimePicker">
@@ -49,5 +50,10 @@
         <item name="android:background">@color/player_sheet_background</item>
         <item name="dialogCornerRadius">28dp</item>
         <item name="checkedTextViewStyle">@style/AlertDialog.TextColor</item>
+        <item name="colorControlActivated">#FFDAE2FF</item>
+    </style>
+
+    <style name="AlertDialog.TextColor" parent="@style/TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">?attr/colorControlNormal</item>
     </style>
 </resources>

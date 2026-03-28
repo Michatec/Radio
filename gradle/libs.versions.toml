@@ -3,24 +3,25 @@ activityKtx = "1.13.0"
 agp = "9.1.0"
 coreKtx = "1.18.0"
 freedroidwarn = "V1.10"
-gradleToolchainsFoojayResolverConvention = "1.0.0"
 gson = "2.13.2"
 kotlin = "2.3.20"
+leanback = "1.2.0"
 material = "1.13.0"
 material3 = "1.4.0"
 media = "1.7.1"
-media3 = "1.9.3"
+media3 = "1.10.0"
 navigation = "2.9.7"
 paletteKtx = "1.0.0"
 preferenceKtx = "1.2.1"
 volley = "1.2.1"
-workRuntimeKtx = "2.11.1"
+workRuntimeKtx = "2.11.2"
 
 [libraries]
 activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 freedroidwarn = { group = "com.github.woheller69", name = "FreeDroidWarn", version.ref = "freedroidwarn" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+leanback = { group = "androidx.leanback", name = "leanback", version.ref = "leanback" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 media = { group = "androidx.media", name = "media", version.ref = "media" }
@@ -38,5 +39,4 @@ work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-foojay = { id = "org.gradle.toolchains.foojay-resolver-convention", version.ref = "gradleToolchainsFoojayResolverConvention" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

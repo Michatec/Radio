@@ -1,17 +1,3 @@
-/*
- * SettingsFragment.kt
- * Implements the SettingsFragment fragment
- * A SettingsFragment displays the user accessible settings of the app
- *
- * This file is part of
- * TRANSISTOR - Radio App for Android
- *
- * Copyright (c) 2015-22 - Y20K.org
- * Licensed under the MIT-License
- * http://opensource.org/licenses/MIT
- */
-
-
 package com.michatec.radio
 
 import android.app.Activity
@@ -92,6 +78,8 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
                 val index: Int = preference.entryValues.indexOf(newValue)
                 preferenceThemeSelection.summary =
                     "${getString(R.string.pref_theme_selection_summary)} ${preference.entries[index]}"
+
+                AppThemeHelper.setTheme(newValue as String)
                 return@setOnPreferenceChangeListener true
             } else {
                 return@setOnPreferenceChangeListener false
@@ -193,7 +181,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceEnableEditingStreamUri.key = Keys.PREF_EDIT_STREAMS_URIS
         preferenceEnableEditingStreamUri.summaryOn = getString(R.string.pref_edit_station_stream_summary_enabled)
         preferenceEnableEditingStreamUri.summaryOff = getString(R.string.pref_edit_station_stream_summary_disabled)
-        preferenceEnableEditingStreamUri.setDefaultValue(PreferencesHelper.loadEditStreamUrisEnabled())
+        preferenceEnableEditingStreamUri.setDefaultValue(PreferencesHelper.loadEditStreamUrisEnabled(context))
 
 
         // set up "Edit Stations" preference
@@ -203,7 +191,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceEnableEditingGeneral.key = Keys.PREF_EDIT_STATIONS
         preferenceEnableEditingGeneral.summaryOn = getString(R.string.pref_edit_station_summary_enabled)
         preferenceEnableEditingGeneral.summaryOff = getString(R.string.pref_edit_station_summary_disabled)
-        preferenceEnableEditingGeneral.setDefaultValue(PreferencesHelper.loadEditStationsEnabled())
+        preferenceEnableEditingGeneral.setDefaultValue(PreferencesHelper.loadEditStationsEnabled(context))
         preferenceEnableEditingGeneral.setOnPreferenceChangeListener { _, newValue ->
             when (newValue) {
                 true -> {

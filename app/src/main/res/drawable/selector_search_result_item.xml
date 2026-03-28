@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- View is "selected" -->
+    <!-- View is "selected" or "focused" (for TV) -->
     <item android:drawable="@drawable/shape_search_result_item_selected" android:state_selected="true" />
+    <item android:drawable="@drawable/shape_search_result_item_selected" android:state_focused="true" />
 
     <!-- Default state. -->
     <item android:drawable="@drawable/shape_search_result_item" />

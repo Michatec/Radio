@@ -21,6 +21,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
@@ -63,6 +64,8 @@ class FindStationDialog (
     private lateinit var searchRequestProgressIndicator: ProgressBar
     private lateinit var noSearchResultsTextView: MaterialTextView
     private lateinit var stationSearchResultList: RecyclerView
+    private var customPositiveButton: Button? = null
+    private var customNegativeButton: Button? = null
     private lateinit var searchResultAdapter: SearchResultAdapter
     private lateinit var radioBrowserSearch: RadioBrowserSearch
     private lateinit var directInputCheck: DirectInputCheck
@@ -134,6 +137,10 @@ class FindStationDialog (
         // set up list of search results
         setupRecyclerView(context)
 
+        // find custom buttons (for TV layout)
+        customPositiveButton = view.findViewById(R.id.dialog_positive_button)
+        customNegativeButton = view.findViewById(R.id.dialog_negative_button)
+
         // add okay ("Add") button
         builder.setPositiveButton(R.string.dialog_find_station_button_add) { _, _ ->
             // listen for click on add button
@@ -150,6 +157,18 @@ class FindStationDialog (
         builder.setOnCancelListener {
             radioBrowserSearch.stopSearchRequest()
             searchResultAdapter.stopPrePlayback()
+        }
+
+        // set up custom buttons if they exist (TV layout)
+        customPositiveButton?.setOnClickListener {
+            listener.onFindStationDialog(station)
+            searchResultAdapter.stopPrePlayback()
+            dialog.dismiss()
+        }
+        customNegativeButton?.setOnClickListener {
+            radioBrowserSearch.stopSearchRequest()
+            searchResultAdapter.stopPrePlayback()
+            dialog.dismiss()
         }
 
         // listen for input
@@ -174,10 +193,18 @@ class FindStationDialog (
         dialog = builder.create()
         dialog.show()
 
-        // initially disable "Add" button
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isAllCaps = true
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).isAllCaps = true
+        // handle button visibility and state
+        if (customPositiveButton != null) {
+            // hide default buttons if custom ones are used
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isGone = true
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).isGone = true
+            customPositiveButton?.isEnabled = false
+        } else {
+            // initially disable default "Add" button
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isAllCaps = true
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).isAllCaps = true
+        }
     }
 
 
@@ -242,12 +269,14 @@ class FindStationDialog (
     /* Makes the "Add" button clickable */
     override fun activateAddButton() {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+        customPositiveButton?.isEnabled = true
         searchRequestProgressIndicator.isGone = true
         noSearchResultsTextView.isGone = true
     }
 
     override fun deactivateAddButton() {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+        customPositiveButton?.isEnabled = false
         searchRequestProgressIndicator.isGone = true
         noSearchResultsTextView.isGone = true
     }
@@ -256,6 +285,7 @@ class FindStationDialog (
     /* Resets the dialog layout to default state */
     private fun resetLayout(clearAdapter: Boolean = false) {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+        customPositiveButton?.isEnabled = false
         searchRequestProgressIndicator.isGone = true
         noSearchResultsTextView.isGone = true
         searchResultAdapter.resetSelection(clearAdapter)
@@ -265,6 +295,7 @@ class FindStationDialog (
     /* Display the "No Results" error - hide other unneeded views */
     private fun showNoResultsError() {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+        customPositiveButton?.isEnabled = false
         searchRequestProgressIndicator.isGone = true
         noSearchResultsTextView.isVisible = true
     }
@@ -273,6 +304,7 @@ class FindStationDialog (
     /* Display the "No Results" error - hide other unneeded views */
     private fun showProgressIndicator() {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+        customPositiveButton?.isEnabled = false
         searchRequestProgressIndicator.isVisible = true
         noSearchResultsTextView.isGone = true
     }

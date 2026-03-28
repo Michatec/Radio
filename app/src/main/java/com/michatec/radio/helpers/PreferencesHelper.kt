@@ -16,6 +16,7 @@ package com.michatec.radio.helpers
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
@@ -223,13 +224,15 @@ object PreferencesHelper {
 
 
     /* Loads value of the option: Edit Stations */
-    fun loadEditStationsEnabled(): Boolean {
-        return sharedPreferences.getBoolean(Keys.PREF_EDIT_STATIONS, true)
+    fun loadEditStationsEnabled(context: Context): Boolean {
+        val defaultValue = !context.packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
+        return sharedPreferences.getBoolean(Keys.PREF_EDIT_STATIONS, defaultValue)
     }
 
     /* Loads value of the option: Edit Station Streams */
-    fun loadEditStreamUrisEnabled(): Boolean {
-        return sharedPreferences.getBoolean(Keys.PREF_EDIT_STREAMS_URIS, true)
+    fun loadEditStreamUrisEnabled(context: Context): Boolean {
+        val defaultValue = !context.packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
+        return sharedPreferences.getBoolean(Keys.PREF_EDIT_STREAMS_URIS, defaultValue)
     }
 
 

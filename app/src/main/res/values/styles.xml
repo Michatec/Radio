@@ -2,28 +2,20 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Set AppCompat’s colors -->
         <item name="colorPrimary">#FF495D92</item>
         <item name="colorAccent">#FF495D92</item>
         <item name="android:textColorHighlight">#FF495D92</item>
-
-        <!-- Do not use primary colored elevation overlays to present a visual hierarchy - TOO COLORFUL  -->
         <item name="elevationOverlayEnabled">false</item>
-
-        <!-- Switch Theming  -->
+        <item name="colorControlActivated">#FFDAE2FF</item>
         <item name="switchPreferenceCompatStyle">@style/Preference.SwitchPreferenceCompat.Material3</item>
-
-        <!-- Material Alert Dialog Theming -->
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
         <item name="alertDialogTheme">@style/ThemeOverlay.App.AlertDialogTheme</item>
-
-        <!-- Material Time Picker Theming -->
         <item name="materialTimePickerTheme">@style/ThemeOverlay.App.TimePicker</item>
-
-        <!-- Use "light" Status Bar -->
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
+
+    <style name="SplashTheme" parent="AppTheme" />
 
     <style name="Preference.SwitchPreferenceCompat.Material3" parent="@style/Preference.SwitchPreferenceCompat.Material">
         <item name="widgetLayout">@layout/preference_switch</item>
@@ -38,7 +30,11 @@
     <style name="ThemeOverlay.App.AlertDialogTheme" parent="@style/ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="android:background">@color/list_card_background</item>
         <item name="dialogCornerRadius">28dp</item>
-        <item name="checkedTextViewStyle">@style/AlertDialog.TextColor</item>
+        <!-- TV Fix: Explicitly set accent color for radio buttons/checkboxes -->
+        <item name="colorAccent">@color/icon_default</item>
+        <item name="colorControlActivated">@color/icon_default</item>
+        <item name="android:textColorPrimary">@color/text_default</item>
+        <item name="android:textColorSecondary">@color/text_lightweight</item>
     </style>
 
     <style name="ThemeOverlay.App.TimePicker" parent="ThemeOverlay.MaterialComponents.TimePicker">
@@ -46,13 +42,16 @@
     </style>
 
     <style name="AlertDialog.TextColor" parent="@style/TextAppearance.MaterialComponents.Body1">
-        <item name="android:textColor">?attr/colorControlNormal</item>
+        <item name="android:textColor">@color/text_default</item>
     </style>
 
     <style name="App.Widget.Material3.CardView.Outlined" parent="@style/Widget.Material3.CardView.Outlined">
-        <item name="strokeColor">@color/list_card_stroke_background</item>
-        <item name="strokeWidth">3dp</item>
+        <item name="strokeColor">@color/selector_card_station_stroke</item>
+        <item name="strokeWidth">4dp</item>
         <item name="cardCornerRadius">24dp</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:descendantFocusability">afterDescendants</item>
     </style>
 
     <style name="App.Widget.MaterialComponents.TextView" parent="@style/Widget.MaterialComponents.TextView">

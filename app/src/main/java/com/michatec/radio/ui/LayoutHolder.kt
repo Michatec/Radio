@@ -1,17 +1,3 @@
-/*
- * LayoutHolder.kt
- * Implements the LayoutHolder class
- * A LayoutHolder hold references to the main views
- *
- * This file is part of
- * TRANSISTOR - Radio App for Android
- *
- * Copyright (c) 2015-22 - Y20K.org
- * Licensed under the MIT-License
- * http://opensource.org/licenses/MIT
- */
-
-
 package com.michatec.radio.ui
 
 import android.annotation.SuppressLint
@@ -54,30 +40,32 @@ data class LayoutHolder(var rootView: View) {
     /* Main class variables */
     var recyclerView: RecyclerView = rootView.findViewById(R.id.station_list)
     val layoutManager: LinearLayoutManager
-    private var bottomSheet: ConstraintLayout = rootView.findViewById(R.id.bottom_sheet)
+    private var bottomSheet: ConstraintLayout? = rootView.findViewById(R.id.bottom_sheet)
 
     //private var sheetMetadataViews: Group
-    private var sleepTimerRunningViews: Group = rootView.findViewById(R.id.sleep_timer_running_views)
-    private var downloadProgressIndicator: ProgressBar = rootView.findViewById(R.id.download_progress_indicator)
-    private var stationImageView: ImageView = rootView.findViewById(R.id.station_icon)
-    private var stationNameView: TextView = rootView.findViewById(R.id.player_station_name)
-    private var metadataView: TextView = rootView.findViewById(R.id.player_station_metadata)
+    private var sleepTimerRunningViews: Group? = rootView.findViewById(R.id.sleep_timer_running_views)
+    private var downloadProgressIndicator: ProgressBar? = rootView.findViewById(R.id.download_progress_indicator)
+    private var stationImageView: ImageView? = rootView.findViewById(R.id.station_icon)
+    private var stationNameView: TextView? = rootView.findViewById(R.id.player_station_name)
+    private var metadataView: TextView? = rootView.findViewById(R.id.player_station_metadata)
     var playButtonView: ImageButton = rootView.findViewById(R.id.player_play_button)
+    var playerPrevButtonView: ImageButton? = rootView.findViewById(R.id.player_prev_button)
+    var playerNextButtonView: ImageButton? = rootView.findViewById(R.id.player_next_button)
     private var bufferingIndicator: ProgressBar = rootView.findViewById(R.id.player_buffering_indicator)
-    private var sheetStreamingLinkHeadline: TextView = rootView.findViewById(R.id.sheet_streaming_link_headline)
-    private var sheetStreamingLinkView: TextView = rootView.findViewById(R.id.sheet_streaming_link)
-    private var sheetMetadataHistoryHeadline: TextView = rootView.findViewById(R.id.sheet_metadata_headline)
-    private var sheetMetadataHistoryView: TextView = rootView.findViewById(R.id.sheet_metadata_history)
-    private var sheetNextMetadataView: ImageButton = rootView.findViewById(R.id.sheet_next_metadata_button)
-    private var sheetPreviousMetadataView: ImageButton = rootView.findViewById(R.id.sheet_previous_metadata_button)
-    private var sheetCopyMetadataButtonView: ImageButton = rootView.findViewById(R.id.copy_station_metadata_button)
-    private var sheetShareLinkButtonView: ImageView = rootView.findViewById(R.id.sheet_share_link_button)
-    private var sheetBitrateView: TextView = rootView.findViewById(R.id.sheet_bitrate_view)
-    var sheetSleepTimerStartButtonView: ImageButton = rootView.findViewById(R.id.sleep_timer_start_button)
-    var sheetSleepTimerCancelButtonView: ImageButton = rootView.findViewById(R.id.sleep_timer_cancel_button)
+    private var sheetStreamingLinkHeadline: TextView? = rootView.findViewById(R.id.sheet_streaming_link_headline)
+    private var sheetStreamingLinkView: TextView? = rootView.findViewById(R.id.sheet_streaming_link)
+    private var sheetMetadataHistoryHeadline: TextView? = rootView.findViewById(R.id.sheet_metadata_headline)
+    private var sheetMetadataHistoryView: TextView? = rootView.findViewById(R.id.sheet_metadata_history)
+    private var sheetNextMetadataView: ImageButton? = rootView.findViewById(R.id.sheet_next_metadata_button)
+    private var sheetPreviousMetadataView: ImageButton? = rootView.findViewById(R.id.sheet_previous_metadata_button)
+    private var sheetCopyMetadataButtonView: ImageButton? = rootView.findViewById(R.id.copy_station_metadata_button)
+    private var sheetShareLinkButtonView: ImageView? = rootView.findViewById(R.id.sheet_share_link_button)
+    private var sheetBitrateView: TextView? = rootView.findViewById(R.id.sheet_bitrate_view)
+    var sheetSleepTimerStartButtonView: ImageButton? = rootView.findViewById(R.id.sleep_timer_start_button)
+    var sheetSleepTimerCancelButtonView: ImageButton? = rootView.findViewById(R.id.sleep_timer_cancel_button)
     private var sheetSleepTimerRemainingTimeView: TextView = rootView.findViewById(R.id.sleep_timer_remaining_time)
     private var onboardingLayout: ConstraintLayout = rootView.findViewById(R.id.onboarding_layout)
-    private var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout> = BottomSheetBehavior.from(bottomSheet)
+    private var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>? = bottomSheet?.let { BottomSheetBehavior.from(it) }
     private var metadataHistory: MutableList<String>
     private var metadataHistoryPosition: Int
     private var isBuffering: Boolean
@@ -97,31 +85,31 @@ data class LayoutHolder(var rootView: View) {
         recyclerView.itemAnimator = DefaultItemAnimator()
 
         // set up metadata history next and previous buttons
-        sheetPreviousMetadataView.setOnClickListener {
+        sheetPreviousMetadataView?.setOnClickListener {
             if (metadataHistory.isNotEmpty()) {
                 if (metadataHistoryPosition > 0) {
                     metadataHistoryPosition -= 1
                 } else {
                     metadataHistoryPosition = metadataHistory.size - 1
                 }
-                sheetMetadataHistoryView.text = metadataHistory[metadataHistoryPosition]
+                sheetMetadataHistoryView?.text = metadataHistory[metadataHistoryPosition]
             }
         }
-        sheetNextMetadataView.setOnClickListener {
+        sheetNextMetadataView?.setOnClickListener {
             if (metadataHistory.isNotEmpty()) {
                 if (metadataHistoryPosition < metadataHistory.size - 1) {
                     metadataHistoryPosition += 1
                 } else {
                     metadataHistoryPosition = 0
                 }
-                sheetMetadataHistoryView.text = metadataHistory[metadataHistoryPosition]
+                sheetMetadataHistoryView?.text = metadataHistory[metadataHistoryPosition]
             }
         }
-        sheetMetadataHistoryView.setOnLongClickListener {
+        sheetMetadataHistoryView?.setOnLongClickListener {
             copyMetadataHistoryToClipboard()
             return@setOnLongClickListener true
         }
-        sheetMetadataHistoryHeadline.setOnLongClickListener {
+        sheetMetadataHistoryHeadline?.setOnLongClickListener {
             copyMetadataHistoryToClipboard()
             return@setOnLongClickListener true
         }
@@ -137,29 +125,29 @@ data class LayoutHolder(var rootView: View) {
 
         // set default metadata views, when playback has stopped
         if (!isPlaying) {
-            metadataView.text = station.name
-            sheetMetadataHistoryView.text = station.name
+            metadataView?.text = station.name
+            sheetMetadataHistoryView?.text = station.name
 //            sheetMetadataHistoryView.isSelected = true
         }
 
         // update name
-        stationNameView.text = station.name
+        stationNameView?.text = station.name
 
         // toggle text scrolling (marquee) if necessary
-        stationNameView.isSelected = isPlaying
+        stationNameView?.isSelected = isPlaying
 
         // reduce the shadow left and right because of scrolling (Marquee)
-        stationNameView.setFadingEdgeLength(8)
+        stationNameView?.setFadingEdgeLength(8)
 
         // update cover
         if (station.imageColor != -1) {
-            stationImageView.setBackgroundColor(station.imageColor)
+            stationImageView?.setBackgroundColor(station.imageColor)
         }
-        stationImageView.setImageBitmap(ImageHelper.getStationImage(context, station.smallImage))
-        stationImageView.contentDescription = "${context.getString(R.string.descr_player_station_image)}: ${station.name}"
+        stationImageView?.setImageBitmap(ImageHelper.getStationImage(context, station.smallImage))
+        stationImageView?.contentDescription = "${context.getString(R.string.descr_player_station_image)}: ${station.name}"
 
         // update streaming link
-        sheetStreamingLinkView.text = station.getStreamUri()
+        sheetStreamingLinkView?.text = station.getStreamUri()
 
         val bitrateText: CharSequence = if (station.codec.isNotEmpty()) {
             if (station.bitrate == 0) {
@@ -188,50 +176,50 @@ data class LayoutHolder(var rootView: View) {
         }
 
         // update bitrate
-        sheetBitrateView.text = bitrateText
+        sheetBitrateView?.text = bitrateText
 
         // update click listeners
-        sheetStreamingLinkHeadline.setOnClickListener {
+        sheetStreamingLinkHeadline?.setOnClickListener {
             copyToClipboard(
                 context,
-                sheetStreamingLinkView.text
+                sheetStreamingLinkView?.text ?: ""
             )
         }
-        sheetStreamingLinkView.setOnClickListener {
+        sheetStreamingLinkView?.setOnClickListener {
             copyToClipboard(
                 context,
-                sheetStreamingLinkView.text
+                sheetStreamingLinkView?.text ?: ""
             )
         }
-        sheetMetadataHistoryHeadline.setOnClickListener {
+        sheetMetadataHistoryHeadline?.setOnClickListener {
             copyToClipboard(
                 context,
-                sheetMetadataHistoryView.text
+                sheetMetadataHistoryView?.text ?: ""
             )
         }
-        sheetMetadataHistoryView.setOnClickListener {
+        sheetMetadataHistoryView?.setOnClickListener {
             copyToClipboard(
                 context,
-                sheetMetadataHistoryView.text
+                sheetMetadataHistoryView?.text ?: ""
             )
         }
-        sheetCopyMetadataButtonView.setOnClickListener {
+        sheetCopyMetadataButtonView?.setOnClickListener {
             copyToClipboard(
                 context,
-                sheetMetadataHistoryView.text
+                sheetMetadataHistoryView?.text ?: ""
             )
         }
-        sheetBitrateView.setOnClickListener {
+        sheetBitrateView?.setOnClickListener {
             copyToClipboard(
                 context,
-                sheetBitrateView.text
+                sheetBitrateView?.text ?: ""
             )
         }
-        sheetShareLinkButtonView.setOnClickListener {
+        sheetShareLinkButtonView?.setOnClickListener {
             val share = Intent.createChooser(Intent().apply {
                 action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TITLE, stationNameView.text)
-                putExtra(Intent.EXTRA_TEXT, sheetStreamingLinkView.text)
+                putExtra(Intent.EXTRA_TITLE, stationNameView?.text)
+                putExtra(Intent.EXTRA_TEXT, sheetStreamingLinkView?.text ?: "")
                 type = "text/plain"
             }, null)
             context.startActivity(share)
@@ -264,11 +252,11 @@ data class LayoutHolder(var rootView: View) {
     fun updateMetadata(metadataHistoryList: MutableList<String>?) {
         if (!metadataHistoryList.isNullOrEmpty()) {
             metadataHistory = metadataHistoryList
-            if (metadataHistory.last() != metadataView.text) {
+            if (metadataHistory.last() != metadataView?.text) {
                 metadataHistoryPosition = metadataHistory.size - 1
                 val metadataString = metadataHistory[metadataHistoryPosition]
-                metadataView.text = metadataString
-                sheetMetadataHistoryView.text = metadataString
+                metadataView?.text = metadataString
+                sheetMetadataHistoryView?.text = metadataString
             }
         }
     }
@@ -278,14 +266,16 @@ data class LayoutHolder(var rootView: View) {
     fun updateSleepTimer(context: Context, timeRemaining: Long = 0L) {
         when (timeRemaining) {
             0L -> {
-                sleepTimerRunningViews.isGone = true
+                sleepTimerRunningViews?.isGone = true
+                sheetSleepTimerRemainingTimeView.isVisible = false
             }
             else -> {
-                sleepTimerRunningViews.isVisible = true
+                sleepTimerRunningViews?.isVisible = true
+                sheetSleepTimerRemainingTimeView.isVisible = true
                 val sleepTimerTimeRemaining = DateTimeHelper.convertToHoursMinutesSeconds(timeRemaining)
                 sheetSleepTimerRemainingTimeView.text = sleepTimerTimeRemaining
                 sheetSleepTimerRemainingTimeView.contentDescription = "${context.getString(R.string.descr_expanded_player_sleep_timer_remaining_time)}: $sleepTimerTimeRemaining"
-                stationNameView.isSelected = false
+                stationNameView?.isSelected = false
             }
         }
     }
@@ -297,11 +287,11 @@ data class LayoutHolder(var rootView: View) {
             playButtonView.setImageResource(R.drawable.ic_audio_waves_animated)
             val animatedVectorDrawable = playButtonView.drawable as? AnimatedVectorDrawable
             animatedVectorDrawable?.start()
-            sheetSleepTimerStartButtonView.isVisible = true
+            sheetSleepTimerStartButtonView?.isVisible = true
             // bufferingIndicator.isVisible = false
         } else {
             playButtonView.setImageResource(R.drawable.ic_player_play_symbol_42dp)
-            sheetSleepTimerStartButtonView.isVisible = false
+            sheetSleepTimerStartButtonView?.isVisible = false
             // bufferingIndicator.isVisible = isBuffering
         }
     }
@@ -316,8 +306,8 @@ data class LayoutHolder(var rootView: View) {
     /* Toggles visibility of the download progress indicator */
     fun toggleDownloadProgressIndicator() {
         when (PreferencesHelper.loadActiveDownloads()) {
-            Keys.ACTIVE_DOWNLOADS_EMPTY -> downloadProgressIndicator.isGone = true
-            else -> downloadProgressIndicator.isVisible = true
+            Keys.ACTIVE_DOWNLOADS_EMPTY -> downloadProgressIndicator?.isGone = true
+            else -> downloadProgressIndicator?.isVisible = true
         }
     }
 
@@ -338,27 +328,20 @@ data class LayoutHolder(var rootView: View) {
 
     /* Initiates the rotation animation of the play button  */
     fun animatePlaybackButtonStateTransition(context: Context, isPlaying: Boolean) {
-        when (isPlaying) {
-            true -> {
-                val rotateClockwise = AnimationUtils.loadAnimation(context, R.anim.rotate_clockwise_slow)
-                rotateClockwise.setAnimationListener(createAnimationListener(true))
-                playButtonView.startAnimation(rotateClockwise)
-            }
-            false -> {
-                val rotateCounterClockwise = AnimationUtils.loadAnimation(context, R.anim.rotate_counterclockwise_fast)
-                rotateCounterClockwise.setAnimationListener(createAnimationListener(false))
-                playButtonView.startAnimation(rotateCounterClockwise)
-            }
-
-        }
+        // Toggle play button immediately for snappier feel
+        togglePlayButton(isPlaying)
     }
 
 
     /* Shows player */
     fun showPlayer(context: Context): Boolean {
-        UiHelper.setViewMargins(context, recyclerView, 0, 0, 0, Keys.BOTTOM_SHEET_PEEK_HEIGHT)
-        if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN && onboardingLayout.isGone) {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        if (bottomSheetBehavior != null) {
+            UiHelper.setViewMargins(context, recyclerView, 0, 0, 0, Keys.BOTTOM_SHEET_PEEK_HEIGHT)
+            if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_HIDDEN && onboardingLayout.isGone) {
+                bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+        } else {
+            UiHelper.setViewMargins(context, recyclerView, 0, 0, 0, 0)
         }
         return true
     }
@@ -367,15 +350,15 @@ data class LayoutHolder(var rootView: View) {
     /* Hides player */
     private fun hidePlayer(context: Context): Boolean {
         UiHelper.setViewMargins(context, recyclerView, 0, 0, 0, 0)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         return true
     }
 
 
     /* Minimizes player sheet if expanded */
     fun minimizePlayerIfExpanded(): Boolean {
-        return if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        return if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED) {
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
             true
         } else {
             false
@@ -399,38 +382,40 @@ data class LayoutHolder(var rootView: View) {
 
     /* Sets up the player (BottomSheet) */
     private fun setupBottomSheet() {
-        // show / hide the small player
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        bottomSheetBehavior.addBottomSheetCallback(object :
-            BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(view: View, slideOffset: Float) {
-            }
-
-            override fun onStateChanged(view: View, state: Int) {
-                when (state) {
-                    BottomSheetBehavior.STATE_COLLAPSED -> Unit // do nothing
-                    BottomSheetBehavior.STATE_DRAGGING -> Unit // do nothing
-                    BottomSheetBehavior.STATE_EXPANDED -> Unit // do nothing
-                    BottomSheetBehavior.STATE_HALF_EXPANDED -> Unit // do nothing
-                    BottomSheetBehavior.STATE_SETTLING -> Unit // do nothing
-                    BottomSheetBehavior.STATE_HIDDEN -> showPlayer(rootView.context)
+        if (bottomSheetBehavior != null) {
+            // show / hide the small player
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+            bottomSheetBehavior?.addBottomSheetCallback(object :
+                BottomSheetBehavior.BottomSheetCallback() {
+                override fun onSlide(view: View, slideOffset: Float) {
                 }
-            }
-        })
-        // toggle collapsed state on tap
-        bottomSheet.setOnClickListener { toggleBottomSheetState() }
-        stationImageView.setOnClickListener { toggleBottomSheetState() }
-        stationNameView.setOnClickListener { toggleBottomSheetState() }
-        metadataView.setOnClickListener { toggleBottomSheetState() }
+
+                override fun onStateChanged(view: View, state: Int) {
+                    when (state) {
+                        BottomSheetBehavior.STATE_COLLAPSED -> Unit // do nothing
+                        BottomSheetBehavior.STATE_DRAGGING -> Unit // do nothing
+                        BottomSheetBehavior.STATE_EXPANDED -> Unit // do nothing
+                        BottomSheetBehavior.STATE_HALF_EXPANDED -> Unit // do nothing
+                        BottomSheetBehavior.STATE_SETTLING -> Unit // do nothing
+                        BottomSheetBehavior.STATE_HIDDEN -> showPlayer(rootView.context)
+                    }
+                }
+            })
+            // toggle collapsed state on tap
+            bottomSheet?.setOnClickListener { toggleBottomSheetState() }
+            stationImageView?.setOnClickListener { toggleBottomSheetState() }
+            stationNameView?.setOnClickListener { toggleBottomSheetState() }
+            metadataView?.setOnClickListener { toggleBottomSheetState() }
+        }
     }
 
 
     /* Toggle expanded/collapsed state of bottom sheet */
     private fun toggleBottomSheetState() {
-        when (bottomSheetBehavior.state) {
-            BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehavior.state =
+        when (bottomSheetBehavior?.state) {
+            BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehavior?.state =
                 BottomSheetBehavior.STATE_EXPANDED
-            else -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            else -> bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
         }
     }
 
