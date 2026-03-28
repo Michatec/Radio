@@ -3,6 +3,7 @@
 ### ℹ️ About Radio
 **Radio is an application with a minimalist approach to listening to radio over the Internet.** <br>
 **Radio only offers a very basic search option, and it imports audio streaming links when you tap them in a web browser.** <br>
+**Radio now also supports Android TV (Beta).** <br>
 **Pull request are welcome at any time.**<br>
 
 **Radio is free software. It is released under the [MIT open source license](https://opensource.org/licenses/MIT).**
