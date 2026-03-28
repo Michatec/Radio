@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pref_theme_selection_title"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:paddingBottom="16dp" />
+
+    <RadioGroup
+        android:id="@+id/theme_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/radio_theme_follow_system"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pref_theme_selection_mode_device_default"
+            android:textSize="20sp"
+            android:padding="12dp"
+            android:button="@null"
+            android:drawableStart="?android:attr/listChoiceIndicatorSingle"
+            android:drawablePadding="16dp"
+            android:focusable="true"
+            android:clickable="true" />
+
+        <RadioButton
+            android:id="@+id/radio_theme_light"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pref_theme_selection_mode_light"
+            android:textSize="20sp"
+            android:padding="12dp"
+            android:button="@null"
+            android:drawableStart="?android:attr/listChoiceIndicatorSingle"
+            android:drawablePadding="16dp"
+            android:focusable="true"
+            android:clickable="true" />
+
+        <RadioButton
+            android:id="@+id/radio_theme_dark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pref_theme_selection_mode_dark"
+            android:textSize="20sp"
+            android:padding="12dp"
+            android:button="@null"
+            android:drawableStart="?android:attr/listChoiceIndicatorSingle"
+            android:drawablePadding="16dp"
+            android:focusable="true"
+            android:clickable="true" />
+
+    </RadioGroup>
+
+</LinearLayout>

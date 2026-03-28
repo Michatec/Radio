@@ -84,6 +84,7 @@ object Keys {
     const val DIALOG_REMOVE_STATION: Int = 2
     const val DIALOG_UPDATE_STATION_IMAGES: Int = 4
     const val DIALOG_RESTORE_COLLECTION: Int = 5
+    const val DIALOG_THEME_SELECTION: Int = 6
 
     // dialog results
     const val DIALOG_EMPTY_PAYLOAD_STRING: String = ""
