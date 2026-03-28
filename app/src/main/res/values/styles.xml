@@ -13,6 +13,9 @@
         <item name="materialTimePickerTheme">@style/ThemeOverlay.App.TimePicker</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="colorControlHighlight">#80FFFFFF</item>
+        <item name="android:colorControlHighlight">#80FFFFFF</item>
+        <item name="android:colorFocusedHighlight">#FFFFFFFF</item>
     </style>
 
     <style name="SplashTheme" parent="AppTheme" />
@@ -35,6 +38,8 @@
         <item name="colorControlActivated">@color/icon_default</item>
         <item name="android:textColorPrimary">@color/text_default</item>
         <item name="android:textColorSecondary">@color/text_lightweight</item>
+        <item name="colorControlHighlight">#80FFFFFF</item>
+        <item name="android:colorFocusedHighlight">#FFFFFFFF</item>
     </style>
 
     <style name="ThemeOverlay.App.TimePicker" parent="ThemeOverlay.MaterialComponents.TimePicker">
