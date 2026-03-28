@@ -223,6 +223,14 @@ object PreferencesHelper {
     }
 
 
+    /* Save currently selected app theme */
+    fun saveThemeSelection(theme: String) {
+        sharedPreferences.edit {
+            putString(Keys.PREF_THEME_SELECTION, theme)
+        }
+    }
+
+
     /* Loads value of the option: Edit Stations */
     fun loadEditStationsEnabled(context: Context): Boolean {
         val defaultValue = !context.packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)

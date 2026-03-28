@@ -8,6 +8,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.michatec.radio.Keys
 import com.michatec.radio.R
 import com.michatec.radio.helpers.AppThemeHelper
+import com.michatec.radio.helpers.PreferencesHelper
 
 
 /*
@@ -85,10 +86,10 @@ class ThemeSelectionDialog(private var themeSelectionDialogListener: ThemeSelect
                 R.id.radio_theme_dark -> Keys.STATE_THEME_DARK_MODE
                 else -> Keys.STATE_THEME_FOLLOW_SYSTEM
             }
+            // save theme selection to preferences
+            PreferencesHelper.saveThemeSelection(selectedTheme)
             // apply theme immediately
             AppThemeHelper.setTheme(selectedTheme)
-            // update radio buttons to reflect new theme
-            updateRadioButtons(context, radioFollowSystem, radioLight, radioDark)
             // notify listener
             themeSelectionDialogListener.onThemeSelectionDialog(true, selectedTheme)
             // dismiss dialog
