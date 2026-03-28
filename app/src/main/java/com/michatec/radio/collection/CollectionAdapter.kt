@@ -425,6 +425,13 @@ class CollectionAdapter(
                             return@setOnKeyListener true
                         }
                     }
+                    KeyEvent.KEYCODE_NUMPAD_0, KeyEvent.KEYCODE_0, KeyEvent.KEYCODE_DEL -> {
+                        if (expandedStationPosition == stationViewHolder.bindingAdapterPosition) {
+                            toggleEditViews(stationViewHolder.bindingAdapterPosition, station.uuid)
+                        }
+                        removeStation(context, stationViewHolder.bindingAdapterPosition)
+                        return@setOnKeyListener true
+                    }
                 }
             }
             false
