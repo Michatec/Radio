@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Build
 import android.view.View
@@ -328,8 +329,15 @@ data class LayoutHolder(var rootView: View) {
 
     /* Initiates the rotation animation of the play button  */
     fun animatePlaybackButtonStateTransition(context: Context, isPlaying: Boolean) {
-        // Toggle play button immediately for snappier feel
-        togglePlayButton(isPlaying)
+        if (context.packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)) {
+            // TV: Toggle play button immediately for snappier feel
+            togglePlayButton(isPlaying)
+        } else {
+            // Handy/Tablet: Rotate the play button
+            val rotateAnimation = AnimationUtils.loadAnimation(context, if (isPlaying) R.anim.rotate_clockwise_slow else R.anim.rotate_counterclockwise_fast)
+            rotateAnimation.setAnimationListener(createAnimationListener(isPlaying))
+            playButtonView.startAnimation(rotateAnimation)
+        }
     }
 
 
@@ -371,7 +379,7 @@ data class LayoutHolder(var rootView: View) {
         return object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation) {}
             override fun onAnimationEnd(animation: Animation) {
-                // set up button symbol and playback indicator afterwards
+                // set up button symbol and playback indicator afterward
                 togglePlayButton(isPlaying)
             }
 
