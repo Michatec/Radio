@@ -46,11 +46,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.fragment_settings_title)
         requireActivity().window.navigationBarColor = getColor(requireContext(), android.R.attr.colorBackground)
-
-        // Set TV-specific layout for preferences to ensure focus is visible
-        if (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_TYPE_MASK == android.content.res.Configuration.UI_MODE_TYPE_TELEVISION) {
-            listView.setBackgroundResource(R.drawable.selector_preference_focus)
-        }
     }
 
     /* Overrides onCreatePreferences from PreferenceFragmentCompat */
@@ -90,10 +85,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
                 return@setOnPreferenceChangeListener false
             }
         }
-        // Set TV layout for preference to ensure focus is visible
-        if (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_TYPE_MASK == android.content.res.Configuration.UI_MODE_TYPE_TELEVISION) {
-            preferenceThemeSelection.layoutResource = R.layout.preference_tv
-        }
 
         // set up "Update Station Images" preference
         val preferenceUpdateStationImages = Preference(activity as Context)
@@ -110,11 +101,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             )
             return@setOnPreferenceClickListener true
         }
-        // Set TV layout for preference to ensure focus is visible
-        if (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_TYPE_MASK == android.content.res.Configuration.UI_MODE_TYPE_TELEVISION) {
-            preferenceUpdateStationImages.layoutResource = R.layout.preference_tv
-        }
-
 
         // set up "Update Stations" preference
         val preferenceUpdateCollection = Preference(activity as Context)
@@ -131,10 +117,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             )
             return@setOnPreferenceClickListener true
         }
-        // Set TV layout for preference to ensure focus is visible
-        if (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_TYPE_MASK == android.content.res.Configuration.UI_MODE_TYPE_TELEVISION) {
-            preferenceUpdateCollection.layoutResource = R.layout.preference_tv
-        }
 
 
         // set up "M3U Export" preference
@@ -145,10 +127,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceM3uExport.setOnPreferenceClickListener {
             openSaveM3uDialog()
             return@setOnPreferenceClickListener true
-        }
-        // Set TV layout for preference to ensure focus is visible
-        if (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_TYPE_MASK == android.content.res.Configuration.UI_MODE_TYPE_TELEVISION) {
-            preferenceM3uExport.layoutResource = R.layout.preference_tv
         }
 
 
@@ -161,10 +139,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             openSavePlsDialog()
             return@setOnPreferenceClickListener true
         }
-        // Set TV layout for preference to ensure focus is visible
-        if (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_TYPE_MASK == android.content.res.Configuration.UI_MODE_TYPE_TELEVISION) {
-            preferencePlsExport.layoutResource = R.layout.preference_tv
-        }
 
 
         // set up "Backup Stations" preference
@@ -175,10 +149,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceBackupCollection.setOnPreferenceClickListener {
             openBackupCollectionDialog()
             return@setOnPreferenceClickListener true
-        }
-        // Set TV layout for preference to ensure focus is visible
-        if (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_TYPE_MASK == android.content.res.Configuration.UI_MODE_TYPE_TELEVISION) {
-            preferenceBackupCollection.layoutResource = R.layout.preference_tv
         }
 
 
@@ -191,10 +161,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             openRestoreCollectionDialog()
             return@setOnPreferenceClickListener true
         }
-        // Set TV layout for preference to ensure focus is visible
-        if (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_TYPE_MASK == android.content.res.Configuration.UI_MODE_TYPE_TELEVISION) {
-            preferenceRestoreCollection.layoutResource = R.layout.preference_tv
-        }
 
 
         // set up "Buffer Size" preference
@@ -205,10 +171,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceBufferSize.summaryOn = getString(R.string.pref_buffer_size_summary_enabled)
         preferenceBufferSize.summaryOff = getString(R.string.pref_buffer_size_summary_disabled)
         preferenceBufferSize.setDefaultValue(PreferencesHelper.loadLargeBufferSize())
-        // Set TV layout for preference to ensure focus is visible
-        if (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_TYPE_MASK == android.content.res.Configuration.UI_MODE_TYPE_TELEVISION) {
-            preferenceBufferSize.layoutResource = R.layout.preference_tv
-        }
 
 
         // set up "Edit Stream Address" preference
@@ -220,10 +182,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceEnableEditingStreamUri.summaryOff = getString(R.string.pref_edit_station_stream_summary_disabled)
         preferenceEnableEditingStreamUri.setDefaultValue(PreferencesHelper.loadEditStreamUrisEnabled(context))
         preferenceEnableEditingStreamUri.isEnabled = PreferencesHelper.loadEditStreamUrisEnabled(context)
-        // Set TV layout for preference to ensure focus is visible
-        if (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_TYPE_MASK == android.content.res.Configuration.UI_MODE_TYPE_TELEVISION) {
-            preferenceEnableEditingStreamUri.layoutResource = R.layout.preference_tv
-        }
 
 
         // set up "Edit Stations" preference
@@ -246,11 +204,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             }
             return@setOnPreferenceChangeListener true
         }
-        // Set TV layout for preference to ensure focus is visible
-        if (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_TYPE_MASK == android.content.res.Configuration.UI_MODE_TYPE_TELEVISION) {
-            preferenceEnableEditingGeneral.layoutResource = R.layout.preference_tv
-        }
-
 
         // set up "App Version" preference
         val preferenceAppVersion = Preference(context)
@@ -268,10 +221,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             }
             return@setOnPreferenceClickListener true
         }
-        // Set TV layout for preference to ensure focus is visible
-        if (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_TYPE_MASK == android.content.res.Configuration.UI_MODE_TYPE_TELEVISION) {
-            preferenceAppVersion.layoutResource = R.layout.preference_tv
-        }
 
 
         // set up "GitHub" preference
@@ -288,10 +237,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             startActivity(intent)
             return@setOnPreferenceClickListener true
         }
-        // Set TV layout for preference to ensure focus is visible
-        if (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_TYPE_MASK == android.content.res.Configuration.UI_MODE_TYPE_TELEVISION) {
-            preferenceGitHub.layoutResource = R.layout.preference_tv
-        }
 
         // set up "License" preference
         val preferenceLicense = Preference(context)
@@ -306,10 +251,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             }
             startActivity(intent)
             return@setOnPreferenceClickListener true
-        }
-        // Set TV layout for preference to ensure focus is visible
-        if (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_TYPE_MASK == android.content.res.Configuration.UI_MODE_TYPE_TELEVISION) {
-            preferenceLicense.layoutResource = R.layout.preference_tv
         }
 
 
