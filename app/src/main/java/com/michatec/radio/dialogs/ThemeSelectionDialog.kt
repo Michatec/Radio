@@ -71,7 +71,7 @@ class ThemeSelectionDialog(private var themeSelectionDialogListener: ThemeSelect
         builder.setView(view)
 
         // add OK button
-        builder.setPositiveButton(R.string.dialog_generic_button_ok) { _, _ ->
+        builder.setPositiveButton(R.string.dialog_generic_button_okay) { dialog, _ ->
             // get selected theme
             val selectedTheme = when (radioGroup.checkedRadioButtonId) {
                 R.id.radio_theme_follow_system -> Keys.STATE_THEME_FOLLOW_SYSTEM
@@ -81,12 +81,14 @@ class ThemeSelectionDialog(private var themeSelectionDialogListener: ThemeSelect
             }
             // notify listener
             themeSelectionDialogListener.onThemeSelectionDialog(true, selectedTheme)
+            dialog.dismiss()
         }
 
         // add cancel button
-        builder.setNegativeButton(R.string.dialog_generic_button_cancel) { _, _ ->
+        builder.setNegativeButton(R.string.dialog_generic_button_cancel) { dialog, _ ->
             // notify listener
             themeSelectionDialogListener.onThemeSelectionDialog(false, Keys.STATE_THEME_FOLLOW_SYSTEM)
+            dialog.dismiss()
         }
 
         // handle outside-click as cancel
