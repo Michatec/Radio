@@ -419,16 +419,14 @@ class CollectionAdapter(
                             return@setOnKeyListener true
                         }
                     }
-                    KeyEvent.KEYCODE_BACK -> {
+                    KeyEvent.KEYCODE_NUMPAD_1, KeyEvent.KEYCODE_1, KeyEvent.KEYCODE_BACK -> {
                         if (expandedStationPosition == stationViewHolder.bindingAdapterPosition) {
-                            toggleEditViews(stationViewHolder.bindingAdapterPosition, station.uuid)
+                            val position: Int = stationViewHolder.bindingAdapterPosition
+                            toggleEditViews(position, station.uuid)
                             return@setOnKeyListener true
                         }
                     }
                     KeyEvent.KEYCODE_NUMPAD_0, KeyEvent.KEYCODE_0, KeyEvent.KEYCODE_DEL -> {
-                        if (expandedStationPosition == stationViewHolder.bindingAdapterPosition) {
-                            toggleEditViews(stationViewHolder.bindingAdapterPosition, station.uuid)
-                        }
                         removeStation(context, stationViewHolder.bindingAdapterPosition)
                         return@setOnKeyListener true
                     }
