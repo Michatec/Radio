@@ -288,6 +288,27 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceScreen = screen
     }
 
+    /* Overrides onThemeSelectionDialog from ThemeSelectionDialogListener */
+    override fun onThemeSelectionDialog(dialogResult: Boolean, selectedTheme: String) {
+        if (dialogResult) {
+            // update summary
+            val themes = arrayOf(
+                getString(R.string.pref_theme_selection_mode_device_default),
+                getString(R.string.pref_theme_selection_mode_light),
+                getString(R.string.pref_theme_selection_mode_dark)
+            )
+            val themeValues = arrayOf(
+                Keys.STATE_THEME_FOLLOW_SYSTEM,
+                Keys.STATE_THEME_LIGHT_MODE,
+                Keys.STATE_THEME_DARK_MODE
+            )
+            val index = themeValues.indexOf(selectedTheme)
+            val preferenceThemeSelection = findPreference<Preference>(Keys.PREF_THEME_SELECTION)
+            preferenceThemeSelection?.summary = "${getString(R.string.pref_theme_selection_summary)} ${themes[index]}"
+        }
+    }
+
+
     /* Overrides onYesNoDialog from YesNoDialogListener */
     override fun onYesNoDialog(
         type: Int,
