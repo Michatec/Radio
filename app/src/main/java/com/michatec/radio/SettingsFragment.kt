@@ -5,7 +5,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -17,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.navigation.fragment.findNavController
 import androidx.preference.*
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.michatec.radio.dialogs.ErrorDialog
 import com.michatec.radio.dialogs.ThemeSelectionDialog
@@ -66,15 +64,8 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             AppThemeHelper.getCurrentTheme(activity as Context)
         }"
         preferenceThemeSelection.setOnPreferenceClickListener {
-            // check if device is a TV
-            val isTv = requireContext().packageManager.hasSystemFeature(android.content.pm.PackageManager.FEATURE_LEANBACK)
-            if (isTv) {
-                // show TV-specific theme selection dialog
-                ThemeSelectionDialog(this).show(activity as Context)
-            } else {
-                // show standard theme selection dialog for non-TV devices
-                showThemeSelectionDialog()
-            }
+            // show theme selection dialog
+            ThemeSelectionDialog(this).show(activity as Context)
             return@setOnPreferenceClickListener true
         }
 
@@ -296,58 +287,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         screen.addPreference(preferenceGitHub)
         preferenceScreen = screen
     }
-
-
-    /* Shows theme selection dialog for non-TV devices */
-    private fun showThemeSelectionDialog() {
-        val themes = arrayOf(
-            getString(R.string.pref_theme_selection_mode_device_default),
-            getString(R.string.pref_theme_selection_mode_light),
-            getString(R.string.pref_theme_selection_mode_dark)
-        )
-        val themeValues = arrayOf(
-            Keys.STATE_THEME_FOLLOW_SYSTEM,
-            Keys.STATE_THEME_LIGHT_MODE,
-            Keys.STATE_THEME_DARK_MODE
-        )
-        val currentTheme = AppThemeHelper.getCurrentTheme(activity as Context)
-        val currentIndex = themes.indexOf(currentTheme)
-
-        val builder = MaterialAlertDialogBuilder(activity as Context)
-        builder.setTitle(getString(R.string.pref_theme_selection_title))
-        builder.setSingleChoiceItems(themes, currentIndex) { dialog, which ->
-            val selectedTheme = themeValues[which]
-            AppThemeHelper.setTheme(selectedTheme)
-            // update summary
-            val preferenceThemeSelection = findPreference<Preference>(Keys.PREF_THEME_SELECTION)
-            preferenceThemeSelection?.summary = "${getString(R.string.pref_theme_selection_summary)} ${themes[which]}"
-            dialog.dismiss()
-        }
-        builder.setNegativeButton(R.string.dialog_generic_button_cancel, null)
-        builder.show()
-    }
-
-
-    /* Overrides onThemeSelectionDialog from ThemeSelectionDialogListener */
-    override fun onThemeSelectionDialog(dialogResult: Boolean, selectedTheme: String) {
-        if (dialogResult) {
-            // update summary
-            val themes = arrayOf(
-                getString(R.string.pref_theme_selection_mode_device_default),
-                getString(R.string.pref_theme_selection_mode_light),
-                getString(R.string.pref_theme_selection_mode_dark)
-            )
-            val themeValues = arrayOf(
-                Keys.STATE_THEME_FOLLOW_SYSTEM,
-                Keys.STATE_THEME_LIGHT_MODE,
-                Keys.STATE_THEME_DARK_MODE
-            )
-            val index = themeValues.indexOf(selectedTheme)
-            val preferenceThemeSelection = findPreference<Preference>(Keys.PREF_THEME_SELECTION)
-            preferenceThemeSelection?.summary = "${getString(R.string.pref_theme_selection_summary)} ${themes[index]}"
-        }
-    }
-
 
     /* Overrides onYesNoDialog from YesNoDialogListener */
     override fun onYesNoDialog(
