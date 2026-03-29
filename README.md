@@ -97,7 +97,7 @@ When **Edit Stations** is enabled:
 <details>
 <summary>📜️ Credit</summary>
 
-Base app Michatec & [TRANSISTOR](https://codeberg.org/y20k/transistor).
+To Michatec.
 </details>
 
 <div align="right">
