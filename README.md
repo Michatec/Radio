@@ -3,7 +3,6 @@
 	<a href="https://github.com/michatec/Radio/releases"><img src="https://img.shields.io/github/downloads/michatec/Radio/total.svg?style=flat-square" /></a>
 	<a href="https://github.com/michatec/Radio/issues"><img src="https://img.shields.io/github/issues-raw/michatec/Radio.svg?style=flat-square&label=issues" /></a>
 	<a href="https://github.com/michatec/Radio/graphs/contributors"><img src="https://img.shields.io/github/contributors/michatec/Radio?style=flat-square" /></a>
-	<a href="https://github.com/michatec/Radio/blob/master/LICENSE"><img src="https://img.shields.io/github/license/michatec/Radio?style=flat-square" /></a>
 </p>
 <div align="center">
 
