@@ -1,17 +1,3 @@
-/*
- * AudioHelper.kt
- * Implements the AudioHelper object
- * A AudioHelper provides helper methods for handling audio files
- *
- * This file is part of
- * TRANSISTOR - Radio App for Android
- *
- * Copyright (c) 2015-22 - Y20K.org
- * Licensed under the MIT-License
- * http://opensource.org/licenses/MIT
- */
-
-
 package com.michatec.radio.helpers
 
 import android.util.Log

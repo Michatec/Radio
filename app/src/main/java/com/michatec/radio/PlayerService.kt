@@ -1,17 +1,3 @@
-/*
- * PlayerService.kt
- * Implements the PlayerService class
- * PlayerService is Radio's foreground service that plays radio station audio
- *
- * This file is part of
- * TRANSISTOR - Radio App for Android
- *
- * Copyright (c) 2015-22 - Y20K.org
- * Licensed under the MIT-License
- * http://opensource.org/licenses/MIT
- */
-
-
 package com.michatec.radio
 
 import android.app.PendingIntent

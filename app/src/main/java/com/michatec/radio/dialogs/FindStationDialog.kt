@@ -1,17 +1,3 @@
-/*
- * FindStationDialog.kt
- * Implements the FindStationDialog class
- * A FindStationDialog shows a dialog with search box and list of results
- *
- * This file is part of
- * TRANSISTOR - Radio App for Android
- *
- * Copyright (c) 2015-22 - Y20K.org
- * Licensed under the MIT-License
- * http://opensource.org/licenses/MIT
- */
-
-
 package com.michatec.radio.dialogs
 
 import android.annotation.SuppressLint

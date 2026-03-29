@@ -13,7 +13,7 @@
 **Radio now also supports Android TV (Beta).** <br>
 **Pull request are welcome at any time.**<br>
 
-**Radio is free software. It is released under the [MIT open source license](https://opensource.org/licenses/MIT).**
+**Radio is free software. It is released under the [GPLv3 open source license](https://opensource.org/licenses/GPL-3.0).**
 </div>
 
 ----------------------------------------

@@ -1,17 +1,3 @@
-/*
- * CollectionViewModel.kt
- * Implements the CollectionViewModel class
- * A CollectionViewModel stores the collection of stations as live data
- *
- * This file is part of
- * TRANSISTOR - Radio App for Android
- *
- * Copyright (c) 2015-22 - Y20K.org
- * Licensed under the MIT-License
- * http://opensource.org/licenses/MIT
- */
-
-
 package com.michatec.radio.collection
 
 import android.app.Application

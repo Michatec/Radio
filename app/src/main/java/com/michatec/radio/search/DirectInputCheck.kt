@@ -1,17 +1,3 @@
-/*
- * DirectInputCheck.kt
- * Implements the DirectInputCheck class
- * A DirectInputCheck checks if a station url is valid and returns station via a listener
- *
- * This file is part of
- * TRANSISTOR - Radio App for Android
- *
- * Copyright (c) 2015-23 - Y20K.org
- * Licensed under the MIT-License
- * http://opensource.org/licenses/MIT
- */
-
-
 package com.michatec.radio.search
 
 import android.content.Context

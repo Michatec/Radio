@@ -63,7 +63,7 @@
     <string name="pref_edit_station_title">Επεξεργασία Σταθμών</string>
     <string name="pref_general_title">Γενικές ρυθμίσεις</string>
     <string name="pref_license_title">Αυτή η εφαρμογή είναι ανοικτού κώδικα</string>
-    <string name="pref_license_summary">Αδειοδότηση με άδεια MIT</string>
+    <string name="pref_license_summary">Αδειοδότηση με άδεια GPLv3</string>
     <string name="pref_links_title">Σύνδεσμοι</string>
     <string name="pref_m3u_export_summary">Αποθηκεύστε τους ραδιοφωνικούς σας σταθμούς σε ένα αρχείο λίστας αναπαραγωγής M3U που μπορεί να εισαχθεί σε άλλους αναπαραγωγούς.</string>
     <string name="pref_m3u_export_title">Εξαγωγή M3U</string>

@@ -1,17 +1,3 @@
-/*
- * ErrorDialog.kt
- * Implements the ErrorDialog class
- * An ErrorDialog shows an error dialog with details
- *
- * This file is part of
- * TRANSISTOR - Radio App for Android
- *
- * Copyright (c) 2015-22 - Y20K.org
- * Licensed under the MIT-License
- * http://opensource.org/licenses/MIT
- */
-
-
 package com.michatec.radio.dialogs
 
 import android.content.Context
