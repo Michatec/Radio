@@ -97,7 +97,12 @@ When **Edit Stations** is enabled:
 <details>
 <summary>📜️ Credit</summary>
 
-To Michatec.
+- [Radio Browser](http://www.radio-browser.info/) for providing the radio station database
+- [AndroidX Leanback](https://developer.android.com/jetpack/androidx/releases/leanback) for providing the Android TV UI components
+
+- Michatec for developing the app and maintaining the project
+- All the contributors who have contributed to the project by submitting pull requests, reporting issues, or providing feedback
+
 </details>
 
 <div align="right">
