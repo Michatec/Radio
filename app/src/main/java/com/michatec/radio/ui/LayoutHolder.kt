@@ -128,7 +128,6 @@ data class LayoutHolder(var rootView: View) {
         if (!isPlaying) {
             metadataView?.text = station.name
             sheetMetadataHistoryView?.text = station.name
-//            sheetMetadataHistoryView.isSelected = true
         }
 
         // update name
@@ -289,11 +288,9 @@ data class LayoutHolder(var rootView: View) {
             val animatedVectorDrawable = playButtonView.drawable as? AnimatedVectorDrawable
             animatedVectorDrawable?.start()
             sheetSleepTimerStartButtonView?.isVisible = true
-            // bufferingIndicator.isVisible = false
         } else {
             playButtonView.setImageResource(R.drawable.ic_player_play_symbol_42dp)
             sheetSleepTimerStartButtonView?.isVisible = false
-            // bufferingIndicator.isVisible = isBuffering
         }
     }
 

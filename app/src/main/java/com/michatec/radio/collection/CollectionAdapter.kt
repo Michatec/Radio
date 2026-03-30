@@ -22,7 +22,6 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
-import androidx.media3.common.text.TextAnnotation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -190,7 +189,11 @@ class CollectionAdapter(
 
                 // highlight if reordering
                 if (reorderStationUuid == station.uuid) {
-                    stationViewHolder.stationCardView.setStrokeColor(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.cardview_reordering)))
+                    stationViewHolder.stationCardView.setStrokeColor(
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(context, R.color.cardview_reordering)
+                        )
+                    )
                 }
 
                 // show / hide edit views
@@ -369,12 +372,16 @@ class CollectionAdapter(
         when (station.starred) {
             true -> {
                 if (station.imageColor != -1) {
-                    // stationViewHolder.stationCardView.setCardBackgroundColor(station.imageColor)
                     stationViewHolder.stationStarredView.setColorFilter(station.imageColor)
+                } else {
+                    stationViewHolder.stationStarredView.clearColorFilter()
                 }
                 stationViewHolder.stationStarredView.isVisible = true
             }
-            false -> stationViewHolder.stationStarredView.isGone = true
+            false -> {
+                stationViewHolder.stationStarredView.clearColorFilter()
+                stationViewHolder.stationStarredView.isGone = true
+            }
         }
     }
 

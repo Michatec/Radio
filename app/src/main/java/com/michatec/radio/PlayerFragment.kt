@@ -561,15 +561,27 @@ class PlayerFragment : Fragment(),
 
     /* Handles this activity's start intent */
     private fun handleStartIntent() {
-        if ((activity as Activity).intent.action != null) {
-            when ((activity as Activity).intent.action) {
-                Keys.ACTION_SHOW_PLAYER -> handleShowPlayer()
-                Intent.ACTION_VIEW -> handleViewIntent()
-                Keys.ACTION_START -> handleStartPlayer()
+        val intent = (activity as Activity).intent
+        if (intent.action != null && intent.action?.isNotEmpty() == true) {
+            var handled = false
+            when (intent.action) {
+                Keys.ACTION_SHOW_PLAYER -> {
+                    handleShowPlayer()
+                    handled = true
+                }
+                Intent.ACTION_VIEW -> {
+                    handleViewIntent()
+                    handled = true
+                }
+                Keys.ACTION_START -> {
+                    handled = handleStartPlayer()
+                }
+            }
+            if (handled) {
+                // clear intent action to prevent double calls
+                intent.action = ""
             }
         }
-        // clear intent action to prevent double calls
-        (activity as Activity).intent.action = ""
     }
 
 
@@ -590,12 +602,12 @@ class PlayerFragment : Fragment(),
                 val scheme: String = intentUri.scheme ?: String()
                 // CASE: intent is a web link
                 if (scheme.startsWith("http")) {
-                    Log.i(TAG, "Transistor was started to handle a web link.")
+                    Log.i(TAG, "Radio was started to handle a web link.")
                     stationList.addAll(CollectionHelper.createStationsFromUrl(intentUri.toString()))
                 }
                 // CASE: intent is a local file
                 else if (scheme.startsWith("content")) {
-                    Log.i(TAG, "Transistor was started to handle a local audio playlist.")
+                    Log.i(TAG, "Radio was started to handle a local audio playlist.")
                     stationList.addAll(CollectionHelper.createStationListFromContentUri(activity as Context, intentUri))
                 }
                 withContext(Main) {
@@ -612,17 +624,30 @@ class PlayerFragment : Fragment(),
 
 
     /* Handles START_PLAYER_SERVICE request from App Shortcut */
-    private fun handleStartPlayer() {
+    private fun handleStartPlayer(): Boolean {
+        if (controller == null || collection.stations.isEmpty()) {
+            return false
+        }
         val intent: Intent = (activity as Activity).intent
         if (intent.hasExtra(Keys.EXTRA_START_LAST_PLAYED_STATION)) {
-            controller?.play(activity as Context, CollectionHelper.getStation(collection, playerState.stationUuid))
+            val station = CollectionHelper.getStation(collection, playerState.stationUuid)
+            if (station.isValid()) {
+                controller?.play(activity as Context, station)
+                return true
+            }
         } else if (intent.hasExtra(Keys.EXTRA_STATION_UUID)) {
             val uuid: String = intent.getStringExtra(Keys.EXTRA_STATION_UUID) ?: String()
-            controller?.play(activity as Context, CollectionHelper.getStation(collection, uuid))
+            val station = CollectionHelper.getStation(collection, uuid)
+            if (station.isValid()) {
+                controller?.play(activity as Context, station)
+                return true
+            }
         } else if (intent.hasExtra(Keys.EXTRA_STREAM_URI)) {
             val streamUri: String = intent.getStringExtra(Keys.EXTRA_STREAM_URI) ?: String()
             controller?.playStreamDirectly(streamUri)
+            return true
         }
+        return false
     }
 
 
@@ -640,9 +665,9 @@ class PlayerFragment : Fragment(),
             collection = it
             // updates current station in player views
             playerState = PreferencesHelper.loadPlayerState()
-//            // get station
+            // get station
             val station: Station = CollectionHelper.getStation(collection, playerState.stationUuid)
-//            // update player views
+            // update player views
             layout.updatePlayerViews(activity as Context, station, playerState.isPlaying)
             // handle start intent
             handleStartIntent()

@@ -241,11 +241,6 @@ class PlayerService : MediaLibraryService() {
                 async(Dispatchers.Default) { FileHelper.readCollectionSuspended(context) }
             // wait for result and update collection
             collection = deferred.await()
-//            // special case: trigger metadata view update for stations that have no metadata
-//            if (player.isPlaying && station.name == getCurrentMetadata()) {
-//                station = CollectionHelper.getStation(collection, station.uuid)
-//                updateMetadata(null)
-//            }
         }
     }
 
@@ -429,7 +424,6 @@ class PlayerService : MediaLibraryService() {
                 currentMediaId,
                 isPlaying
             )
-            //updatePlayerState(station, playbackState)
 
             if (isPlaying) {
                 // playback is active
@@ -506,10 +500,6 @@ class PlayerService : MediaLibraryService() {
             // try to reconnect every 5 seconds - up to 20 times
             if (loadErrorInfo.errorCount <= Keys.DEFAULT_MAX_RECONNECTION_COUNT && loadErrorInfo.exception is HttpDataSource.HttpDataSourceException) {
                 return Keys.RECONNECTION_WAIT_INTERVAL
-//            } else {
-//                CoroutineScope(Main).launch {
-//                    player.stop()
-//                }
             }
             return C.TIME_UNSET
         }

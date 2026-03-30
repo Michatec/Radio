@@ -245,7 +245,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         val preferenceCategoryMaintenance = PreferenceCategory(activity as Context)
         preferenceCategoryMaintenance.title = getString(R.string.pref_maintenance_title)
         preferenceCategoryMaintenance.contains(preferenceUpdateStationImages)
-//        preferenceCategoryMaintenance.contains(preferenceUpdateCollection)
+        preferenceCategoryMaintenance.contains(preferenceUpdateCollection)
 
         val preferenceCategoryImportExport = PreferenceCategory(activity as Context)
         preferenceCategoryImportExport.title = getString(R.string.pref_backup_import_export_title)
@@ -549,7 +549,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             requestRestoreCollectionLauncher.launch(intent)
         } catch (exception: Exception) {
             Log.e(TAG, "Unable to open file picker for ZIP.\n$exception")
-            // Toast.makeText(activity as Context, R.string.toast_message_install_file_helper, Toast.LENGTH_LONG).show()
         }
     }
 }

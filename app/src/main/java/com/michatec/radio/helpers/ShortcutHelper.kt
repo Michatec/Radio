@@ -21,7 +21,6 @@ object ShortcutHelper {
 
     /* Places shortcut on Home screen */
     fun placeShortcut(context: Context, station: Station) {
-        // credit: https://medium.com/@BladeCoder/using-support-library-26-0-0-you-can-do-bb75911e01e8
         if (ShortcutManagerCompat.isRequestPinShortcutSupported(context)) {
             val shortcut: ShortcutInfoCompat = ShortcutInfoCompat.Builder(context, station.name)
                 .setShortLabel(station.name)
