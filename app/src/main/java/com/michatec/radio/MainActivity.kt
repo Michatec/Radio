@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                 hideLoadingOverlay()
             }, 1200)
         } else {
-            hideLoadingOverlay()
+            findViewById<View>(R.id.loading_layout)?.visibility = View.GONE
         }
 
         // register listener for changes in shared preferences
