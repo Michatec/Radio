@@ -248,7 +248,6 @@ class PlayerFragment : Fragment(),
         // load player state
         playerState = PreferencesHelper.loadPlayerState()
         // recreate player ui
-//        setupPlaybackControls()
         updatePlayerViews()
         updateStationListState()
         togglePeriodicSleepTimerUpdateRequest()
@@ -256,7 +255,7 @@ class PlayerFragment : Fragment(),
         observeCollectionViewModel()
         // handle navigation arguments
         handleNavigationArguments()
-//        // handle start intent - if started via tap on rss link
+        // handle start intent - if started via tap on rss link
         handleStartIntent()
         // start watching for changes in shared preferences
         PreferencesHelper.registerPreferenceChangeListener(this as SharedPreferences.OnSharedPreferenceChangeListener)
