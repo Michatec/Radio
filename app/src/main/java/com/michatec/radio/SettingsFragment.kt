@@ -21,7 +21,6 @@ import com.michatec.radio.dialogs.ErrorDialog
 import com.michatec.radio.dialogs.ThemeSelectionDialog
 import com.michatec.radio.dialogs.YesNoDialog
 import com.michatec.radio.helpers.*
-import com.michatec.radio.helpers.AppThemeHelper.getColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -46,7 +45,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         (activity as AppCompatActivity).supportActionBar?.show()
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.fragment_settings_title)
-        requireActivity().window.navigationBarColor = getColor(requireContext(), android.R.attr.colorBackground)
     }
 
     /* Overrides onCreatePreferences from PreferenceFragmentCompat */

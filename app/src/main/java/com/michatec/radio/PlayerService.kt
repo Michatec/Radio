@@ -81,7 +81,8 @@ class PlayerService : MediaLibraryService() {
 
     /* Overrides onDestroy from Service */
     override fun onDestroy() {
-        // player.removeAnalyticsListener(analyticsListener)
+        // Reset playing state in preferences
+        PreferencesHelper.saveIsPlaying(false)
         player.removeListener(playerListener)
         player.release()
         mediaLibrarySession.release()

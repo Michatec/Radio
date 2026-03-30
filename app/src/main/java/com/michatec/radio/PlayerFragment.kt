@@ -22,6 +22,9 @@ import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.media3.common.MediaItem
@@ -167,8 +170,11 @@ class PlayerFragment : Fragment(),
         // hide action bar
         (activity as AppCompatActivity).supportActionBar?.hide()
 
-        // set the same background color of the player sheet for the navigation bar
-        requireActivity().window.navigationBarColor = ContextCompat.getColor(requireActivity(), R.color.player_sheet_background)
+        ViewCompat.setOnApplyWindowInsetsListener(layout.rootView) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updatePadding(bottom = systemBars.bottom)
+            insets
+        }
         // associate the ItemTouchHelper with the RecyclerView
         itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback())
         itemTouchHelper?.attachToRecyclerView(layout.recyclerView)
@@ -405,6 +411,13 @@ class PlayerFragment : Fragment(),
     private fun setupController() {
         val controller: MediaController = this.controller ?: return
         controller.addListener(playerListener)
+
+        // Sync local playerState with actual controller state
+        if (playerState.isPlaying != controller.isPlaying) {
+            playerState.isPlaying = controller.isPlaying
+            updatePlayerViews()
+        }
+
         requestMetadataUpdate()
         // handle start intent
         handleStartIntent()

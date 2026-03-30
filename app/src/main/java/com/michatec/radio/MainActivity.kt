@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
@@ -28,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
     /* Overrides onCreate from AppCompatActivity */
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         
@@ -49,17 +52,29 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration)
         supportActionBar?.hide()
 
-        // TV-specific loading logic
+        // TV-specific loading logic: Hide the overlay once the app is ready
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)) {
             Handler(Looper.getMainLooper()).postDelayed({
-                findViewById<View>(R.id.loading_layout)?.visibility = View.GONE
-            }, 1500)
+                hideLoadingOverlay()
+            }, 1200)
         } else {
-            findViewById<View>(R.id.loading_layout)?.visibility = View.GONE
+            hideLoadingOverlay()
         }
 
         // register listener for changes in shared preferences
         PreferencesHelper.registerPreferenceChangeListener(sharedPreferenceChangeListener)
+    }
+
+    /* Hides the loading/splash overlay */
+    private fun hideLoadingOverlay() {
+        findViewById<View>(R.id.loading_layout)?.let { overlay ->
+            if (overlay.isVisible) {
+                overlay.animate()
+                    .alpha(0f)
+                    .setDuration(500)
+                    .withEndAction { overlay.visibility = View.GONE }
+            }
+        }
     }
 
 
@@ -75,7 +90,6 @@ class MainActivity : AppCompatActivity() {
 
     /* Overrides onSupportNavigateUp from AppCompatActivity */
     override fun onSupportNavigateUp(): Boolean {
-        // Taken from: https://developer.android.com/guide/navigation/navigation-ui#action_bar
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_host_container) as NavHostFragment
         val navController = navHostFragment.navController
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
