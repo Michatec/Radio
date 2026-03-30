@@ -17,6 +17,7 @@ package com.michatec.radio.collection
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
@@ -28,17 +29,19 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.Group
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
+import androidx.media3.common.text.TextAnnotation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.michatec.radio.Keys
@@ -68,6 +71,7 @@ class CollectionAdapter(
     private var expandedStationUuid: String = PreferencesHelper.loadStationListStreamUuid()
     private var expandedStationPosition: Int = -1
     var isExpandedForEdit: Boolean = false
+    private var reorderStationUuid: String = ""
 
 
     /* Listener Interface */
@@ -198,6 +202,11 @@ class CollectionAdapter(
                 setPlaybackProgress(stationViewHolder, station)
                 setDownloadProgress(stationViewHolder, station)
 
+                // highlight if reordering
+                if (reorderStationUuid == station.uuid) {
+                    stationViewHolder.stationCardView.setStrokeColor(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.cardview_reordering)))
+                }
+
                 // show / hide edit views
                 when (expandedStationPosition) {
                     // show edit views
@@ -324,6 +333,21 @@ class CollectionAdapter(
         }
     }
 
+    /* Shows / hides the reorder highlight for a station */
+    private fun toggleReorderMode(position: Int, stationUuid: String) {
+        if (reorderStationUuid == stationUuid) {
+            reorderStationUuid = ""
+            saveCollectionAfterDragDrop()
+        } else {
+            // collapse edit views if necessary
+            if (isExpandedForEdit) {
+                toggleEditViews(expandedStationPosition, expandedStationUuid)
+            }
+            reorderStationUuid = stationUuid
+        }
+        notifyItemChanged(position)
+    }
+
 
     /* Shows / hides the edit view for a station */
     @SuppressLint("NotifyDataSetChanged")
@@ -392,6 +416,7 @@ class CollectionAdapter(
             false -> stationViewHolder.playButtonView.visibility = View.INVISIBLE
         }
         stationViewHolder.stationCardView.setOnClickListener {
+            if (reorderStationUuid.isNotEmpty()) return@setOnClickListener
             if (expandedStationPosition == stationViewHolder.bindingAdapterPosition) return@setOnClickListener
             collectionAdapterListener.onPlayButtonTapped(station.uuid)
         }
@@ -408,9 +433,35 @@ class CollectionAdapter(
             collectionAdapterListener.onPlayButtonTapped(station.uuid)
         }
 
-        // TV improvement: Allow opening edit view with DPAD_LEFT
+        // TV improvement: Allow reordering with DPAD
         stationViewHolder.stationCardView.setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN) {
+                // Reorder mode handling
+                if (reorderStationUuid == station.uuid) {
+                    when (keyCode) {
+                        KeyEvent.KEYCODE_DPAD_UP -> {
+                            val currentPos = stationViewHolder.bindingAdapterPosition
+                            if (currentPos > 0) {
+                                onItemMove(currentPos, currentPos - 1)
+                            }
+                            return@setOnKeyListener true
+                        }
+                        KeyEvent.KEYCODE_DPAD_DOWN -> {
+                            val currentPos = stationViewHolder.bindingAdapterPosition
+                            if (currentPos < collection.stations.size - 1) {
+                                onItemMove(currentPos, currentPos + 1)
+                            }
+                            return@setOnKeyListener true
+                        }
+                        KeyEvent.KEYCODE_NUMPAD_2, KeyEvent.KEYCODE_2, KeyEvent.KEYCODE_PLUS,
+                        KeyEvent.KEYCODE_BACK, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_DPAD_CENTER -> {
+                            toggleReorderMode(stationViewHolder.bindingAdapterPosition, station.uuid)
+                            return@setOnKeyListener true
+                        }
+                        else -> return@setOnKeyListener true // Consume other keys in reorder mode
+                    }
+                }
+
                 when (keyCode) {
                     KeyEvent.KEYCODE_DPAD_LEFT -> {
                         if (editStationsEnabled && expandedStationPosition != stationViewHolder.bindingAdapterPosition) {
@@ -419,7 +470,7 @@ class CollectionAdapter(
                             return@setOnKeyListener true
                         }
                     }
-                    KeyEvent.KEYCODE_NUMPAD_2, KeyEvent.KEYCODE_2, KeyEvent.KEYCODE_BACK -> {
+                    KeyEvent.KEYCODE_NUMPAD_3, KeyEvent.KEYCODE_3, KeyEvent.KEYCODE_BACK -> {
                         if (expandedStationPosition == stationViewHolder.bindingAdapterPosition) {
                             val position: Int = stationViewHolder.bindingAdapterPosition
                             toggleEditViews(position, station.uuid)
@@ -432,6 +483,10 @@ class CollectionAdapter(
                     }
                     KeyEvent.KEYCODE_NUMPAD_1, KeyEvent.KEYCODE_1, KeyEvent.KEYCODE_SPACE -> {
                         toggleStarredStation(context, stationViewHolder.bindingAdapterPosition)
+                        return@setOnKeyListener true
+                    }
+                    KeyEvent.KEYCODE_NUMPAD_2, KeyEvent.KEYCODE_2, KeyEvent.KEYCODE_PLUS -> {
+                        toggleReorderMode(stationViewHolder.bindingAdapterPosition, station.uuid)
                         return@setOnKeyListener true
                     }
                 }
@@ -717,7 +772,7 @@ class CollectionAdapter(
      */
     private class StationViewHolder(stationCardLayout: View) :
         RecyclerView.ViewHolder(stationCardLayout) {
-        val stationCardView: CardView = stationCardLayout.findViewById(R.id.station_card)
+        val stationCardView: MaterialCardView = stationCardLayout.findViewById(R.id.station_card)
         val stationImageView: ImageView = stationCardLayout.findViewById(R.id.station_icon)
         val stationNameView: TextView = stationCardLayout.findViewById(R.id.station_name)
         val stationStarredView: ImageView = stationCardLayout.findViewById(R.id.starred_icon)

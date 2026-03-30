@@ -37,4 +37,5 @@
     <color name="default_neutral_medium_light">@android:color/system_neutral1_300</color>
     <color name="default_neutral_dark">@android:color/system_neutral1_600</color>
 
+    <color name="cardview_reordering">@android:color/system_accent1_900</color>
 </resources>

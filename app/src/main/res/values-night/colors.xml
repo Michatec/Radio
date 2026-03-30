@@ -31,4 +31,5 @@
     <color name="player_sheet_text_main">#FFFFFFFF</color>
     <color name="player_sheet_icon">#FFFFFFFF</color>
 
+    <color name="cardview_reordering">#FFDAE2FF</color>
 </resources>

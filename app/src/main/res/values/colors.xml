@@ -39,5 +39,5 @@
     <color name="default_neutral_85percent">#D9313033</color>
 
     <color name="splashBackgroundColor">#FF1D3E66</color>
-
+    <color name="cardview_reordering">#161C2C</color>
 </resources>

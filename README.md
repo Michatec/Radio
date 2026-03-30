@@ -77,11 +77,12 @@ You can help out the radio-browser.info community by [adding the missing station
 
 When **Edit Stations** is enabled:
 - Press **← (Left)** on the remote to open the detailed station editing area
-- Press **2** or **Back** to close the editing area
+- Press **3** or **Back** to close the editing area
 
 **General TV** Controls:
 - Press **0** or **DEL** to remove the selected radio station
 - Press **1** or **SPACE** to make the selected radio station favourite
+- Press **2** or **PLUS** to reorder the selected radio station
 
 </details>
 

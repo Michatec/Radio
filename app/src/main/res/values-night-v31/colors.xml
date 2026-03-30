@@ -32,4 +32,5 @@
     <color name="player_sheet_text_main">@android:color/system_neutral1_50</color>
     <color name="player_sheet_icon">@android:color/system_neutral1_50</color>
 
+    <color name="cardview_reordering">@android:color/system_accent1_100</color>
 </resources>
