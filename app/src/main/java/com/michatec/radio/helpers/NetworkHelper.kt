@@ -115,7 +115,7 @@ object NetworkHelper {
     }
 
 
-    /* Creates a http connection from given url string */
+    /* Creates an http connection from given url string */
     private fun createConnection(urlString: String, redirectCount: Int = 0): HttpURLConnection? {
         var connection: HttpURLConnection? = null
 

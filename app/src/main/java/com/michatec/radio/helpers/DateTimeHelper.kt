@@ -17,14 +17,14 @@ object DateTimeHelper {
 
 
     /* Main class variables */
-    private const val pattern: String = "EEE, dd MMM yyyy HH:mm:ss Z"
-    private val dateFormat: SimpleDateFormat = SimpleDateFormat(pattern, Locale.ENGLISH)
+    private const val PATTERN: String = "EEE, dd MMM yyyy HH:mm:ss Z"
+    private val dateFormat: SimpleDateFormat = SimpleDateFormat(PATTERN, Locale.ENGLISH)
 
 
     /* Converts RFC 2822 string representation of a date to DATE */
     fun convertFromRfc2822(dateString: String): Date {
         val date: Date = try {
-            // parse date string using standard pattern
+            // parse date string using standard PATTERN
             dateFormat.parse((dateString)) ?: Keys.DEFAULT_DATE
         } catch (e: Exception) {
             Log.w(TAG, "Unable to parse. Trying an alternative Date format. $e")
@@ -37,7 +37,7 @@ object DateTimeHelper {
 
     /* Converts a DATE to its RFC 2822 string representation */
     fun convertToRfc2822(date: Date): String {
-        val dateFormat = SimpleDateFormat(pattern, Locale.ENGLISH)
+        val dateFormat = SimpleDateFormat(PATTERN, Locale.ENGLISH)
         return dateFormat.format(date)
     }
 

@@ -53,7 +53,7 @@ object BackupHelper {
         Snackbar.make(view, R.string.toastmessage_restored, Snackbar.LENGTH_LONG).show()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            // bypass "ZipException" for Android 14 or above applications when zip file names contain ".." or start with "/"
+            // bypass "ZipException" for Android 14 or above applications when zip file names contain "." or start with "/"
             dalvik.system.ZipPathValidator.clearCallback()
         }
 

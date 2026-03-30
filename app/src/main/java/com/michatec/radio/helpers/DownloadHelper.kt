@@ -370,7 +370,7 @@ object DownloadHelper {
     private fun determineAllowedNetworkTypes(type: Int, ignoreWifiRestriction: Boolean): Int {
         var allowedNetworkTypes: Int =
             (DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
-        // restrict download of audio files to WiFi if necessary
+        // restrict download of audio files to Wi-Fi if necessary
         if (type == Keys.FILE_TYPE_AUDIO) {
             if (!ignoreWifiRestriction && !PreferencesHelper.downloadOverMobile()) {
                 allowedNetworkTypes = DownloadManager.Request.NETWORK_WIFI

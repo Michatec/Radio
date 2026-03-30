@@ -27,28 +27,6 @@ class ThemeSelectionDialog(private var themeSelectionDialogListener: ThemeSelect
     private lateinit var dialog: AlertDialog
 
 
-    /* Update radio buttons to reflect current theme */
-    private fun updateRadioButtons(
-        context: Context,
-        radioFollowSystem: RadioButton,
-        radioLight: RadioButton,
-        radioDark: RadioButton
-    ) {
-        val currentTheme = AppThemeHelper.getCurrentTheme(context)
-        when (currentTheme) {
-            context.getString(R.string.pref_theme_selection_mode_device_default) -> {
-                radioFollowSystem.isChecked = true
-            }
-            context.getString(R.string.pref_theme_selection_mode_light) -> {
-                radioLight.isChecked = true
-            }
-            context.getString(R.string.pref_theme_selection_mode_dark) -> {
-                radioDark.isChecked = true
-            }
-        }
-    }
-
-
     /* Construct and show dialog */
     fun show(context: Context) {
         // prepare dialog builder

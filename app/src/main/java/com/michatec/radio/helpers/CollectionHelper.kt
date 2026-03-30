@@ -299,7 +299,7 @@ object CollectionHelper {
     }
 
 
-    /* Returns the children stations under under root (simple media library structure: root > stations) */
+    /* Returns the children stations under root (simple media library structure: root > stations) */
     fun getChildren(context: Context, collection: Collection): List<MediaItem> {
         val mediaItems: MutableList<MediaItem> = mutableListOf()
         collection.stations.forEach { station ->
