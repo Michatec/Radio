@@ -1,11 +1,7 @@
 package com.michatec.radio.helpers
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.util.Log
-import android.util.TypedValue
-import androidx.annotation.AttrRes
-import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatDelegate
 import com.michatec.radio.Keys
 import com.michatec.radio.R
@@ -18,8 +14,6 @@ object AppThemeHelper {
 
     /* Define log tag */
     private val TAG: String = AppThemeHelper::class.java.simpleName
-
-    private val sTypedValue = TypedValue()
 
     /* Sets app theme */
     fun setTheme(nightModeState: String) {
@@ -62,14 +56,4 @@ object AppThemeHelper {
             else -> context.getString(R.string.pref_theme_selection_mode_device_default)
         }
     }
-
-
-    @ColorInt
-    fun getColor(context: Context, @AttrRes resource: Int): Int {
-        val a: TypedArray = context.obtainStyledAttributes(sTypedValue.data, intArrayOf(resource))
-        val color = a.getColor(0, 0)
-        a.recycle()
-        return color
-    }
-
 }

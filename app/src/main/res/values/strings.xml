@@ -141,5 +141,7 @@
     <string name="snackbar_github_update_check_url" translatable="false">https://api.github.com/repos/michatec/Radio/releases/latest</string>
     <string name="app_name" translatable="false">Radio</string>
     <string name="icon_launcher" translatable="false">Icon launcher.</string>
+
+    <!-- Extras -->
     <string name="loading">Loading...</string>
 </resources>
