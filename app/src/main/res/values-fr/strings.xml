@@ -65,7 +65,7 @@
     <string name="pref_edit_station_title">Modifier la station</string>
     <string name="pref_general_title">Général</string>
     <string name="pref_license_title">Cette application est Open Source</string>
-    <string name="pref_license_summary">Sous licence MIT</string>
+    <string name="pref_license_summary">Sous licence GPLv3</string>
     <string name="pref_links_title">Liens</string>
     <string name="pref_m3u_export_summary">Enregistrez les stations dans un fichier de playlist M3U pouvant être importé dans dautres lecteurs.</string>
     <string name="pref_m3u_export_title">Exporter la playlist M3U</string>

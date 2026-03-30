@@ -80,7 +80,7 @@
     <string name="pref_github_title" translatable="false">GitHub</string>
     <string name="pref_github_summary" translatable="false">github.com/michatec/Radio</string>
     <string name="pref_license_title">This application is open source</string>
-    <string name="pref_license_summary">Licensed under the MIT License</string>
+    <string name="pref_license_summary">Licensed under the GPLv3 License</string>
     <string name="pref_links_title">Links</string>
     <string name="pref_m3u_export_summary">Save your radio stations to an M3U playlist file that can be imported into other players.</string>
     <string name="pref_m3u_export_title">Export M3U</string>

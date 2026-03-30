@@ -1,17 +1,3 @@
-/*
- * AddStationDialog.kt
- * Implements the AddStationDialog class
- * A AddStationDialog shows a dialog with list of stations to import
- *
- * This file is part of
- * TRANSISTOR - Radio App for Android
- *
- * Copyright (c) 2015-23 - Y20K.org
- * Licensed under the MIT-License
- * http://opensource.org/licenses/MIT
- */
-
-
 package com.michatec.radio.dialogs
 
 import android.content.Context

@@ -1,17 +1,3 @@
-/*
- * PlayerState.kt
- * Implements the PlayerState class
- * A PlayerState holds parameters describing the state of the player part of the UI
- *
- * This file is part of
- * TRANSISTOR - Radio App for Android
- *
- * Copyright (c) 2015-22 - Y20K.org
- * Licensed under the MIT-License
- * http://opensource.org/licenses/MIT
- */
-
-
 package com.michatec.radio.ui
 
 import android.os.Parcelable

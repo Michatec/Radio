@@ -1,3 +1,9 @@
+<p align="center">
+	<a href="https://github.com/michatec/Radio/releases"><img src="https://img.shields.io/github/v/release/michatec/Radio?style=flat-square&include_prereleases&label=version" /></a>
+	<a href="https://github.com/michatec/Radio/releases"><img src="https://img.shields.io/github/downloads/michatec/Radio/total.svg?style=flat-square" /></a>
+	<a href="https://github.com/michatec/Radio/issues"><img src="https://img.shields.io/github/issues-raw/michatec/Radio.svg?style=flat-square&label=issues" /></a>
+	<a href="https://github.com/michatec/Radio/graphs/contributors"><img src="https://img.shields.io/github/contributors/michatec/Radio?style=flat-square" /></a>
+</p>
 <div align="center">
 
 ### ℹ️ About Radio
@@ -6,7 +12,7 @@
 **Radio now also supports Android TV (Beta).** <br>
 **Pull request are welcome at any time.**<br>
 
-**Radio is free software. It is released under the [MIT open source license](https://opensource.org/licenses/MIT).**
+**Radio is free software. It is released under the [GPLv3 open source license](https://opensource.org/licenses/GPL-3.0).**
 </div>
 
 ----------------------------------------
@@ -91,7 +97,12 @@ When **Edit Stations** is enabled:
 <details>
 <summary>📜️ Credit</summary>
 
-Base app Michatec & [TRANSISTOR](https://codeberg.org/y20k/transistor).
+- [Radio Browser](http://www.radio-browser.info/) for providing the radio station database
+- [AndroidX Leanback](https://developer.android.com/jetpack/androidx/releases/leanback) for providing the Android TV UI components
+
+- Michatec for developing the app and maintaining the project
+- All the contributors who have contributed to the project by submitting pull requests, reporting issues, or providing feedback
+
 </details>
 
 <div align="right">

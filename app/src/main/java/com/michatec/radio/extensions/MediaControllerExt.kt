@@ -1,17 +1,3 @@
-/*
- * MediaControllerExt.kt
- * Implements the MediaControllerExt extension methods
- * Useful extension methods for MediaController
- *
- * This file is part of
- * TRANSISTOR - Radio App for Android
- *
- * Copyright (c) 2015-22 - Y20K.org
- * Licensed under the MIT-License
- * http://opensource.org/licenses/MIT
- */
-
-
 package com.michatec.radio.extensions
 
 import android.content.Context

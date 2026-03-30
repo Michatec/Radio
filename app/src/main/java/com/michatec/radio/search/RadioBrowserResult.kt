@@ -1,17 +1,3 @@
-/*
- * RadioBrowserResult.kt
- * Implements the RadioBrowserResult class
- * A RadioBrowserResult is the search result of a request to api.radio-browser.info
- *
- * This file is part of
- * TRANSISTOR - Radio App for Android
- *
- * Copyright (c) 2015-22 - Y20K.org
- * Licensed under the MIT-License
- * http://opensource.org/licenses/MIT
- */
-
-
 package com.michatec.radio.search
 
 import com.google.gson.annotations.Expose

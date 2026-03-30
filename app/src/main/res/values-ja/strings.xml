@@ -65,7 +65,7 @@
     <string name="pref_edit_station_title">局を編集</string>
     <string name="pref_general_title">一般</string>
     <string name="pref_license_title">このアプリはオープンソースです</string>
-    <string name="pref_license_summary">MITライセンスで提供されています</string>
+    <string name="pref_license_summary">GPLv3ライセンスで提供されています</string>
     <string name="pref_links_title">リンク</string>
     <string name="pref_m3u_export_summary">ラジオ局をM3Uプレイリストとして保存し、他のプレイヤーにインポートできます。</string>
     <string name="pref_m3u_export_title">M3Uプレイリストをエクスポート</string>
