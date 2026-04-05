@@ -93,7 +93,7 @@ public:
 class Reverb {
 public:
     std::vector<float> d1, d2, d3;
-    int p1 = 0, p2 = 0, p3 = 0;
+    size_t p1 = 0, p2 = 0, p3 = 0;
 
     float feedback = 0.7f;
     float mix = 0.0f;
