@@ -19,9 +19,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.mediarouter.app.MediaRouteButton
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.michatec.radio.Keys
@@ -60,6 +62,7 @@ data class LayoutHolder(var rootView: View) {
     private var sheetNextMetadataView: ImageButton? = rootView.findViewById(R.id.sheet_next_metadata_button)
     private var sheetPreviousMetadataView: ImageButton? = rootView.findViewById(R.id.sheet_previous_metadata_button)
     private var sheetCopyMetadataButtonView: ImageButton? = rootView.findViewById(R.id.copy_station_metadata_button)
+    private var mediaRouteButton: MediaRouteButton? = rootView.findViewById(R.id.media_route_button)
     private var sheetShareLinkButtonView: ImageView? = rootView.findViewById(R.id.sheet_share_link_button)
     private var sheetBitrateView: TextView? = rootView.findViewById(R.id.sheet_bitrate_view)
     var sheetSleepTimerStartButtonView: ImageButton? = rootView.findViewById(R.id.sleep_timer_start_button)
@@ -115,6 +118,11 @@ data class LayoutHolder(var rootView: View) {
             return@setOnLongClickListener true
         }
 
+        // Set up MediaRouteButton (Google Cast)
+        mediaRouteButton?.let {
+            CastButtonFactory.setUpMediaRouteButton(rootView.context, it)
+        }
+
         // set layout for player
         setupBottomSheet()
     }
@@ -123,8 +131,6 @@ data class LayoutHolder(var rootView: View) {
     /* Updates the player views */
     @SuppressLint("DefaultLocale")
     fun updatePlayerViews(context: Context, station: Station, isPlaying: Boolean) {
-
-        // set default metadata views, when playback has stopped
         if (!isPlaying) {
             metadataView?.text = station.name
             sheetMetadataHistoryView?.text = station.name

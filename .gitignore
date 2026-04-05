@@ -7,3 +7,4 @@
 /captures
 /gradle/gradle-daemon-jvm.properties
 /.kotlin
+/app/.cxx/

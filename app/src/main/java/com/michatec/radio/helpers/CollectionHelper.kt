@@ -640,12 +640,18 @@ object CollectionHelper {
         val mediaMetadata = MediaMetadata.Builder().apply {
             setArtist(station.name)
             //setTitle(station.name)
+            
+            // Set artwork URI for casting (TV needs a public URL)
+            val artworkUrl = station.remoteImageLocation.ifEmpty {
+                // Placeholder PNG image for stations without remote image
+                "https://raw.githubusercontent.com/google/material-design-icons/master/png/av/radio/materialicons/48dp/2x/baseline_radio_black_48dp.png"
+            }
+            setArtworkUri(artworkUrl.toUri())
+
             /* check for "file://" prevents a crash when an old backup was restored */
             if (station.image.isNotEmpty() && station.image.startsWith("file://")) {
-                //setArtworkUri(station.image.toUri())
                 setArtworkData(station.image.toUri().toFile().readBytes(), MediaMetadata.PICTURE_TYPE_FRONT_COVER)
             } else {
-                //setArtworkUri(Uri.parse(Keys.LOCATION_RESOURCES + R.raw.ic_default_station_image))
                 setArtworkData(ImageHelper.getStationImageAsByteArray(context), MediaMetadata.PICTURE_TYPE_FRONT_COVER)
             }
             setIsBrowsable(false)

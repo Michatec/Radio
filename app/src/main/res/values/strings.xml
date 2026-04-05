@@ -63,6 +63,16 @@
     <string name="pref_update_collection_summary">Download latest version of all station.</string>
     <string name="dialog_yes_no_message_update_collection">Download latest version of all station?</string>
     <string name="dialog_yes_no_positive_button_update_collection">Update</string>
+    <string name="pref_audio_effects_title">Audio Effects</string>
+    <string name="pref_bass_boost_title">Bass Boost</string>
+    <string name="pref_bass_boost_summary">Increase bass gain.</string>
+    <string name="pref_reverb_title">Reverb</string>
+    <string name="pref_reverb_summary">Adjust reverb mix.</string>
+    <string name="pref_drc_title">Dynamic Range Compression</string>
+    <string name="pref_drc_summary">Compress dynamic range for consistent volume.</string>
+    <string name="pref_eq_low_title">Equalizer: Low</string>
+    <string name="pref_eq_mid_title">Equalizer: Mid</string>
+    <string name="pref_eq_high_title">Equalizer: High</string>
     <string name="pref_advanced_title">Advanced</string>
     <string name="pref_app_version_summary">Version</string>
     <string name="pref_app_version_title">App Version</string>

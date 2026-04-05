@@ -14,8 +14,11 @@ import androidx.media3.common.*
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.HttpDataSource
 import androidx.media3.exoplayer.DefaultLoadControl
+import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.analytics.AnalyticsListener
+import androidx.media3.exoplayer.audio.AudioSink
+import androidx.media3.exoplayer.audio.DefaultAudioSink
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.upstream.DefaultAllocator
 import androidx.media3.exoplayer.upstream.DefaultLoadErrorHandlingPolicy
@@ -25,10 +28,7 @@ import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.michatec.radio.core.Collection
-import com.michatec.radio.helpers.AudioHelper
-import com.michatec.radio.helpers.CollectionHelper
-import com.michatec.radio.helpers.FileHelper
-import com.michatec.radio.helpers.PreferencesHelper
+import com.michatec.radio.helpers.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
 import java.util.*
@@ -38,7 +38,7 @@ import java.util.*
  * PlayerService class
  */
 @UnstableApi
-class PlayerService : MediaLibraryService() {
+class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     /* Define log tag */
     private val TAG: String = PlayerService::class.java.simpleName
@@ -56,6 +56,9 @@ class PlayerService : MediaLibraryService() {
     private var playbackRestartCounter: Int = 0
     private var playLastStation: Boolean = false
     private var manuallyCancelledSleepTimer = false
+    
+    // Native Audio Processor instance
+    private val nativeAudioProcessor = NativeAudioProcessor()
 
 
     /* Overrides onCreate from Service */
@@ -76,6 +79,11 @@ class PlayerService : MediaLibraryService() {
         setMediaNotificationProvider(notificationProvider)
         // fetch the metadata history
         metadataHistory = PreferencesHelper.loadMetadataHistory()
+        
+        // register preference change listener
+        PreferencesHelper.registerPreferenceChangeListener(this)
+        // apply initial audio effects
+        applyAudioEffects()
     }
 
 
@@ -86,6 +94,8 @@ class PlayerService : MediaLibraryService() {
         player.removeListener(playerListener)
         player.release()
         mediaLibrarySession.release()
+        // unregister preference change listener
+        PreferencesHelper.unregisterPreferenceChangeListener(this)
         super.onDestroy()
     }
 
@@ -106,8 +116,26 @@ class PlayerService : MediaLibraryService() {
 
     /* Initializes the ExoPlayer */
     private fun initializePlayer() {
-        val exoPlayer: ExoPlayer = ExoPlayer.Builder(this).apply {
-            setAudioAttributes(AudioAttributes.DEFAULT, true)
+        val audioAttributes = AudioAttributes.Builder()
+            .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+            .setUsage(C.USAGE_MEDIA)
+            .build()
+
+        // Create a RenderersFactory that injects the NativeAudioProcessor
+        val renderersFactory = object : DefaultRenderersFactory(this) {
+            override fun buildAudioSink(
+                context: Context,
+                enableFloatOutput: Boolean,
+                enableAudioTrackPlaybackParams: Boolean
+            ): AudioSink? {
+                return DefaultAudioSink.Builder(context)
+                    .setAudioProcessors(arrayOf(nativeAudioProcessor))
+                    .build()
+            }
+        }
+
+        val exoPlayer: ExoPlayer = ExoPlayer.Builder(this, renderersFactory).apply {
+            setAudioAttributes(audioAttributes, true)
             setHandleAudioBecomingNoisy(true)
             setLoadControl(createDefaultLoadControl(bufferSizeMultiplier))
             setMediaSourceFactory(
@@ -246,6 +274,28 @@ class PlayerService : MediaLibraryService() {
     }
 
 
+    /* Applies audio effects based on preferences */
+    private fun applyAudioEffects() {
+        nativeAudioProcessor.enableBassBoost(PreferencesHelper.loadBassBoost())
+        nativeAudioProcessor.setReverb(PreferencesHelper.loadReverb())
+        nativeAudioProcessor.enableDrc(PreferencesHelper.loadDrcEnabled())
+        nativeAudioProcessor.setEq(0, PreferencesHelper.loadEqLow())
+        nativeAudioProcessor.setEq(1, PreferencesHelper.loadEqMid())
+        nativeAudioProcessor.setEq(2, PreferencesHelper.loadEqHigh())
+    }
+
+
+    /* Overrides onSharedPreferenceChanged from SharedPreferences.OnSharedPreferenceChangeListener */
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        when (key) {
+            Keys.PREF_BASS_BOOST, Keys.PREF_REVERB, Keys.PREF_DRC, 
+            Keys.PREF_EQ_LOW, Keys.PREF_EQ_MID, Keys.PREF_EQ_HIGH -> {
+                applyAudioEffects()
+            }
+        }
+    }
+
+
     /*
      * Custom MediaSession Callback that handles player commands
      */
@@ -268,7 +318,6 @@ class PlayerService : MediaLibraryService() {
             session: MediaSession,
             controller: MediaSession.ControllerInfo
         ): MediaSession.ConnectionResult {
-            // add custom commands
             val connectionResult: MediaSession.ConnectionResult = super.onConnect(session, controller)
             val builder: SessionCommands.Builder = connectionResult.availableSessionCommands.buildUpon()
             builder.add(SessionCommand(Keys.CMD_START_SLEEP_TIMER, Bundle.EMPTY))

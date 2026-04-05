@@ -60,6 +60,12 @@ object Keys {
     const val PREF_LARGE_BUFFER_SIZE: String = "LARGE_BUFFER_SIZE"
     const val PREF_EDIT_STATIONS: String = "EDIT_STATIONS"
     const val PREF_EDIT_STREAMS_URIS: String = "EDIT_STREAMS_URIS"
+    const val PREF_BASS_BOOST: String = "BASS_BOOST"
+    const val PREF_REVERB: String = "REVERB"
+    const val PREF_DRC: String = "DRC"
+    const val PREF_EQ_LOW: String = "EQ_LOW"
+    const val PREF_EQ_MID: String = "EQ_MID"
+    const val PREF_EQ_HIGH: String = "EQ_HIGH"
 
     // default const values
     const val DEFAULT_SIZE_OF_METADATA_HISTORY: Int = 25
@@ -84,7 +90,6 @@ object Keys {
     const val DIALOG_REMOVE_STATION: Int = 2
     const val DIALOG_UPDATE_STATION_IMAGES: Int = 4
     const val DIALOG_RESTORE_COLLECTION: Int = 5
-    const val DIALOG_THEME_SELECTION: Int = 6
 
     // dialog results
     const val DIALOG_EMPTY_PAYLOAD_STRING: String = ""

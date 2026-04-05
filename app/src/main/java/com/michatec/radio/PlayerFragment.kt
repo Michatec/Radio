@@ -809,7 +809,7 @@ class PlayerFragment : Fragment(),
 
 
     /*
-     * Check for update on github
+     * Check for update on GitHub
      */
     private fun checkForUpdates() {
         val url = getString(R.string.snackbar_github_update_check_url)

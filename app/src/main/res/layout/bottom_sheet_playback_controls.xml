@@ -211,6 +211,18 @@
         app:layout_constraintTop_toBottomOf="@+id/sheet_previous_metadata_button"
         app:srcCompat="@drawable/ic_copy_content_24dp" />
 
+    <androidx.mediarouter.app.MediaRouteButton
+        android:id="@+id/media_route_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/copy_station_metadata_button"
+        app:layout_constraintStart_toEndOf="@+id/copy_station_metadata_button"
+        app:layout_constraintTop_toTopOf="@+id/copy_station_metadata_button"
+        app:mediaRouteButtonTint="@color/player_sheet_text_main" />
+
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/sheet_bitrate_view"
         android:layout_width="wrap_content"

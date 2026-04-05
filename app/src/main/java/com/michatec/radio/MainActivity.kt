@@ -27,13 +27,12 @@ class MainActivity : AppCompatActivity() {
     /* Main class variables */
     private lateinit var appBarConfiguration: AppBarConfiguration
 
-
     /* Overrides onCreate from AppCompatActivity */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        
+
         // Free Android
         FreeDroidWarn.showWarningOnUpgrade(this, BuildConfig.VERSION_CODE)
 
@@ -46,7 +45,8 @@ class MainActivity : AppCompatActivity() {
         // set up action bar
         setSupportActionBar(findViewById(R.id.main_toolbar))
         val toolbar: Toolbar = findViewById(R.id.main_toolbar)
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_host_container) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.main_host_container) as NavHostFragment
         val navController = navHostFragment.navController
         appBarConfiguration = AppBarConfiguration(navController.graph)
         NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration)
@@ -69,9 +69,7 @@ class MainActivity : AppCompatActivity() {
     private fun hideLoadingOverlay() {
         findViewById<View>(R.id.loading_layout)?.let { overlay ->
             if (overlay.isVisible) {
-                overlay.animate()
-                    .alpha(0f)
-                    .setDuration(500)
+                overlay.animate().alpha(0f).setDuration(500)
                     .withEndAction { overlay.visibility = View.GONE }
             }
         }
@@ -90,7 +88,8 @@ class MainActivity : AppCompatActivity() {
 
     /* Overrides onSupportNavigateUp from AppCompatActivity */
     override fun onSupportNavigateUp(): Boolean {
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_host_container) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.main_host_container) as NavHostFragment
         val navController = navHostFragment.navController
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }

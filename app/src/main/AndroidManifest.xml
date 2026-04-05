@@ -31,8 +31,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="33">
 
+        <!-- GOOGLE CAST SUPPORT -->
+        <meta-data
+            android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+            android:value="com.michatec.radio.CastOptionsProvider" />
+
         <!-- ANDROID AUTO SUPPORT -->
-        <!--  https://developer.android.com/training/auto/audio/ -->
         <meta-data
             android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc" />
@@ -48,54 +52,41 @@
             android:theme="@style/SplashTheme"
             android:exported="true">
 
-            <!-- react to main intents -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
 
-            <!-- react to be recognized as a music player -->
             <intent-filter>
                 <action android:name="android.intent.action.MUSIC_PLAYER" />
                 <category android:name="android.intent.category.CATEGORY_APP_MUSIC" />
             </intent-filter>
 
-            <!-- react to voice searches, like "Play Security Now" -->
             <intent-filter>
                 <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
-            <!-- react to playlist-links based on file extension -->
-            <!-- This is intended as an App Link for specific extensions -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:scheme="http" />
                 <data android:scheme="https" />
-                <data android:host="*"
-                    tools:ignore="AppLinkUrlError" />
+                <data android:host="*" tools:ignore="AppLinkUrlError" />
                 <data android:pathPattern=".*\\.m3u" />
                 <data android:pathPattern=".*\\.m3u8" />
                 <data android:pathPattern=".*\\.pls" />
             </intent-filter>
 
-            <!-- react to playlist-links based on mimetype -->
-            <!-- Note: MIME types prevent strict App Link verification, but are kept as requested -->
             <intent-filter android:autoVerify="false">
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:scheme="http" />
                 <data android:scheme="https" />
-                <data android:host="*"
-                    tools:ignore="AppLinkUrlError" />
+                <data android:host="*" tools:ignore="AppLinkUrlError" />
                 <data android:mimeType="audio/x-scpls" />
                 <data android:mimeType="audio/mpegurl" />
                 <data android:mimeType="audio/x-mpegurl" />
@@ -106,11 +97,9 @@
                 <data android:mimeType="application/octet-stream" />
             </intent-filter>
 
-            <!-- react to hls playlist-links based on mimetype -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:scheme="content" />
                 <data android:host="*" />
                 <data android:mimeType="audio/x-scpls" />
@@ -122,20 +111,16 @@
                 <data android:mimeType="application/vnd.apple.mpegurl.audio" />
             </intent-filter>
 
-            <!-- react to "start player service" intents -->
             <intent-filter>
                 <action android:name="com.michatec.radio.action.START_PLAYER_SERVICE" />
             </intent-filter>
 
-            <!-- App Shortcuts -->
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
 
         </activity>
 
-
-        <!-- Player Service -->
         <service
             android:name=".PlayerService"
             android:enabled="true"
@@ -149,8 +134,6 @@
             </intent-filter>
         </service>
 
-
-        <!-- handles completed downloads -->
         <receiver
             android:name=".helpers.DownloadFinishedReceiver"
             android:exported="true">
@@ -159,8 +142,6 @@
             </intent-filter>
         </receiver>
 
-
-        <!-- handles media buttons -->
         <receiver
             android:name="androidx.media.session.MediaButtonReceiver"
             android:exported="true">
@@ -169,8 +150,6 @@
             </intent-filter>
         </receiver>
 
-
-        <!-- file provider -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

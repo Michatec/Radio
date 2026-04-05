@@ -186,6 +186,30 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             return@setOnPreferenceChangeListener true
         }
 
+        // set up "Bass Boost" preference
+        val preferenceBassBoost = MarqueeSwitchPreference(context)
+        preferenceBassBoost.title = getString(R.string.pref_bass_boost_title)
+        preferenceBassBoost.setIcon(R.drawable.ic_music_note_24dp)
+        preferenceBassBoost.key = Keys.PREF_BASS_BOOST
+        preferenceBassBoost.summary = getString(R.string.pref_bass_boost_summary)
+        preferenceBassBoost.setDefaultValue(false)
+
+        // set up "Reverb" preference
+        val preferenceReverb = MarqueeSwitchPreference(context)
+        preferenceReverb.title = getString(R.string.pref_reverb_title)
+        preferenceReverb.setIcon(R.drawable.ic_music_note_24dp)
+        preferenceReverb.key = Keys.PREF_REVERB
+        preferenceReverb.summary = getString(R.string.pref_reverb_summary)
+        preferenceReverb.setDefaultValue(false)
+
+        // set up "DRC" preference
+        val preferenceDrc = MarqueeSwitchPreference(context)
+        preferenceDrc.title = getString(R.string.pref_drc_title)
+        preferenceDrc.setIcon(R.drawable.ic_music_note_24dp)
+        preferenceDrc.key = Keys.PREF_DRC
+        preferenceDrc.summary = getString(R.string.pref_drc_summary)
+        preferenceDrc.setDefaultValue(true)
+
         // set up "App Version" preference
         val preferenceAppVersion = Preference(context)
         preferenceAppVersion.title = getString(R.string.pref_app_version_title)
@@ -238,51 +262,52 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         // set preference categories
         val preferenceCategoryGeneral = PreferenceCategory(activity as Context)
         preferenceCategoryGeneral.title = getString(R.string.pref_general_title)
-        preferenceCategoryGeneral.contains(preferenceThemeSelection)
+        
+        val preferenceCategoryAudioEffects = PreferenceCategory(context)
+        preferenceCategoryAudioEffects.title = getString(R.string.pref_audio_effects_title)
 
         val preferenceCategoryMaintenance = PreferenceCategory(activity as Context)
         preferenceCategoryMaintenance.title = getString(R.string.pref_maintenance_title)
-        preferenceCategoryMaintenance.contains(preferenceUpdateStationImages)
-        preferenceCategoryMaintenance.contains(preferenceUpdateCollection)
 
         val preferenceCategoryImportExport = PreferenceCategory(activity as Context)
         preferenceCategoryImportExport.title = getString(R.string.pref_backup_import_export_title)
-        preferenceCategoryImportExport.contains(preferenceM3uExport)
-        preferenceCategoryImportExport.contains(preferencePlsExport)
-        preferenceCategoryImportExport.contains(preferenceBackupCollection)
-        preferenceCategoryImportExport.contains(preferenceRestoreCollection)
 
         val preferenceCategoryAdvanced = PreferenceCategory(activity as Context)
         preferenceCategoryAdvanced.title = getString(R.string.pref_advanced_title)
-        preferenceCategoryAdvanced.contains(preferenceBufferSize)
-        preferenceCategoryAdvanced.contains(preferenceEnableEditingGeneral)
-        preferenceCategoryAdvanced.contains(preferenceEnableEditingStreamUri)
 
         val preferenceCategoryLinks = PreferenceCategory(context)
         preferenceCategoryLinks.title = getString(R.string.pref_links_title)
-        preferenceCategoryLinks.contains(preferenceAppVersion)
-        preferenceCategoryLinks.contains(preferenceGitHub)
 
 
         // setup preference screen
-        screen.addPreference(preferenceAppVersion)
-        screen.addPreference(preferenceLicense)
         screen.addPreference(preferenceCategoryGeneral)
-        screen.addPreference(preferenceThemeSelection)
+        preferenceCategoryGeneral.addPreference(preferenceThemeSelection)
+        
+        screen.addPreference(preferenceCategoryAudioEffects)
+        preferenceCategoryAudioEffects.addPreference(preferenceBassBoost)
+        preferenceCategoryAudioEffects.addPreference(preferenceReverb)
+        preferenceCategoryAudioEffects.addPreference(preferenceDrc)
+
         screen.addPreference(preferenceCategoryMaintenance)
-        screen.addPreference(preferenceUpdateStationImages)
-        screen.addPreference(preferenceUpdateCollection)
+        preferenceCategoryMaintenance.addPreference(preferenceUpdateStationImages)
+        preferenceCategoryMaintenance.addPreference(preferenceUpdateCollection)
+
         screen.addPreference(preferenceCategoryImportExport)
-        screen.addPreference(preferenceM3uExport)
-        screen.addPreference(preferencePlsExport)
-        screen.addPreference(preferenceBackupCollection)
-        screen.addPreference(preferenceRestoreCollection)
+        preferenceCategoryImportExport.addPreference(preferenceM3uExport)
+        preferenceCategoryImportExport.addPreference(preferencePlsExport)
+        preferenceCategoryImportExport.addPreference(preferenceBackupCollection)
+        preferenceCategoryImportExport.addPreference(preferenceRestoreCollection)
+
         screen.addPreference(preferenceCategoryAdvanced)
-        screen.addPreference(preferenceBufferSize)
-        screen.addPreference(preferenceEnableEditingGeneral)
-        screen.addPreference(preferenceEnableEditingStreamUri)
+        preferenceCategoryAdvanced.addPreference(preferenceBufferSize)
+        preferenceCategoryAdvanced.addPreference(preferenceEnableEditingGeneral)
+        preferenceCategoryAdvanced.addPreference(preferenceEnableEditingStreamUri)
+
         screen.addPreference(preferenceCategoryLinks)
-        screen.addPreference(preferenceGitHub)
+        preferenceCategoryLinks.addPreference(preferenceAppVersion)
+        preferenceCategoryLinks.addPreference(preferenceGitHub)
+        preferenceCategoryLinks.addPreference(preferenceLicense)
+
         preferenceScreen = screen
     }
 
@@ -491,28 +516,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
     }
 
 
-    /* Opens up a file picker to select the save location */
-    private fun openSavePlsDialog() {
-        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = Keys.MIME_TYPE_PLS
-
-            val timeStamp: String
-            val dateFormat = SimpleDateFormat("_yyyy-MM-dd'T'HH_mm", Locale.US)
-            timeStamp = dateFormat.format(Date())
-
-            putExtra(Intent.EXTRA_TITLE, "collection$timeStamp.pls")
-        }
-        // file gets saved in the ActivityResult
-        try {
-            requestSavePlsLauncher.launch(intent)
-        } catch (exception: Exception) {
-            Log.e(TAG, "Unable to save PLS.\n$exception")
-            Snackbar.make(requireView(), R.string.toastmessage_install_file_helper, Snackbar.LENGTH_LONG).show()
-        }
-    }
-
-
     /* Opens up a file picker to select the backup location */
     private fun openBackupCollectionDialog() {
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
@@ -547,6 +550,26 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             requestRestoreCollectionLauncher.launch(intent)
         } catch (exception: Exception) {
             Log.e(TAG, "Unable to open file picker for ZIP.\n$exception")
+        }
+    }
+
+    private fun openSavePlsDialog() {
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = Keys.MIME_TYPE_PLS
+
+            val timeStamp: String
+            val dateFormat = SimpleDateFormat("_yyyy-MM-dd'T'HH_mm", Locale.US)
+            timeStamp = dateFormat.format(Date())
+
+            putExtra(Intent.EXTRA_TITLE, "collection$timeStamp.pls")
+        }
+        // file gets saved in the ActivityResult
+        try {
+            requestSavePlsLauncher.launch(intent)
+        } catch (exception: Exception) {
+            Log.e(TAG, "Unable to save PLS.\n$exception")
+            Snackbar.make(requireView(), R.string.toastmessage_install_file_helper, Snackbar.LENGTH_LONG).show()
         }
     }
 }

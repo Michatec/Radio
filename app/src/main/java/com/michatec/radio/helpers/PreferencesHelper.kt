@@ -254,4 +254,27 @@ object PreferencesHelper {
         )
     }
 
+
+    /* Loads Bass Boost gain */
+    fun loadBassBoost(): Float {
+        return if (sharedPreferences.getBoolean(Keys.PREF_BASS_BOOST, false)) 5.0f else 0.0f
+    }
+
+
+    /* Loads Reverb mix */
+    fun loadReverb(): Float {
+        return if (sharedPreferences.getBoolean(Keys.PREF_REVERB, false)) 0.3f else 0.0f
+    }
+
+
+    /* Loads DRC enabled state */
+    fun loadDrcEnabled(): Boolean {
+        return sharedPreferences.getBoolean(Keys.PREF_DRC, false)
+    }
+
+    /* Loads EQ gains */
+    fun loadEqLow(): Float = sharedPreferences.getInt(Keys.PREF_EQ_LOW, 0).toFloat()
+    fun loadEqMid(): Float = sharedPreferences.getInt(Keys.PREF_EQ_MID, 0).toFloat()
+    fun loadEqHigh(): Float = sharedPreferences.getInt(Keys.PREF_EQ_HIGH, 0).toFloat()
+
 }
