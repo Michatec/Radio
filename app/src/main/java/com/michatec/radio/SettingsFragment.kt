@@ -286,9 +286,11 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
 
 
         // setup preference screen
+        screen.addPreference(preferenceAppVersion)
+
         screen.addPreference(preferenceCategoryGeneral)
         preferenceCategoryGeneral.addPreference(preferenceThemeSelection)
-        
+
         screen.addPreference(preferenceCategoryAudioEffects)
         preferenceCategoryAudioEffects.addPreference(preferenceBassBoost)
         preferenceCategoryAudioEffects.addPreference(preferenceReverb)
@@ -311,7 +313,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceCategoryAdvanced.addPreference(preferenceEnableEditingStreamUri)
 
         screen.addPreference(preferenceCategoryLinks)
-        preferenceCategoryLinks.addPreference(preferenceAppVersion)
         preferenceCategoryLinks.addPreference(preferenceGitHub)
         preferenceCategoryLinks.addPreference(preferenceLicense)
 
