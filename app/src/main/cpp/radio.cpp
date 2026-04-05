@@ -92,18 +92,34 @@ public:
  */
 class Reverb {
 public:
-    std::vector<float> delayLine;
-    int pos = 0;
-    float feedback = 0.8f;
+    std::vector<float> d1, d2, d3;
+    int p1 = 0, p2 = 0, p3 = 0;
+
+    float feedback = 0.7f;
     float mix = 0.0f;
 
-    Reverb() { delayLine.resize(22050, 0.0f); } // ~500ms
+    Reverb() {
+        d1.resize(11025, 0.0f); // 250ms
+        d2.resize(14700, 0.0f); // 333ms
+        d3.resize(17640, 0.0f); // 400ms
+    }
 
     float process(float in) {
-        float delayed = delayLine[static_cast<size_t>(pos)];
-        delayLine[static_cast<size_t>(pos)] = in + delayed * feedback;
-        pos = (pos + 1) % static_cast<int>(delayLine.size());
-        return in * (1.0f - mix) + delayed * mix;
+        float y1 = d1[p1];
+        float y2 = d2[p2];
+        float y3 = d3[p3];
+
+        d1[p1] = in + y1 * feedback;
+        d2[p2] = in + y2 * feedback;
+        d3[p3] = in + y3 * feedback;
+
+        p1 = (p1 + 1) % d1.size();
+        p2 = (p2 + 1) % d2.size();
+        p3 = (p3 + 1) % d3.size();
+
+        float reverb = (y1 + y2 + y3) / 3.0f;
+
+        return in * (1.0f - mix) + reverb * mix;
     }
 };
 
