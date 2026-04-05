@@ -45,18 +45,14 @@ class NativeAudioProcessor : BaseAudioProcessor() {
         val shortArraySize = remaining / 2
         val shortArray = ShortArray(shortArraySize)
 
-        // Input-Daten lesen
         inputBuffer.order(ByteOrder.nativeOrder()).asShortBuffer().get(shortArray)
 
-        // Native Verarbeitung
         processAudio(shortArray, shortArraySize)
 
-        // Buffer der Basisklasse anfordern und befüllen
         val outputBuffer = replaceOutputBuffer(remaining)
         outputBuffer.asShortBuffer().put(shortArray)
-        outputBuffer.limit(remaining) // Markiert das Ende der geschriebenen Daten
+        outputBuffer.limit(remaining)
 
-        // Input-Buffer als verarbeitet markieren
         inputBuffer.position(inputBuffer.limit())
     }
 }
