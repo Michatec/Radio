@@ -156,7 +156,8 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
         castPlayer = CastPlayer.Builder(this).setLocalPlayer(exoPlayer).build()
 
         // manually add seek to next and seek to previous since headphones issue them, and they are translated to next and previous station
-        player = object : ForwardingPlayer(exoPlayer) {
+        // IMPORTANT: Use castPlayer here instead of exoPlayer so the session controls both local and remote playback
+        player = object : ForwardingPlayer(castPlayer) {
             override fun getAvailableCommands(): Player.Commands {
                 return super.getAvailableCommands().buildUpon().add(COMMAND_SEEK_TO_NEXT)
                     .add(COMMAND_SEEK_TO_PREVIOUS).build()
@@ -170,6 +171,7 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
                 return C.TIME_UNSET // this will hide progress bar for HLS stations in the notification
             }
         }
+        player.addListener(playerListener)
     }
 
 
@@ -483,35 +485,23 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
                 isPlaying
             )
 
-            if (isPlaying) {
-                // playback is active
-            } else {
+            if (!isPlaying) {
                 // cancel sleep timer
                 cancelSleepTimer()
                 // reset metadata
                 updateMetadata()
 
-                // playback is not active
-                // Not playing because playback is paused, ended, suppressed, or the player
-                // is buffering, stopped or failed. Check player.getPlayWhenReady,
-                // player.getPlaybackState, player.getPlaybackSuppressionReason and
-                // player.getPlaybackError for details.
+                // Check playback state to decide whether to stop the service
                 when (player.playbackState) {
-                    // player is able to immediately play from its current position
+                    Player.STATE_ENDED, Player.STATE_IDLE -> {
+                        stopSelf()
+                    }
                     Player.STATE_READY -> {
+                        // Playback is paused. For radio, we can stop the service to remove the notification.
                         stopSelf()
                     }
-                    // buffering - data needs to be loaded
                     Player.STATE_BUFFERING -> {
-                        stopSelf()
-                    }
-                    // player finished playing all media
-                    Player.STATE_ENDED -> {
-                        stopSelf()
-                    }
-                    // initial state or player is stopped or playback failed
-                    Player.STATE_IDLE -> {
-                        stopSelf()
+                        // DO NOT stop the service while buffering (especially important for Cast)
                     }
                 }
             }
@@ -520,13 +510,9 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
         override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
             super.onPlayWhenReadyChanged(playWhenReady, reason)
             if (!playWhenReady) {
-                when (reason) {
-                    Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM -> {
-                        stopSelf()
-                    }
-                    else -> {
-                        stopSelf()
-                    }
+                // Only stop if not buffering and not ready to play (i.e. truly stopped/paused)
+                if (player.playbackState != Player.STATE_BUFFERING) {
+                    stopSelf()
                 }
             }
         }
