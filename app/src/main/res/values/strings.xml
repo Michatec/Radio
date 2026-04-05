@@ -73,6 +73,9 @@
     <string name="pref_eq_low_title">Equalizer: Low</string>
     <string name="pref_eq_mid_title">Equalizer: Mid</string>
     <string name="pref_eq_high_title">Equalizer: High</string>
+    <string name="pref_equalizer_title">Equalizer</string>
+    <string name="pref_equalizer_summary">Adjust audio frequencies</string>
+    <string name="pref_equalizer_reset_title">Reset Equalizer</string>
     <string name="pref_advanced_title">Advanced</string>
     <string name="pref_app_version_summary">Version</string>
     <string name="pref_app_version_title">App Version</string>

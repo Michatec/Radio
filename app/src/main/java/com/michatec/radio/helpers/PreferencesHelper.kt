@@ -277,4 +277,13 @@ object PreferencesHelper {
     fun loadEqMid(): Float = sharedPreferences.getInt(Keys.PREF_EQ_MID, 0).toFloat()
     fun loadEqHigh(): Float = sharedPreferences.getInt(Keys.PREF_EQ_HIGH, 0).toFloat()
 
+    /* Resets Equalizer settings to default */
+    fun resetEqualizer() {
+        sharedPreferences.edit {
+            putInt(Keys.PREF_EQ_LOW, 0)
+            putInt(Keys.PREF_EQ_MID, 0)
+            putInt(Keys.PREF_EQ_HIGH, 0)
+        }
+    }
+
 }

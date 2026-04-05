@@ -19,6 +19,16 @@
     <fragment
         android:id="@+id/settings_destination"
         android:name="com.michatec.radio.SettingsFragment"
-        android:label="Settings" />
+        android:label="Settings">
+        <action
+            android:id="@+id/action_settings_to_equalizer"
+            app:destination="@id/equalizer_destination" />
+    </fragment>
+
+    <!-- EQUALIZER -->
+    <fragment
+        android:id="@+id/equalizer_destination"
+        android:name="com.michatec.radio.EqualizerFragment"
+        android:label="Equalizer" />
 
 </navigation>

@@ -210,6 +210,16 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceDrc.summary = getString(R.string.pref_drc_summary)
         preferenceDrc.setDefaultValue(true)
 
+        // set up "Equalizer" preference entry
+        val preferenceEqualizer = Preference(context)
+        preferenceEqualizer.title = getString(R.string.pref_equalizer_title)
+        preferenceEqualizer.setIcon(R.drawable.ic_music_note_24dp)
+        preferenceEqualizer.summary = getString(R.string.pref_equalizer_summary)
+        preferenceEqualizer.setOnPreferenceClickListener {
+            findNavController().navigate(R.id.action_settings_to_equalizer)
+            return@setOnPreferenceClickListener true
+        }
+
         // set up "App Version" preference
         val preferenceAppVersion = Preference(context)
         preferenceAppVersion.title = getString(R.string.pref_app_version_title)
@@ -287,6 +297,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceCategoryAudioEffects.addPreference(preferenceBassBoost)
         preferenceCategoryAudioEffects.addPreference(preferenceReverb)
         preferenceCategoryAudioEffects.addPreference(preferenceDrc)
+        preferenceCategoryAudioEffects.addPreference(preferenceEqualizer)
 
         screen.addPreference(preferenceCategoryMaintenance)
         preferenceCategoryMaintenance.addPreference(preferenceUpdateStationImages)

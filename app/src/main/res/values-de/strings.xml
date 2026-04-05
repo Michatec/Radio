@@ -55,7 +55,7 @@
     <string name="pref_update_collection_summary">Die neueste Version aller Senderinformationen herunterladen.</string>
     <string name="dialog_yes_no_message_update_collection">Die neueste Version aller Senderinformationen herunterladen?</string>
     <string name="dialog_yes_no_positive_button_update_collection">Aktualisieren</string>
-    <string name="pref_eq_high_title">Equalizer: Hoch</string>
+    <string name="pref_eq_high_title">Equalizer: Höhen</string>
     <string name="pref_advanced_title">Erweitert</string>
     <string name="pref_app_version_summary">Version</string>
     <string name="pref_app_version_title">App-Version</string>
@@ -118,13 +118,16 @@
     <!-- Snackbars -->
     <string name="snackbar_show">Zeigen</string>
     <string name="snackbar_update_available">ist verfügbar!</string>
-    <string name="pref_audio_effects_title">Audio Effekte</string>
-    <string name="pref_bass_boost_title">Bass Boost</string>
+    <string name="pref_audio_effects_title">Audio-Effekte</string>
+    <string name="pref_bass_boost_title">Bass-Boost</string>
     <string name="pref_bass_boost_summary">Erhöhen Sie die Bassverstärkung.</string>
     <string name="pref_reverb_title">Hall</string>
     <string name="pref_reverb_summary">Reverb-Mix anpassen.</string>
-    <string name="pref_drc_title">Komprimierung des Dynamikbereichs</string>
-    <string name="pref_drc_summary">Den Dynamikbereich für ein gleichbleibendes Volumen komprimieren.</string>
-    <string name="pref_eq_low_title">Equalizer: Leicht</string>
-    <string name="pref_eq_mid_title">Equalizer: Mitte</string>
+    <string name="pref_drc_title">Dynamikkompression</string>
+    <string name="pref_drc_summary">Den Dynamikbereich für eine gleichbleibende Lautstärke komprimieren.</string>
+    <string name="pref_eq_low_title">Equalizer: Bass</string>
+    <string name="pref_eq_mid_title">Equalizer: Mitten</string>
+    <string name="pref_equalizer_title">Equalizer</string>
+    <string name="pref_equalizer_summary">Passen Sie die Audio-Frequenzen an.</string>
+    <string name="pref_equalizer_reset_title">Equalizer zurücksetzen</string>
 </resources>
