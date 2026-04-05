@@ -74,4 +74,10 @@
         <item name="cornerSizeBottomRight">16dp</item>
         <item name="cornerFamilyBottomRight">rounded</item>
     </style>
+
+    <style name="CustomCastExpandedControllerStyle" parent="CastExpandedController">
+        <item name="android:windowBackground">#FFFFFF</item>
+        <item name="castBackground">#FFFFFF</item>
+        <item name="castButtonColor">#FF495D92</item>
+    </style>
 </resources>

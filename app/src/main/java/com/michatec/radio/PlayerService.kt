@@ -10,6 +10,7 @@ import android.os.CountDownTimer
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot.EXTRA_RECENT
+import androidx.media3.cast.CastPlayer
 import androidx.media3.common.*
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.HttpDataSource
@@ -45,6 +46,8 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
 
     /* Main class variables */
     private lateinit var player: Player
+    private lateinit var exoPlayer: ExoPlayer
+    private lateinit var castPlayer: CastPlayer
     private lateinit var mediaLibrarySession: MediaLibrarySession
     private lateinit var sleepTimer: CountDownTimer
     var sleepTimerTimeRemaining: Long = 0L
@@ -93,6 +96,8 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
         PreferencesHelper.saveIsPlaying(false)
         player.removeListener(playerListener)
         player.release()
+        exoPlayer.release()
+        castPlayer.release()
         mediaLibrarySession.release()
         // unregister preference change listener
         PreferencesHelper.unregisterPreferenceChangeListener(this)
@@ -134,7 +139,7 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
             }
         }
 
-        val exoPlayer: ExoPlayer = ExoPlayer.Builder(this, renderersFactory).apply {
+        exoPlayer = ExoPlayer.Builder(this, renderersFactory).apply {
             setAudioAttributes(audioAttributes, true)
             setHandleAudioBecomingNoisy(true)
             setLoadControl(createDefaultLoadControl(bufferSizeMultiplier))
@@ -147,7 +152,10 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
         exoPlayer.addAnalyticsListener(analyticsListener)
         exoPlayer.addListener(playerListener)
 
-        // manually add seek to next and seek to previous since headphones issue them and they are translated to next and previous station
+        // Initialize CastPlayer
+        castPlayer = CastPlayer.Builder(this).setLocalPlayer(exoPlayer).build()
+
+        // manually add seek to next and seek to previous since headphones issue them, and they are translated to next and previous station
         player = object : ForwardingPlayer(exoPlayer) {
             override fun getAvailableCommands(): Player.Commands {
                 return super.getAvailableCommands().buildUpon().add(COMMAND_SEEK_TO_NEXT)
@@ -543,7 +551,7 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
 
 
     /*
-     * Custom LoadErrorHandlingPolicy that network drop outs
+     * Custom LoadErrorHandlingPolicy that network drop-outs
      */
     private val loadErrorHandlingPolicy: DefaultLoadErrorHandlingPolicy = object: DefaultLoadErrorHandlingPolicy()  {
         override fun getRetryDelayMsFor(loadErrorInfo: LoadErrorHandlingPolicy.LoadErrorInfo): Long {

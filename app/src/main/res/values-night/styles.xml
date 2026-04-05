@@ -27,4 +27,10 @@
         <!-- Don't show light status bar -->
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
+
+    <style name="CustomCastExpandedControllerStyle" parent="CastExpandedController">
+        <item name="android:windowBackground">#FFFFFF</item>
+        <item name="castBackground">#FFFFFF</item>
+        <item name="castButtonColor">#FF495D92</item>
+    </style>
 </resources>

@@ -31,11 +31,6 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="33">
 
-        <!-- GOOGLE CAST SUPPORT -->
-        <meta-data
-            android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
-            android:value="com.michatec.radio.CastOptionsProvider" />
-
         <!-- ANDROID AUTO SUPPORT -->
         <meta-data
             android:name="com.google.android.gms.car.application"
@@ -43,6 +38,17 @@
         <meta-data
             android:name="com.google.android.gms.car.notification.SmallIcon"
             android:resource="@mipmap/ic_launcher" />
+
+        <!-- GOOGLE CAST SUPPORT -->
+        <receiver android:name="androidx.mediarouter.media.MediaTransferReceiver" />
+        <meta-data
+            android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+            android:value="com.michatec.radio.CastOptionsProvider" />
+
+        <activity
+            android:name=".ExpandedControllerActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
 
         <!-- Main activity for radio station playback on phone and TV -->
         <activity

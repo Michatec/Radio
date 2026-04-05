@@ -638,15 +638,13 @@ object CollectionHelper {
         }.build()
         // build MediaMetadata
         val mediaMetadata = MediaMetadata.Builder().apply {
+            setTitle(station.name)
             setArtist(station.name)
-            //setTitle(station.name)
             
-            // Set artwork URI for casting (TV needs a public URL)
-            val artworkUrl = station.remoteImageLocation.ifEmpty {
-                // Placeholder PNG image for stations without remote image
-                "https://raw.githubusercontent.com/google/material-design-icons/master/png/av/radio/materialicons/48dp/2x/baseline_radio_black_48dp.png"
+            // Set artwork URI for casting (remote devices need a public URL)
+            if (station.remoteImageLocation.isNotEmpty()) {
+                setArtworkUri(station.remoteImageLocation.toUri())
             }
-            setArtworkUri(artworkUrl.toUri())
 
             /* check for "file://" prevents a crash when an old backup was restored */
             if (station.image.isNotEmpty() && station.image.startsWith("file://")) {
@@ -656,6 +654,7 @@ object CollectionHelper {
             }
             setIsBrowsable(false)
             setIsPlayable(true)
+            setMediaType(MediaMetadata.MEDIA_TYPE_RADIO_STATION)
         }.build()
         // build MediaItem and return it
         return MediaItem.Builder().apply {

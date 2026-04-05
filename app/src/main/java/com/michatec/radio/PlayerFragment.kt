@@ -402,6 +402,7 @@ class PlayerFragment : Fragment(),
 
     /* Releases MediaController */
     private fun releaseController() {
+        controller?.removeListener(playerListener)
         MediaController.releaseFuture(controllerFuture)
     }
 
