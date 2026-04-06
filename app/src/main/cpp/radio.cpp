@@ -110,8 +110,9 @@ struct alignas(16) BassFilter {
         float y = x * a0 + z1;
         z1 = x * a1 + z2 - b1 * y + DENORMAL_OFFSET;
         z2 = x * a2 - b2 * y;
-        if(y>1.2f) y=1.2f;
-        else if(y<-1.2f) y=-1.2f;
+        y = bassSafeClip(y);
+        if(y > 1.2f) y = 1.2f;
+        else if(y < -1.2f) y = -1.2f;
         return y;
     }
 
@@ -137,6 +138,13 @@ struct alignas(16) BassFilter {
 #else
         for(int i=0;i<count;i++) data[i]=process(data[i]);
 #endif
+    }
+
+    static inline float bassSafeClip(float x) {
+        const float maxGain = 1.0f;
+        if (x > maxGain) return maxGain - (maxGain - x) * 0.5f;
+        if (x < -maxGain) return -maxGain - (-maxGain - x) * 0.5f;
+        return x;
     }
 
     void setLowShelf(float sr,float f,float g,float q){
@@ -232,8 +240,8 @@ class CompressorOptimized {
 public:
     float threshold = 0.3f;
     float ratio = 4.0f;
-    float attack = 0.01f;
-    float release = 0.2f;
+    float attack = 0.08f;
+    float release = 0.8f;
     float sampleRate = 44100.0f;
 
 private:
@@ -385,6 +393,16 @@ inline void applyAutoGain(float* buffer, int count){
     }
 }
 
+inline void applyRMSLimit(float* buffer, int count){
+    float sumSq = 0.0f;
+    for(int i=0;i<count;i++) sumSq += buffer[i]*buffer[i];
+    float rms = sqrtf(sumSq / float(count));
+    if(rms > 0.8f){
+        float scale = 0.8f / rms;
+        for(int i=0;i<count;i++) buffer[i] *= scale;
+    }
+}
+
 // Main processing function - heavily optimized
 extern "C" {
 
@@ -468,6 +486,9 @@ JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_proc
     if (gBassBoostEnabled) {
         gBassL.processNEON(gLeftBuf.data(), numFrames);
         gBassR.processNEON(gRightBuf.data(), numFrames);
+
+        applyRMSLimit(gLeftBuf.data(), numFrames);
+        applyRMSLimit(gRightBuf.data(), numFrames);
     }
 
     // Reverb

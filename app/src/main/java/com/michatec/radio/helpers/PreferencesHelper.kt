@@ -257,13 +257,13 @@ object PreferencesHelper {
 
     /* Loads Bass Boost gain */
     fun loadBassBoost(): Float {
-        return if (sharedPreferences.getBoolean(Keys.PREF_BASS_BOOST, false)) 0.6f else 0.0f
+        return if (sharedPreferences.getBoolean(Keys.PREF_BASS_BOOST, false)) 0.4f else 0.0f
     }
 
 
     /* Loads Reverb mix */
     fun loadReverb(): Float {
-        return if (sharedPreferences.getBoolean(Keys.PREF_REVERB, false)) 0.3f else 0.0f
+        return if (sharedPreferences.getBoolean(Keys.PREF_REVERB, false)) 0.2f else 0.0f
     }
 
 
