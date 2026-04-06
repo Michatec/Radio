@@ -3,7 +3,7 @@
 #include <cmath>
 #include <complex>
 #include <array>
-#include <mutex>
+#include <atomic>
 
 #if defined(__ARM_NEON)
 #include <arm_neon.h>
@@ -13,75 +13,89 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-static float gSampleRate = 44100.0f;
-static std::mutex gAudioMutex;
-
-static constexpr int FFT_SIZE = 512;
+static std::atomic<float> gSampleRate(44100.0f);
+static constexpr int FFT_SIZE = 2048;
 static constexpr int NUM_EQ_BANDS = 10;
 static constexpr float INV_32768 = 1.0f / 32768.0f;
 static constexpr float SQRT_2_INV = 0.70710678f;
 static constexpr float DENORMAL_OFFSET = 1e-18f;
+static constexpr float INTERPOLATION_SPEED = 0.1f;
 
 static constexpr std::array<float, NUM_EQ_BANDS> EQ_FREQUENCIES = {
         31.25f, 62.5f, 125.0f, 250.0f, 500.0f,
         1000.0f, 2000.0f, 4000.0f, 8000.0f, 16000.0f
 };
 
-struct alignas(16) BiquadBank {
-    alignas(16) std::array<float, NUM_EQ_BANDS> a0{}, a1{}, a2{}, b1{}, b2{};
-    alignas(16) std::array<float, NUM_EQ_BANDS> z1{}, z2{};
-    uint16_t activeMask = 0;
+struct alignas(16) EqBandInterpolator {
+    std::atomic<float> targetGain{0.0f};
+    std::atomic<float> currentGain{0.0f};
+    float a0 = 1.0f, a1 = 0.0f, a2 = 0.0f, b1 = 0.0f, b2 = 0.0f;
+    float z1 = 0.0f, z2 = 0.0f;
+    bool active = false;
 
-    [[nodiscard]] inline bool hasActiveBands() const { return activeMask != 0; }
-
-    inline void setBandActive(int band, bool active) {
-        if (active) activeMask |= (1 << band);
-        else activeMask &= ~(1 << band);
-    }
-
-    inline void processBlock(float* __restrict__ data, int count) {
-        if (!this -> hasActiveBands()) return;
-        for (int i = 0; i < count; i++) {
-            float x = data[i];
-#pragma GCC unroll 10
-            for (int b = 0; b < NUM_EQ_BANDS; b++) {
-                if (activeMask & (1 << b)) {
-                    float y = x * a0[b] + z1[b];
-                    z1[b] = x * a1[b] + z2[b] - b1[b] * y + DENORMAL_OFFSET;
-                    z2[b] = x * a2[b] - b2[b] * y;
-                    x = y;
-                }
-            }
-            data[i] = x;
+    inline void setTargetGain(float g) { targetGain.store(g, std::memory_order_release); }
+    
+    inline void updateInterpolation() {
+        float target = targetGain.load(std::memory_order_acquire);
+        float current = currentGain.load(std::memory_order_relaxed);
+        float diff = target - current;
+        if (std::abs(diff) > 0.001f) {
+            currentGain.store(current + diff * INTERPOLATION_SPEED, std::memory_order_release);
         }
     }
-
-    void setPeakingEQ(int band, float sr, float f, float g, float bw) {
-        if (band < 0 || band >= NUM_EQ_BANDS) return;
-        const bool active = std::abs(g) > 0.1f;
-        setBandActive(band, active);
-        if (!active) return;
+    
+    inline float process(float x) {
+        if (!active) return x;
+        updateInterpolation();
+        float g = currentGain.load(std::memory_order_acquire);
+        if (std::abs(g) < 0.01f) return x;
+        float y = x * a0 + z1;
+        z1 = x * a1 + z2 - b1 * y + DENORMAL_OFFSET;
+        z2 = x * a2 - b2 * y;
+        return y;
+    }
+    
+    inline void setCoefficients(float sr, float f, float g, float bw) {
+        const bool isActive = std::abs(g) > 0.1f;
+        active = isActive;
+        if (!isActive) return;
         const float A = powf(10.0f, g / 40.0f);
         const float w = 2.0f * static_cast<float>(M_PI) * f / sr;
         const float alpha = sinf(w) * sinhf(logf(2.0f) / 2.0f * bw * w / sinf(w));
         const float c = cosf(w);
         const float a0_raw = 1.0f + alpha / A;
         const float invA0 = 1.0f / a0_raw;
-        a0[band] = (1.0f + alpha * A) * invA0;
-        a1[band] = (-2.0f * c) * invA0;
-        a2[band] = (1.0f - alpha * A) * invA0;
-        b1[band] = (-2.0f * c) * invA0;
-        b2[band] = (1.0f - alpha / A) * invA0;
+        a0 = (1.0f + alpha * A) * invA0;
+        a1 = (-2.0f * c) * invA0;
+        a2 = (1.0f - alpha * A) * invA0;
+        b1 = (-2.0f * c) * invA0;
+        b2 = (1.0f - alpha / A) * invA0;
     }
+    
+    inline void clearState() { z1 = 0.0f; z2 = 0.0f; }
 };
 
 struct alignas(16) BassFilter {
     alignas(16) float a0 = 1.2f, a1 = 1.2f, a2 = 1.2f, b1 = 0.0f, b2 = 0.0f;
     alignas(16) float z1 = 0.0f, z2 = 0.0f;
-    bool active = false;
+    std::atomic<bool> active{false};
+    std::atomic<float> targetGain{0.0f};
+    std::atomic<float> currentGain{0.0f};
+
+    inline void updateInterpolation() {
+        float target = targetGain.load(std::memory_order_acquire);
+        float current = currentGain.load(std::memory_order_relaxed);
+        float diff = target - current;
+        if (std::abs(diff) > 0.001f) {
+            currentGain.store(current + diff * INTERPOLATION_SPEED, std::memory_order_release);
+        }
+    }
 
     inline float process(float x) {
-        if (!active) return x;
+        if (!active.load(std::memory_order_acquire)) return x;
+        updateInterpolation();
+        float g = currentGain.load(std::memory_order_acquire);
+        if (std::abs(g) < 0.01f) return x;
         float y = x * a0 + z1;
         z1 = x * a1 + z2 - b1 * y + DENORMAL_OFFSET;
         z2 = x * a2 - b2 * y;
@@ -89,9 +103,7 @@ struct alignas(16) BassFilter {
         return y;
     }
 
-    void setLowShelf(float sr,float f,float g,float q){
-        active=std::abs(g)>0.01f;
-        if(!active) return;
+    void setCoefficients(float sr, float f, float g, float q){
         float A=powf(10.0f,g/40.0f);
         float w=2.0f*static_cast<float>(M_PI)*f/sr;
         float alpha=sinf(w)/2.0f*sqrtf((A+1.0f/A)*(1.0f/q-1.0f)+2.0f);
@@ -103,6 +115,11 @@ struct alignas(16) BassFilter {
         a2=A*((A+1.0f)-(A-1.0f)*c-2.0f*sqrtA*alpha)*invA0;
         b1=-2.0f*((A-1.0f)+(A+1.0f)*c)*invA0;
         b2=((A+1.0f)+(A-1.0f)*c-2.0f*sqrtA*alpha)*invA0;
+    }
+    
+    void applyGain(float sr) {
+        float g = currentGain.load(std::memory_order_acquire);
+        setCoefficients(sr, 150.0f, g, SQRT_2_INV);
     }
 };
 
@@ -119,11 +136,11 @@ class ReverbOptimized {
     std::array<CircularBuffer<1116>, 4> combs;
     std::array<CircularBuffer<556>, 2> allpasses;
     std::array<float, 4> combFeedback = {0.841f, 0.815f, 0.796f, 0.771f};
-    float mix = 0.0f;
 public:
-    inline void setMix(float m) { mix = m; }
+    std::atomic<float> mix{0.0f};
     inline float process(float x) {
-        if (mix < 0.01f) return x;
+        float m = mix.load(std::memory_order_acquire);
+        if (m < 0.01f) return x;
         float out = 0.0f;
 #pragma GCC unroll 4
         for (int i = 0; i < 4; i++) {
@@ -140,10 +157,11 @@ public:
             allpasses[i].advance();
             out = xOut;
         }
-        return x * (1.0f - mix) + out * mix;
+        return x * (1.0f - m) + out * m;
     }
     inline void processBlock(float* __restrict__ left, float* __restrict__ right, int count) {
-        if (mix < 0.01f) return;
+        float m = mix.load(std::memory_order_acquire);
+        if (m < 0.01f) return;
         for (int i = 0; i < count; i++) {
             left[i] = process(left[i]);
             right[i] = process(right[i]);
@@ -153,7 +171,9 @@ public:
 
 class CompressorOptimized {
 public:
-    float threshold = 0.3f, ratio = 4.0f, attack = 0.08f, release = 0.8f, sampleRate = 44100.0f;
+    std::atomic<float> threshold{0.3f}, ratio{4.0f}, attack{0.08f}, release{0.8f};
+    std::atomic<float> sampleRate{44100.0f};
+    std::atomic<bool> enabled{false};
 private:
     float envelopeL = 0.0f, envelopeR = 0.0f;
     float attackCoef = 0.0f, releaseCoef = 0.0f;
@@ -161,34 +181,35 @@ private:
 public:
     inline void updateCoefficients() {
         if (coefficientsValid) return;
-        attackCoef = expf(-1.0f / (attack * sampleRate));
-        releaseCoef = expf(-1.0f / (release * sampleRate));
+        float a = attack.load(std::memory_order_acquire);
+        float r = release.load(std::memory_order_acquire);
+        float sr = sampleRate.load(std::memory_order_acquire);
+        attackCoef = expf(-1.0f / (a * sr));
+        releaseCoef = expf(-1.0f / (r * sr));
         coefficientsValid = true;
     }
     inline void processBlock(float* __restrict__ buffer, int count, float& envelope) {
         updateCoefficients();
+        float th = threshold.load(std::memory_order_acquire);
+        float rt = ratio.load(std::memory_order_acquire);
         for(int i=0; i<count; i++){
             float absInput = fabsf(buffer[i]);
             envelope = (absInput > envelope) ? attackCoef*envelope + (1-attackCoef)*absInput : releaseCoef*envelope + (1-releaseCoef)*absInput;
-            float gain = (envelope>threshold)? (threshold + (envelope-threshold)/ratio)/(envelope+1e-9f) : 1.0f;
+            float gain = (envelope>th)? (th + (envelope-th)/rt)/(envelope+1e-9f) : 1.0f;
             buffer[i]*=gain;
         }
     }
     inline void process(float* __restrict__ left, float* __restrict__ right, int count) {
+        if (!enabled.load(std::memory_order_acquire)) return;
         processBlock(left, count, envelopeL);
         processBlock(right, count, envelopeR);
     }
 };
 
-CompressorOptimized gCompressor;
-ReverbOptimized gReverbL, gReverbR;
-BiquadBank gEqL, gEqR;
-BassFilter gBassL, gBassR;
-bool gDrcEnabled = false, gEqEnabled = false, gBassBoostEnabled = false;
-float gStereoWidth = 1.0f;
+static std::atomic<bool> gEqEnabled{false};
+static std::atomic<float> gStereoWidth{1.0f};
 alignas(16) std::array<float, 4096> gLeftBuf, gRightBuf;
 alignas(16) std::array<float, 256> gFFTData;
-alignas(16) std::array<std::complex<float>, FFT_SIZE> gFFTWork;
 
 inline void fastFFT(std::complex<float>* __restrict__ data, int n) {
     for (int i = 1, j = 0; i < n; i++) {
@@ -220,6 +241,13 @@ inline void applyHannWindow(float* __restrict__ data, int size) {
     }
 }
 
+inline void applyHannWindowToReal(std::complex<float>* __restrict__ data, int size) {
+    for (int i = 0; i < size; i++) {
+        float window = 0.5f * (1.0f - cosf(2.0f * static_cast<float>(M_PI) * i / (size - 1)));
+        data[i] = std::complex<float>(data[i].real() * window, data[i].imag());
+    }
+}
+
 inline float fastSoftClip(float x) {
     float ax = fabsf(x);
     float sign = x > 0 ? 1.0f : -1.0f;
@@ -227,40 +255,85 @@ inline float fastSoftClip(float x) {
     return x * (1.5f - 0.5f * x * x);
 }
 
+static EqBandInterpolator gEqL[NUM_EQ_BANDS];
+static EqBandInterpolator gEqR[NUM_EQ_BANDS];
+static BassFilter gBassL, gBassR;
+static CompressorOptimized gCompressor;
+static ReverbOptimized gReverbL, gReverbR;
+static alignas(16) std::array<std::complex<float>, FFT_SIZE> gFFTWork;
+static int gEqUpdateCounter = 0;
+
+inline void updateAllEqBands() {
+    float sr = gSampleRate.load(std::memory_order_acquire);
+    for (int b = 0; b < NUM_EQ_BANDS; b++) {
+        float g = gEqL[b].targetGain.load(std::memory_order_acquire);
+        gEqL[b].setCoefficients(sr, EQ_FREQUENCIES[b], g, 1.0f);
+        gEqR[b].setCoefficients(sr, EQ_FREQUENCIES[b], g, 1.0f);
+    }
+    bool anyActive = false;
+    for (int b = 0; b < NUM_EQ_BANDS; b++) {
+        if (std::abs(gEqL[b].targetGain.load(std::memory_order_acquire)) > 0.1f) {
+            anyActive = true;
+            break;
+        }
+    }
+    gEqEnabled.store(anyActive, std::memory_order_release);
+}
+
 extern "C" {
 
 JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setSampleRate(JNIEnv*, jobject, jfloat sr) {
-    std::lock_guard<std::mutex> lock(gAudioMutex);
-    gSampleRate = sr;
-    gCompressor.sampleRate = sr;
+    gSampleRate.store(sr, std::memory_order_release);
+    gCompressor.sampleRate.store(sr, std::memory_order_release);
+    gBassL.applyGain(sr);
+    gBassR.applyGain(sr);
+    gEqUpdateCounter = 1;
 }
 JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setDrcEnabled(JNIEnv*, jobject, jboolean e) {
-    std::lock_guard<std::mutex> lock(gAudioMutex);
-    gDrcEnabled = e;
+    gCompressor.enabled.store(e == JNI_TRUE, std::memory_order_release);
 }
 JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setReverbMix(JNIEnv*, jobject, jfloat m) {
-    std::lock_guard<std::mutex> lock(gAudioMutex);
-    gReverbL.setMix(m); gReverbR.setMix(m);
+    gReverbL.mix.store(m, std::memory_order_release);
+    gReverbR.mix.store(m, std::memory_order_release);
 }
 JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setEqBand(JNIEnv*, jobject, jint b, jfloat g) {
-    std::lock_guard<std::mutex> lock(gAudioMutex);
     if (b >= 0 && b < NUM_EQ_BANDS) {
-        gEqL.setPeakingEQ(b, gSampleRate, EQ_FREQUENCIES[b], g, 1.0f);
-        gEqR.setPeakingEQ(b, gSampleRate, EQ_FREQUENCIES[b], g, 1.0f);
+        gEqL[b].setTargetGain(g);
+        gEqR[b].setTargetGain(g);
+        gEqUpdateCounter = 1;
     }
-    gEqEnabled = gEqL.hasActiveBands();
+}
+JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setEqFull(JNIEnv* env, jobject thiz, jfloatArray gains) {
+    if (!gains) return;
+    
+    jsize len = env->GetArrayLength(gains);
+    int bandsToUpdate = std::min(static_cast<int>(len), NUM_EQ_BANDS);
+    
+    jfloat* gainsPtr = env->GetFloatArrayElements(gains, nullptr);
+    if (!gainsPtr) return;
+    
+    for (int b = 0; b < bandsToUpdate; b++) {
+        gEqL[b].setTargetGain(gainsPtr[b]);
+        gEqR[b].setTargetGain(gainsPtr[b]);
+    }
+    
+    gEqUpdateCounter = 1;
+    
+    env->ReleaseFloatArrayElements(gains, gainsPtr, JNI_ABORT);
 }
 JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setBassBoost(JNIEnv*, jobject, jfloat g) {
-    std::lock_guard<std::mutex> lock(gAudioMutex);
-    if (g > 0.01f) {
-        gBassL.setLowShelf(gSampleRate, 150.0f, g, SQRT_2_INV);
-        gBassR.setLowShelf(gSampleRate, 150.0f, g, SQRT_2_INV);
-        gBassBoostEnabled = true;
-    } else { gBassBoostEnabled = false; }
+    gBassL.targetGain.store(g, std::memory_order_release);
+    gBassR.targetGain.store(g, std::memory_order_release);
+    if (std::abs(g) > 0.01f) {
+        gBassL.active.store(true, std::memory_order_release);
+        gBassR.active.store(true, std::memory_order_release);
+    } else {
+        gBassL.active.store(false, std::memory_order_release);
+        gBassR.active.store(false, std::memory_order_release);
+    }
 }
 JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setStereoWidth(JNIEnv*, jobject, jfloat w) {
-    std::lock_guard<std::mutex> lock(gAudioMutex);
-    gStereoWidth = fmaxf(0.0f, fminf(w, 2.0f));
+    gStereoWidth.store(fmaxf(0.0f, fminf(w, 2.0f)), std::memory_order_release);
 }
 
 JNIEXPORT jfloatArray JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_getFftData(JNIEnv* env, jobject) {
@@ -269,47 +342,100 @@ JNIEXPORT jfloatArray JNICALL Java_com_michatec_radio_helpers_NativeAudioProcess
     return arr;
 }
 
+inline void computeLogarithmicFFT(float* output, const std::complex<float>* input, int inputSize) {
+    float sr = gSampleRate.load(std::memory_order_acquire);
+    float binWidth = sr / (2.0f * inputSize);
+    constexpr int NUM_BANDS = 256;
+    constexpr float MIN_FREQ = 20.0f;
+    constexpr float MAX_FREQ = 20000.0f;
+    float logMin = logf(MIN_FREQ);
+    float logMax = logf(MAX_FREQ);
+    float logRange = logMax - logMin;
+    
+    for (int b = 0; b < NUM_BANDS; b++) {
+        float f1 = expf(logMin + (logRange * b / NUM_BANDS));
+        float f2 = expf(logMin + (logRange * (b + 1) / NUM_BANDS));
+        int idx1 = static_cast<int>(f1 / binWidth);
+        int idx2 = static_cast<int>(f2 / binWidth);
+        idx1 = std::max(0, std::min(idx1, inputSize - 1));
+        idx2 = std::max(0, std::min(idx2, inputSize - 1));
+        
+        float sum = 0.0f;
+        int count = idx2 - idx1 + 1;
+        for (int i = idx1; i <= idx2 && i < inputSize; i++) {
+            sum += std::abs(input[i]);
+        }
+        float avg = (count > 0) ? sum / static_cast<float>(count) : 0.0f;
+        output[b] = avg * 0.5f;
+    }
+}
+
 JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_processAudioDirect(JNIEnv* env, jobject, jobject byteBuffer, jint size) {
     auto* buffer = static_cast<jshort*>(env->GetDirectBufferAddress(byteBuffer));
     if (!buffer) return;
     int numFrames = (size / 2) / 2;
     if (numFrames > 4096) numFrames = 4096;
 
+    if (gEqUpdateCounter > 0) {
+        updateAllEqBands();
+        gEqUpdateCounter--;
+    }
+
     for (int i = 0; i < numFrames; i++) {
         gLeftBuf[i] = static_cast<float>(buffer[i * 2]) * INV_32768;
         gRightBuf[i] = static_cast<float>(buffer[i * 2 + 1]) * INV_32768;
     }
 
-    if (gEqEnabled) { gEqL.processBlock(gLeftBuf.data(), numFrames); gEqR.processBlock(gRightBuf.data(), numFrames); }
-    if (gBassBoostEnabled) {
-        for(int i=0; i<numFrames; i++) { gLeftBuf[i] = gBassL.process(gLeftBuf[i]); gRightBuf[i] = gBassR.process(gRightBuf[i]); }
-    }
-    gReverbL.processBlock(gLeftBuf.data(), gRightBuf.data(), numFrames);
-
-    if (gStereoWidth != 1.0f) {
-        float halfWidth = gStereoWidth * 0.5f;
-        for (int j = 0; j < numFrames; j++) {
-            float mid = (gLeftBuf[j] + gRightBuf[j]) * 0.5f;
-            float side = (gLeftBuf[j] - gRightBuf[j]) * halfWidth;
-            gLeftBuf[j] = mid + side; gRightBuf[j] = mid - side;
+    bool eqEnabled = gEqEnabled.load(std::memory_order_acquire);
+    if (eqEnabled) {
+        for (int i = 0; i < numFrames; i++) {
+            float xL = gLeftBuf[i];
+            float xR = gRightBuf[i];
+            for (int b = 0; b < NUM_EQ_BANDS; b++) {
+                xL = gEqL[b].process(xL);
+                xR = gEqR[b].process(xR);
+            }
+            gLeftBuf[i] = xL;
+            gRightBuf[i] = xR;
         }
     }
 
-    if (gDrcEnabled) gCompressor.process(gLeftBuf.data(), gRightBuf.data(), numFrames);
+    for(int i = 0; i < numFrames; i++) {
+        gLeftBuf[i] = gBassL.process(gLeftBuf[i]);
+        gRightBuf[i] = gBassR.process(gRightBuf[i]);
+    }
 
-    // FFT for visualization with Hann window
-    alignas(16) std::array<float, 256> fftWindow;
-    for (int k = 0; k < 256; k++) {
-        fftWindow[k] = (k < numFrames) ? gLeftBuf[k] : 0.0f;
+    gReverbL.processBlock(gLeftBuf.data(), gRightBuf.data(), numFrames);
+
+    float stereoWidth = gStereoWidth.load(std::memory_order_acquire);
+    if (stereoWidth != 1.0f) {
+        float halfWidth = stereoWidth * 0.5f;
+        for (int j = 0; j < numFrames; j++) {
+            float mid = (gLeftBuf[j] + gRightBuf[j]) * 0.5f;
+            float side = (gLeftBuf[j] - gRightBuf[j]) * halfWidth;
+            gLeftBuf[j] = mid + side;
+            gRightBuf[j] = mid - side;
+        }
     }
-    applyHannWindow(fftWindow.data(), 256);
-    for (int k = 0; k < FFT_SIZE; k++) {
-        gFFTWork[k] = (k < 256) ? std::complex<float>(fftWindow[k], 0.0f) : std::complex<float>(0.0f, 0.0f);
+
+    gCompressor.process(gLeftBuf.data(), gRightBuf.data(), numFrames);
+
+    if (numFrames >= FFT_SIZE) {
+        for (int k = 0; k < FFT_SIZE; k++) {
+            gFFTWork[k] = std::complex<float>(gLeftBuf[k], 0.0f);
+        }
+    } else {
+        for (int k = 0; k < numFrames; k++) {
+            gFFTWork[k] = std::complex<float>(gLeftBuf[k], 0.0f);
+        }
+        for (int k = numFrames; k < FFT_SIZE; k++) {
+            gFFTWork[k] = std::complex<float>(0.0f, 0.0f);
+        }
     }
+    
+    applyHannWindowToReal(gFFTWork.data(), FFT_SIZE);
     fastFFT(gFFTWork.data(), FFT_SIZE);
-    for (int k = 0; k < 256; k++) {
-        gFFTData[k] = std::abs(gFFTWork[k]) * 0.5f;
-    }
+    computeLogarithmicFFT(gFFTData.data(), gFFTWork.data(), FFT_SIZE / 2);
 
     for (int k = 0; k < numFrames; k++) {
         buffer[k * 2] = static_cast<jshort>(fastSoftClip(gLeftBuf[k]) * 32767.0f);

@@ -31,6 +31,7 @@ class NativeAudioProcessor : BaseAudioProcessor() {
     private external fun setDrcEnabled(enabled: Boolean)
     private external fun setReverbMix(mix: Float)
     private external fun setEqBand(band: Int, gainDb: Float)
+    private external fun setEqFull(gains: FloatArray)
     private external fun setBassBoost(gainDb: Float)
     private external fun setStereoWidth(width: Float)
     private external fun processAudioDirect(buf: ByteBuffer, size: Int)
@@ -40,9 +41,7 @@ class NativeAudioProcessor : BaseAudioProcessor() {
     fun enableDrc(enabled: Boolean) = setDrcEnabled(enabled)
     fun setReverb(mix: Float) = setReverbMix(mix)
     fun setEq(band: Int, gainDb: Float) = setEqBand(band, gainDb)
-    fun setEqAll(gains: FloatArray) {
-        gains.forEachIndexed { i, g -> setEq(i, g) }
-    }
+    fun setEqAll(gains: FloatArray) = setEqFull(gains)
     fun enableBassBoost(gainDb: Float) = setBassBoost(gainDb)
     fun setWidth(width: Float) = setStereoWidth(width)
 
@@ -69,28 +68,27 @@ class NativeAudioProcessor : BaseAudioProcessor() {
         val size = inputBuffer.remaining()
         if (size == 0) return
 
-        // Always ensure we have a direct buffer for JNI
-        if (directBuffer == null || directBuffer!!.capacity() < size) {
-            directBuffer = ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder())
+        val bufferToProcess: ByteBuffer
+        if (inputBuffer.isDirect) {
+            bufferToProcess = inputBuffer
+        } else {
+            if (directBuffer == null || directBuffer!!.capacity() < size) {
+                directBuffer = ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder())
+            }
+            directBuffer!!.clear()
+            inputBuffer.position()
+            directBuffer!!.put(inputBuffer)
+            directBuffer!!.flip()
+            bufferToProcess = directBuffer!!
         }
-        
-        directBuffer!!.clear()
-        inputBuffer.position()
-        directBuffer!!.put(inputBuffer)
-        
-        directBuffer!!.flip()
-        
-        // Process audio in JNI
-        processAudioDirect(directBuffer!!, size)
 
-        // Copy processed data back to output
+        processAudioDirect(bufferToProcess, size)
+
         val out = replaceOutputBuffer(size)
         out.order(ByteOrder.nativeOrder())
-        
-        directBuffer!!.position(0)
-        out.put(directBuffer!!)
+        bufferToProcess.position(0)
+        out.put(bufferToProcess)
         out.flip()
-
     }
 
     override fun onReset() {
