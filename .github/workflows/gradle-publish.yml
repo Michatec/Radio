@@ -43,7 +43,7 @@ jobs:
         #if: steps.cache-android-sdk.outputs.cache-hit != 'true'
         uses: android-actions/setup-android@v4
         with:
-          packages: ''
+          packages: 'ndk;29.0.14206865'
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
