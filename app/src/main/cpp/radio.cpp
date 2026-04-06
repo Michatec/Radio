@@ -55,7 +55,7 @@ struct alignas(16) BiquadBank {
 
     // Optimized bulk processing for a single channel
     inline void processBlock(float* __restrict__ data, int count) {
-        if (!hasActiveBands()) return;
+        if (!this -> hasActiveBands()) return;
 
         for (int i = 0; i < count; i++) {
             float x = data[i];
@@ -103,6 +103,7 @@ struct alignas(16) BassFilter {
     alignas(16) float a0 = 1.2f, a1 = 1.2f, a2 = 1.2f, b1 = 0.0f, b2 = 0.0f;
     alignas(16) float z1 = 0.0f, z2 = 0.0f;
     bool active = false;
+    BiquadBank myBank;
 
     inline float process(float x) {
         if (!active) return x;
@@ -116,18 +117,23 @@ struct alignas(16) BassFilter {
 
     inline void processNEON(float* __restrict__ data, int count) {
 #if defined(__ARM_NEON)
-        if (!active || count < 4) { for(int i=0;i<count;i++) data[i]=process(data[i]); return; }
-
-        // Scalar feedback for stability
-        for(int i=0;i<count;i++){
-            float x = data[i];
-            float y = a0*x + z1;
-            z1 = a1*x + z2 - b1*y + DENORMAL_OFFSET;
-            z2 = a2*x - b2*y;
-            if(y>1.2f) y=1.2f;
-            else if(y<-1.2f) y=-1.2f;
-            data[i] = y;
+        if (!active) return;
+        int i = 0;
+        for (; i <= count-4; i+=4) {
+            float32x4_t x = vld1q_f32(data + i);
+            for(int b=0;b<NUM_EQ_BANDS;b++){
+                if(active){
+                    float32x4_t y  = vmlaq_n_f32(vdupq_n_f32(z1), x, a0);
+                    float32x4_t z1n = vmlaq_n_f32(vdupq_n_f32(z2), x, a1) - vmulq_n_f32(y, b1) + vdupq_n_f32(DENORMAL_OFFSET);
+                    float32x4_t z2n = vmlaq_n_f32(vdupq_n_f32(0.0f), x, a2) - vmulq_n_f32(y, b2);
+                    z1 = vgetq_lane_f32(z1n,3);
+                    z2 = vgetq_lane_f32(z2n,3);
+                    x = y;
+                }
+            }
+            vst1q_f32(data+i, x);
         }
+        for(;i<count;i++) myBank.processBlock(data+i,1); // Rest scalar
 #else
         for(int i=0;i<count;i++) data[i]=process(data[i]);
 #endif
@@ -250,20 +256,19 @@ public:
 
     inline void processBlock(float* __restrict__ buffer, int count, float& envelope) {
         updateCoefficients();
-
-        for (int i = 0; i < count; i++) {
-            float absInput = fabsf(buffer[i]);
-            // Branch-free envelope attack/release
-            bool attackMode = absInput > envelope;
-            envelope = attackMode
-                    ? attackCoef * envelope + (1.0f - attackCoef) * absInput
-                    : releaseCoef * envelope + (1.0f - releaseCoef) * absInput;
-
-            // Soft-knee compression
-            if (envelope > threshold) {
-                float gainReduction = threshold + (envelope - threshold) / ratio;
-                buffer[i] *= (gainReduction / (envelope + 1e-9f));
+        const int blockSize = 32;
+        for(int b=0;b<count;b+=blockSize){
+            int sz = (b+blockSize<count)? blockSize : count-b;
+            float maxVal = 0.0f;
+            for(int i=0;i<sz;i++){
+                float absInput = fabsf(buffer[b+i]);
+                if(absInput>maxVal) maxVal = absInput;
             }
+            bool attackMode = maxVal > envelope;
+            envelope = attackMode ? attackCoef*envelope + (1-attackCoef)*maxVal
+                    : releaseCoef*envelope + (1-releaseCoef)*maxVal;
+            float gain = (envelope>threshold)? (threshold + (envelope-threshold)/ratio)/(envelope+1e-9f) : 1.0f;
+            for(int i=0;i<sz;i++) buffer[b+i]*=gain;
         }
     }
 
@@ -338,49 +343,44 @@ inline float fastSoftClip(float x) {
     return x * (1.4f - 0.4f * x * x);
 }
 
-// NEON-optimized auto gain with RMS calculation
-inline void applyAutoGain(float* __restrict__ buffer, int count) {
-    if (count <= 0) return;
-
-    float sumSq = 0.0f;
+inline void applyAutoGain(float* buffer, int count){
+    int block = 128;
+    for(int i=0; i<count; i+=block){
+        int sz = (i+block<count) ? block : count-i;
+        float sumSq = 0.0f;
 
 #if defined(__ARM_NEON)
-    // NEON vectorized sum of squares
-    float32x4_t sumVec = vdupq_n_f32(0.0f);
-    int i = 0;
-    for (; i <= count - 4; i += 4) {
-        float32x4_t v = vld1q_f32(buffer + i);
-        sumVec = vmlaq_f32(sumVec, v, v);  // sum += v*v
-    }
-    // Horizontal add
-    float32x2_t sumLo = vget_low_f32(sumVec);
-    float32x2_t sumHi = vget_high_f32(sumVec);
-    float32x2_t sumPair = vadd_f32(sumLo, sumHi);
-    sumSq = vget_lane_f32(sumPair, 0) + vget_lane_f32(sumPair, 1);
-#endif
-    // Scalar tail
-    for (int i = (count & ~3); i < count; i++) {
-        sumSq += buffer[i] * buffer[i];
-    }
-
-    float rms = sqrtf(sumSq / static_cast<float>(count));
-    if (rms > 0.001f) {
-        float target = gTargetRMS / rms;
-        // Smooth gain transition (exponential moving average)
-        gCurrentGain = gCurrentGain * 0.99f + target * 0.01f;
-        gCurrentGain = fminf(gCurrentGain, 2.0f);
-
-        // NEON vectorized gain application
-#if defined(__ARM_NEON)
-        float32x4_t gVec = vdupq_n_f32(gCurrentGain);
-        int j = 0;
-        for (; j <= count - 4; j += 4) {
-            float32x4_t v = vld1q_f32(buffer + j);
-            vst1q_f32(buffer + j, vmulq_f32(v, gVec));
+        float32x4_t sumVec = vdupq_n_f32(0.0f);
+        int j=0;
+        for(; j<=sz-4; j+=4){
+            float32x4_t v = vld1q_f32(buffer + i + j);
+            sumVec = vmlaq_f32(sumVec, v, v);
         }
+        float32x2_t lo = vget_low_f32(sumVec);
+        float32x2_t hi = vget_high_f32(sumVec);
+        sumSq = vget_lane_f32(lo,0) + vget_lane_f32(lo,1) + vget_lane_f32(hi,0) + vget_lane_f32(hi,1);
+        for(; j<sz; j++) sumSq += buffer[i+j]*buffer[i+j];
+#else
+        for(int j=0; j<sz; j++) sumSq += buffer[i+j]*buffer[i+j];
 #endif
-        for (int j = (count & ~3); j < count; j++) {
-            buffer[j] *= gCurrentGain;
+
+        float rms = sqrtf(sumSq / static_cast<float>(sz));
+        if(rms > 0.001f){
+            float target = gTargetRMS / rms;
+            gCurrentGain = gCurrentGain*0.99f + target*0.01f;
+            if(gCurrentGain > 2.0f) gCurrentGain = 2.0f;
+
+#if defined(__ARM_NEON)
+            float32x4_t gVec = vdupq_n_f32(gCurrentGain);
+            int j=0;
+            for(; j<=sz-4; j+=4){
+                float32x4_t v = vld1q_f32(buffer + i + j);
+                vst1q_f32(buffer + i + j, vmulq_f32(v, gVec));
+            }
+            for(; j<sz; j++) buffer[i+j] *= gCurrentGain;
+#else
+            for(int j=0; j<sz; j++) buffer[i+j] *= gCurrentGain;
+#endif
         }
     }
 }

@@ -78,7 +78,7 @@ class NativeAudioProcessor : BaseAudioProcessor() {
         setReverb(0.2f)
         setWidth(1.1f)
         setEqAll(floatArrayOf(2f, 1f, 0f, -1f, -1f, 0f, 1f, 2f, 2f, 3f))
-        enableBassBoost(1.5f)
+        enableBassBoost(0.8f)
     }
 
     fun setPresetPop() {
@@ -86,7 +86,7 @@ class NativeAudioProcessor : BaseAudioProcessor() {
         setReverb(0.15f)
         setWidth(1.05f)
         setEqAll(floatArrayOf(1f, 1f, 0f, 0f, 0f, 0f, 1f, 2f, 2f, 1f))
-        enableBassBoost(1.0f)
+        enableBassBoost(0.5f)
     }
 
     fun setPresetJazz() {
@@ -94,7 +94,7 @@ class NativeAudioProcessor : BaseAudioProcessor() {
         setReverb(0.15f)
         setWidth(1.0f)
         setEqAll(floatArrayOf(0f, 0f, 1f, 1f, 0f, 0f, 1f, 1f, 0f, 0f))
-        enableBassBoost(0.5f)
+        enableBassBoost(0.2f)
     }
 
     fun setPresetFlat() {
