@@ -22,7 +22,6 @@ android {
         versionCode 145
         versionName '14.5'
         resourceConfigurations += ['en', 'de', 'el', 'nl', 'pl', 'ru','uk', 'ja', 'da', 'fr']
-        ndkVersion "29.0.14206865"
         externalNativeBuild {
             cmake {
                 cppFlags ''
@@ -55,6 +54,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    ndkVersion "29.0.14206865"
     externalNativeBuild {
         cmake {
             path file('src/main/cpp/CMakeLists.txt')
