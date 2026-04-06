@@ -107,7 +107,7 @@ class VisualizerFragment : PreferenceFragmentCompat() {
                     }
                 }, MoreExecutors.directExecutor())
             }
-            handler.postDelayed(this, 25) // ~40 FPS
+            handler.postDelayed(this, 18) // ~60 FPS
         }
     }
 

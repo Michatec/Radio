@@ -253,6 +253,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         val preferenceVisualizer = Preference(context)
         preferenceVisualizer.title = getString(R.string.pref_visualizer_title)
         preferenceVisualizer.setIcon(R.drawable.ic_music_note_24dp)
+        preferenceVisualizer.summary = getString(R.string.pref_visualizer_summary)
         preferenceVisualizer.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_settings_to_visualizer)
             return@setOnPreferenceClickListener true

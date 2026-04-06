@@ -146,4 +146,5 @@
     <string name="pref_preset_jazz">Jazz</string>
     <string name="pref_preset_flat">Flach</string>
     <string name="pref_visualizer_title">Spektrumanzeige</string>
+    <string name="pref_visualizer_summary">Sehe die Spektrumanzeige.</string>
 </resources>
