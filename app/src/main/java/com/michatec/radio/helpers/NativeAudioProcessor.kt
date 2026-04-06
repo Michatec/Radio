@@ -14,7 +14,7 @@ class NativeAudioProcessor : BaseAudioProcessor() {
 
     companion object {
         init {
-            System.loadLibrary("radio")
+            System.loadLibrary("dsp")
         }
     }
 
