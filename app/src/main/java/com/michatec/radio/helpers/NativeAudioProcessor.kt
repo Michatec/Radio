@@ -27,6 +27,7 @@ class NativeAudioProcessor : BaseAudioProcessor() {
     private var directBuffer: ByteBuffer? = null
 
     // ===== JNI =====
+    private external fun setSampleRate(sampleRate: Float)
     private external fun setDrcEnabled(enabled: Boolean)
     private external fun setReverbMix(mix: Float)
     private external fun setEqBand(band: Int, gainDb: Float)
@@ -59,6 +60,8 @@ class NativeAudioProcessor : BaseAudioProcessor() {
             Log.e(TAG, "Unsupported encoding: ${inputAudioFormat.encoding}")
             throw AudioProcessor.UnhandledAudioFormatException(inputAudioFormat)
         }
+        // Pass the actual sample rate to native
+        setSampleRate(inputAudioFormat.sampleRate.toFloat())
         return inputAudioFormat
     }
 

@@ -3,6 +3,7 @@
 #include <cmath>
 #include <complex>
 #include <array>
+#include <mutex>
 
 #if defined(__ARM_NEON)
 #include <arm_neon.h>
@@ -11,6 +12,9 @@
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
+
+static float gSampleRate = 44100.0f;
+static std::mutex gAudioMutex;
 
 static constexpr int FFT_SIZE = 512;
 static constexpr int NUM_EQ_BANDS = 10;
@@ -209,6 +213,13 @@ inline void fastFFT(std::complex<float>* __restrict__ data, int n) {
     }
 }
 
+inline void applyHannWindow(float* __restrict__ data, int size) {
+    for (int i = 0; i < size; i++) {
+        float window = 0.5f * (1.0f - cosf(2.0f * static_cast<float>(M_PI) * i / (size - 1)));
+        data[i] *= window;
+    }
+}
+
 inline float fastSoftClip(float x) {
     float ax = fabsf(x);
     float sign = x > 0 ? 1.0f : -1.0f;
@@ -218,23 +229,39 @@ inline float fastSoftClip(float x) {
 
 extern "C" {
 
-JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setDrcEnabled(JNIEnv*, jobject, jboolean e) { gDrcEnabled = e; }
-JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setReverbMix(JNIEnv*, jobject, jfloat m) { gReverbL.setMix(m); gReverbR.setMix(m); }
+JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setSampleRate(JNIEnv*, jobject, jfloat sr) {
+    std::lock_guard<std::mutex> lock(gAudioMutex);
+    gSampleRate = sr;
+    gCompressor.sampleRate = sr;
+}
+JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setDrcEnabled(JNIEnv*, jobject, jboolean e) {
+    std::lock_guard<std::mutex> lock(gAudioMutex);
+    gDrcEnabled = e;
+}
+JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setReverbMix(JNIEnv*, jobject, jfloat m) {
+    std::lock_guard<std::mutex> lock(gAudioMutex);
+    gReverbL.setMix(m); gReverbR.setMix(m);
+}
 JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setEqBand(JNIEnv*, jobject, jint b, jfloat g) {
+    std::lock_guard<std::mutex> lock(gAudioMutex);
     if (b >= 0 && b < NUM_EQ_BANDS) {
-        gEqL.setPeakingEQ(b, 44100.0f, EQ_FREQUENCIES[b], g, 1.0f);
-        gEqR.setPeakingEQ(b, 44100.0f, EQ_FREQUENCIES[b], g, 1.0f);
+        gEqL.setPeakingEQ(b, gSampleRate, EQ_FREQUENCIES[b], g, 1.0f);
+        gEqR.setPeakingEQ(b, gSampleRate, EQ_FREQUENCIES[b], g, 1.0f);
     }
     gEqEnabled = gEqL.hasActiveBands();
 }
 JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setBassBoost(JNIEnv*, jobject, jfloat g) {
+    std::lock_guard<std::mutex> lock(gAudioMutex);
     if (g > 0.01f) {
-        gBassL.setLowShelf(44100.0f, 150.0f, g, SQRT_2_INV);
-        gBassR.setLowShelf(44100.0f, 150.0f, g, SQRT_2_INV);
+        gBassL.setLowShelf(gSampleRate, 150.0f, g, SQRT_2_INV);
+        gBassR.setLowShelf(gSampleRate, 150.0f, g, SQRT_2_INV);
         gBassBoostEnabled = true;
     } else { gBassBoostEnabled = false; }
 }
-JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setStereoWidth(JNIEnv*, jobject, jfloat w) { gStereoWidth = fmaxf(0.0f, fminf(w, 2.0f)); }
+JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setStereoWidth(JNIEnv*, jobject, jfloat w) {
+    std::lock_guard<std::mutex> lock(gAudioMutex);
+    gStereoWidth = fmaxf(0.0f, fminf(w, 2.0f));
+}
 
 JNIEXPORT jfloatArray JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_getFftData(JNIEnv* env, jobject) {
     jfloatArray arr = env->NewFloatArray(256);
@@ -270,13 +297,18 @@ JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_proc
 
     if (gDrcEnabled) gCompressor.process(gLeftBuf.data(), gRightBuf.data(), numFrames);
 
-    // FFT for visualization
+    // FFT for visualization with Hann window
+    alignas(16) std::array<float, 256> fftWindow;
+    for (int k = 0; k < 256; k++) {
+        fftWindow[k] = (k < numFrames) ? gLeftBuf[k] : 0.0f;
+    }
+    applyHannWindow(fftWindow.data(), 256);
     for (int k = 0; k < FFT_SIZE; k++) {
-        gFFTWork[k] = (k < 256 && k < numFrames) ? std::complex<float>(gLeftBuf[k], 0.0f) : std::complex<float>(0.0f, 0.0f);
+        gFFTWork[k] = (k < 256) ? std::complex<float>(fftWindow[k], 0.0f) : std::complex<float>(0.0f, 0.0f);
     }
     fastFFT(gFFTWork.data(), FFT_SIZE);
     for (int k = 0; k < 256; k++) {
-        gFFTData[k] = std::abs(gFFTWork[k]) * 0.5f; // Increased scale
+        gFFTData[k] = std::abs(gFFTWork[k]) * 0.5f;
     }
 
     for (int k = 0; k < numFrames; k++) {
