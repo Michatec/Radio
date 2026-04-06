@@ -18,21 +18,21 @@ project("radio")
 # Gradle automatically packages shared libraries with your APK.
 #
 # In this top level CMakeLists.txt, ${CMAKE_PROJECT_NAME} is used to define
-# the target library name; in the sub-module's CMakeLists.txt, ${PROJECT_NAME}
+# the target library name; in the sub-module's CMakeLists.txt, the project name
 # is preferred for the same purpose.
 #
 # In order to load a library into your app from Java/Kotlin, you must call
 # System.loadLibrary() and pass the name of the library defined here;
 # for GameActivity/NativeActivity derived applications, the same library name must be
 # used in the AndroidManifest.xml file.
-add_library(${CMAKE_PROJECT_NAME} SHARED
+add_library(dsp SHARED
     # List C/C++ source files with relative paths to this CMakeLists.txt.
     dsp.cpp)
 
 # Specifies libraries CMake should link to your target library. You
 # can link libraries from various origins, such as libraries defined in this
 # build script, prebuilt third-party libraries, or Android system libraries.
-target_link_libraries(${CMAKE_PROJECT_NAME}
+target_link_libraries(dsp
     # List libraries link to the target library
     android
     log)
