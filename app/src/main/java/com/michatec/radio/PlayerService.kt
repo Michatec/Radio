@@ -286,20 +286,61 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
 
     /* Applies audio effects based on preferences */
     private fun applyAudioEffects() {
-        nativeAudioProcessor.enableBassBoost(PreferencesHelper.loadBassBoost())
-        nativeAudioProcessor.setReverb(PreferencesHelper.loadReverb())
-        nativeAudioProcessor.enableDrc(PreferencesHelper.loadDrcEnabled())
-        nativeAudioProcessor.setEq(0, PreferencesHelper.loadEqLow())
-        nativeAudioProcessor.setEq(1, PreferencesHelper.loadEqMid())
-        nativeAudioProcessor.setEq(2, PreferencesHelper.loadEqHigh())
+        val selectedPreset = PreferencesHelper.loadSelectedPreset()
+        if (selectedPreset.isNotEmpty()) {
+            applyPreset(selectedPreset)
+        } else {
+            // Apply manual settings
+            nativeAudioProcessor.enableBassBoost(PreferencesHelper.loadBassBoost())
+            nativeAudioProcessor.setReverb(PreferencesHelper.loadReverb())
+            nativeAudioProcessor.enableDrc(PreferencesHelper.loadDrcEnabled())
+            nativeAudioProcessor.setWidth(1f)
+            // Apply all 10 EQ bands
+            val eqGains = FloatArray(10)
+            for (i in 0 until 10) {
+                eqGains[i] = PreferencesHelper.loadEqBand(i).toFloat()
+            }
+            nativeAudioProcessor.setEqAll(eqGains)
+        }
     }
 
+    /* Applies a saved preset */
+    private fun applyPreset(presetName: String) {
+        when (presetName) {
+            getString(R.string.pref_preset_rock) -> nativeAudioProcessor.setPresetRock()
+            getString(R.string.pref_preset_pop) -> nativeAudioProcessor.setPresetPop()
+            getString(R.string.pref_preset_jazz) -> nativeAudioProcessor.setPresetJazz()
+            getString(R.string.pref_preset_flat) -> nativeAudioProcessor.setPresetFlat()
+            else -> {
+                // Custom preset - load from preferences
+                nativeAudioProcessor.enableDrc(PreferencesHelper.loadPresetDrc())
+                nativeAudioProcessor.setReverb(PreferencesHelper.loadPresetReverb())
+                nativeAudioProcessor.setWidth(PreferencesHelper.loadPresetStereoWidth())
+                nativeAudioProcessor.enableBassBoost(PreferencesHelper.loadPresetBassBoost())
+                val eqGains = FloatArray(10)
+                for (i in 0 until 10) {
+                    eqGains[i] = PreferencesHelper.loadPresetEqBand(i).toFloat()
+                }
+                nativeAudioProcessor.setEqAll(eqGains)
+            }
+        }
+    }
 
     /* Overrides onSharedPreferenceChanged from SharedPreferences.OnSharedPreferenceChangeListener */
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
-            Keys.PREF_BASS_BOOST, Keys.PREF_REVERB, Keys.PREF_DRC, 
-            Keys.PREF_EQ_LOW, Keys.PREF_EQ_MID, Keys.PREF_EQ_HIGH -> {
+            Keys.PREF_BASS_BOOST, Keys.PREF_REVERB, Keys.PREF_DRC,
+            Keys.PREF_EQ_LOW, Keys.PREF_EQ_MID, Keys.PREF_EQ_HIGH,
+            Keys.PREF_EQ_BAND_1, Keys.PREF_EQ_BAND_2, Keys.PREF_EQ_BAND_3,
+            Keys.PREF_EQ_BAND_4, Keys.PREF_EQ_BAND_5, Keys.PREF_EQ_BAND_6,
+            Keys.PREF_EQ_BAND_7, Keys.PREF_EQ_BAND_8,
+            Keys.PREF_PRESET_SELECTED,
+            Keys.PREF_PRESET_EQ_BAND_0, Keys.PREF_PRESET_EQ_BAND_1, Keys.PREF_PRESET_EQ_BAND_2,
+            Keys.PREF_PRESET_EQ_BAND_3, Keys.PREF_PRESET_EQ_BAND_4, Keys.PREF_PRESET_EQ_BAND_5,
+            Keys.PREF_PRESET_EQ_BAND_6, Keys.PREF_PRESET_EQ_BAND_7, Keys.PREF_PRESET_EQ_BAND_8,
+            Keys.PREF_PRESET_EQ_BAND_9,
+            Keys.PREF_PRESET_BASS_BOOST, Keys.PREF_PRESET_REVERB,
+            Keys.PREF_PRESET_DRC, Keys.PREF_PRESET_STEREO_WIDTH -> {
                 applyAudioEffects()
             }
         }

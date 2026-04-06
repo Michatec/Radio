@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.*
 import com.google.android.material.snackbar.Snackbar
 import com.michatec.radio.dialogs.ErrorDialog
+import com.michatec.radio.dialogs.PresetSelectionDialog
 import com.michatec.radio.dialogs.ThemeSelectionDialog
 import com.michatec.radio.dialogs.YesNoDialog
 import com.michatec.radio.helpers.*
@@ -30,7 +31,7 @@ import java.util.*
 /*
  * SettingsFragment class
  */
-class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListener, ThemeSelectionDialog.ThemeSelectionDialogListener {
+class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListener, ThemeSelectionDialog.ThemeSelectionDialogListener, PresetSelectionDialog.PresetSelectionDialogListener {
 
 
     /* Define log tag */
@@ -51,6 +52,9 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
 
         val context = preferenceManager.context
         val screen = preferenceManager.createPreferenceScreen(context)
+
+        // Load current preset once
+        val currentPreset = PreferencesHelper.loadSelectedPreset()
 
         // set up "App Theme" preference
         val preferenceThemeSelection = Preference(activity as Context)
@@ -190,6 +194,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceBassBoost.title = getString(R.string.pref_bass_boost_title)
         preferenceBassBoost.setIcon(R.drawable.ic_music_note_24dp)
         preferenceBassBoost.key = Keys.PREF_BASS_BOOST
+        preferenceBassBoost.isEnabled = currentPreset.isEmpty()
         preferenceBassBoost.summary = getString(R.string.pref_bass_boost_summary)
         preferenceBassBoost.setDefaultValue(false)
 
@@ -198,6 +203,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceReverb.title = getString(R.string.pref_reverb_title)
         preferenceReverb.setIcon(R.drawable.ic_music_note_24dp)
         preferenceReverb.key = Keys.PREF_REVERB
+        preferenceReverb.isEnabled = currentPreset.isEmpty()
         preferenceReverb.summary = getString(R.string.pref_reverb_summary)
         preferenceReverb.setDefaultValue(false)
 
@@ -206,14 +212,39 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceDrc.title = getString(R.string.pref_drc_title)
         preferenceDrc.setIcon(R.drawable.ic_music_note_24dp)
         preferenceDrc.key = Keys.PREF_DRC
+        preferenceDrc.isEnabled = currentPreset.isEmpty()
         preferenceDrc.summary = getString(R.string.pref_drc_summary)
         preferenceDrc.setDefaultValue(true)
+
+        // set up "Preset Selection" preference
+        val preferencePresetSelection = Preference(context)
+        preferencePresetSelection.title = getString(R.string.pref_preset_selection_title)
+        preferencePresetSelection.setIcon(R.drawable.ic_music_note_24dp)
+        preferencePresetSelection.key = Keys.PREF_PRESET_SELECTED
+        val presetSummary = currentPreset.ifEmpty {
+            getString(R.string.pref_preset_none)
+        }
+        preferencePresetSelection.summary = "${getString(R.string.pref_preset_selection_summary)}: $presetSummary"
+        preferencePresetSelection.setOnPreferenceClickListener {
+            PresetSelectionDialog(this).show(activity as Context)
+            return@setOnPreferenceClickListener true
+        }
+
+        // Initialize EQ control states based on current preset
+        updateEqControlStates()
 
         // set up "Equalizer" preference entry
         val preferenceEqualizer = Preference(context)
         preferenceEqualizer.title = getString(R.string.pref_equalizer_title)
         preferenceEqualizer.setIcon(R.drawable.ic_music_note_24dp)
-        preferenceEqualizer.summary = getString(R.string.pref_equalizer_summary)
+        preferenceEqualizer.key = Keys.PREF_EQUALIZER
+        if (currentPreset.isEmpty()) {
+            preferenceEqualizer.summary = getString(R.string.pref_equalizer_summary)
+            preferenceEqualizer.isEnabled = true
+        } else {
+            preferenceEqualizer.summary = getString(R.string.pref_equalizer_summary_off)
+            preferenceEqualizer.isEnabled = false
+        }
         preferenceEqualizer.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_settings_to_equalizer)
             return@setOnPreferenceClickListener true
@@ -295,6 +326,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceCategoryAudioEffects.addPreference(preferenceBassBoost)
         preferenceCategoryAudioEffects.addPreference(preferenceReverb)
         preferenceCategoryAudioEffects.addPreference(preferenceDrc)
+        preferenceCategoryAudioEffects.addPreference(preferencePresetSelection)
         preferenceCategoryAudioEffects.addPreference(preferenceEqualizer)
 
         screen.addPreference(preferenceCategoryMaintenance)
@@ -336,6 +368,49 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             val index = themeValues.indexOf(selectedTheme)
             val preferenceThemeSelection = findPreference<Preference>(Keys.PREF_THEME_SELECTION)
             preferenceThemeSelection?.summary = "${getString(R.string.pref_theme_selection_summary)} ${themes[index]}"
+        }
+    }
+
+
+    /* Overrides onPresetSelectionDialog from PresetSelectionDialogListener */
+    override fun onPresetSelectionDialog(dialogResult: Boolean, selectedPreset: String) {
+        if (dialogResult) {
+            // update summary
+            val presetPreference = findPreference<Preference>(Keys.PREF_PRESET_SELECTED)
+            val presetSummary = selectedPreset.ifEmpty {
+                getString(R.string.pref_preset_none)
+            }
+            presetPreference?.summary = "${getString(R.string.pref_preset_selection_summary)}: $presetSummary"
+
+            // Enable/disable manual EQ controls based on preset selection
+            updateEqControlStates()
+        }
+    }
+
+    /* Updates the enabled/disabled state of EQ controls based on preset selection */
+    private fun updateEqControlStates() {
+        val currentPreset = PreferencesHelper.loadSelectedPreset()
+        val isPresetSelected = currentPreset.isNotEmpty()
+
+        // Update Bass Boost
+        findPreference<Preference>(Keys.PREF_BASS_BOOST)?.isEnabled = !isPresetSelected
+        
+        // Update Reverb
+        findPreference<Preference>(Keys.PREF_REVERB)?.isEnabled = !isPresetSelected
+        
+        // Update DRC
+        findPreference<Preference>(Keys.PREF_DRC)?.isEnabled = !isPresetSelected
+        
+        // Update Equalizer with proper key
+        val preferenceEqualizer = findPreference<Preference>(Keys.PREF_EQUALIZER)
+        if (preferenceEqualizer != null) {
+            if (isPresetSelected) {
+                preferenceEqualizer.summary = getString(R.string.pref_equalizer_summary_off)
+                preferenceEqualizer.isEnabled = false
+            } else {
+                preferenceEqualizer.summary = getString(R.string.pref_equalizer_summary)
+                preferenceEqualizer.isEnabled = true
+            }
         }
     }
 

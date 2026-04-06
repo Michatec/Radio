@@ -55,7 +55,6 @@
     <string name="pref_update_collection_summary">Die neueste Version aller Senderinformationen herunterladen.</string>
     <string name="dialog_yes_no_message_update_collection">Die neueste Version aller Senderinformationen herunterladen?</string>
     <string name="dialog_yes_no_positive_button_update_collection">Aktualisieren</string>
-    <string name="pref_eq_high_title">Equalizer: Höhen</string>
     <string name="pref_advanced_title">Erweitert</string>
     <string name="pref_app_version_summary">Version</string>
     <string name="pref_app_version_title">App-Version</string>
@@ -125,9 +124,25 @@
     <string name="pref_reverb_summary">Reverb-Mix anpassen.</string>
     <string name="pref_drc_title">Dynamikkompression</string>
     <string name="pref_drc_summary">Den Dynamikbereich für eine gleichbleibende Lautstärke komprimieren.</string>
-    <string name="pref_eq_low_title">Equalizer: Bass</string>
-    <string name="pref_eq_mid_title">Equalizer: Mitten</string>
+    <string name="pref_eq_low_title">Equalizer: 31 Hz</string>
+    <string name="pref_eq_mid_title">Equalizer: 2 kHz</string>
+    <string name="pref_eq_high_title">Equalizer: 16 kHz</string>
+    <string name="pref_eq_band_1_title">Equalizer: 62 Hz</string>
+    <string name="pref_eq_band_2_title">Equalizer: 125 Hz</string>
+    <string name="pref_eq_band_3_title">Equalizer: 250 Hz</string>
+    <string name="pref_eq_band_4_title">Equalizer: 500 Hz</string>
+    <string name="pref_eq_band_5_title">Equalizer: 1 kHz</string>
+    <string name="pref_eq_band_6_title">Equalizer: 4 kHz</string>
+    <string name="pref_eq_band_7_title">Equalizer: 8 kHz</string>
     <string name="pref_equalizer_title">Equalizer</string>
     <string name="pref_equalizer_summary">Passen Sie die Audio-Frequenzen an.</string>
+    <string name="pref_equalizer_summary_off">Das Anpassen von den Audio-Frequenzen ist deaktiviert.</string>
     <string name="pref_equalizer_reset_title">Equalizer zurücksetzen</string>
+    <string name="pref_preset_selection_title">Preset auswählen</string>
+    <string name="pref_preset_selection_summary">Wählen Sie ein Klangprofil</string>
+    <string name="pref_preset_none">Keines (Manuell)</string>
+    <string name="pref_preset_rock">Rock</string>
+    <string name="pref_preset_pop">Pop</string>
+    <string name="pref_preset_jazz">Jazz</string>
+    <string name="pref_preset_flat">Flach</string>
 </resources>

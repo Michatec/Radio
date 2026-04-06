@@ -257,7 +257,7 @@ object PreferencesHelper {
 
     /* Loads Bass Boost gain */
     fun loadBassBoost(): Float {
-        return if (sharedPreferences.getBoolean(Keys.PREF_BASS_BOOST, false)) 5.0f else 0.0f
+        return if (sharedPreferences.getBoolean(Keys.PREF_BASS_BOOST, false)) 1.5f else 0.0f
     }
 
 
@@ -272,10 +272,69 @@ object PreferencesHelper {
         return sharedPreferences.getBoolean(Keys.PREF_DRC, false)
     }
 
-    /* Loads EQ gains */
-    fun loadEqLow(): Float = sharedPreferences.getInt(Keys.PREF_EQ_LOW, 0).toFloat()
-    fun loadEqMid(): Float = sharedPreferences.getInt(Keys.PREF_EQ_MID, 0).toFloat()
-    fun loadEqHigh(): Float = sharedPreferences.getInt(Keys.PREF_EQ_HIGH, 0).toFloat()
+    /* Loads all EQ bands (10 bands for full range) */
+    fun loadEqBand(band: Int): Int {
+        return when (band) {
+            0 -> sharedPreferences.getInt(Keys.PREF_EQ_LOW, 0)
+            1 -> sharedPreferences.getInt(Keys.PREF_EQ_BAND_1, 0)
+            2 -> sharedPreferences.getInt(Keys.PREF_EQ_MID, 0)
+            3 -> sharedPreferences.getInt(Keys.PREF_EQ_BAND_3, 0)
+            4 -> sharedPreferences.getInt(Keys.PREF_EQ_BAND_4, 0)
+            5 -> sharedPreferences.getInt(Keys.PREF_EQ_BAND_5, 0)
+            6 -> sharedPreferences.getInt(Keys.PREF_EQ_BAND_6, 0)
+            7 -> sharedPreferences.getInt(Keys.PREF_EQ_BAND_7, 0)
+            8 -> sharedPreferences.getInt(Keys.PREF_EQ_BAND_8, 0)
+            9 -> sharedPreferences.getInt(Keys.PREF_EQ_HIGH, 0)
+            else -> 0
+        }
+    }
+
+    /* Loads selected preset name */
+    fun loadSelectedPreset(): String {
+        return sharedPreferences.getString(Keys.PREF_PRESET_SELECTED, "") ?: ""
+    }
+
+    /* Saves selected preset name */
+    fun saveSelectedPreset(preset: String) {
+        sharedPreferences.edit { putString(Keys.PREF_PRESET_SELECTED, preset) }
+    }
+
+    /* Loads preset EQ band values */
+    fun loadPresetEqBand(band: Int): Int {
+        return when (band) {
+            0 -> sharedPreferences.getInt(Keys.PREF_PRESET_EQ_BAND_0, 0)
+            1 -> sharedPreferences.getInt(Keys.PREF_PRESET_EQ_BAND_1, 0)
+            2 -> sharedPreferences.getInt(Keys.PREF_PRESET_EQ_BAND_2, 0)
+            3 -> sharedPreferences.getInt(Keys.PREF_PRESET_EQ_BAND_3, 0)
+            4 -> sharedPreferences.getInt(Keys.PREF_PRESET_EQ_BAND_4, 0)
+            5 -> sharedPreferences.getInt(Keys.PREF_PRESET_EQ_BAND_5, 0)
+            6 -> sharedPreferences.getInt(Keys.PREF_PRESET_EQ_BAND_6, 0)
+            7 -> sharedPreferences.getInt(Keys.PREF_PRESET_EQ_BAND_7, 0)
+            8 -> sharedPreferences.getInt(Keys.PREF_PRESET_EQ_BAND_8, 0)
+            9 -> sharedPreferences.getInt(Keys.PREF_PRESET_EQ_BAND_9, 0)
+            else -> 0
+        }
+    }
+
+    /* Loads preset Bass Boost */
+    fun loadPresetBassBoost(): Float {
+        return sharedPreferences.getFloat(Keys.PREF_PRESET_BASS_BOOST, 0f)
+    }
+
+    /* Loads preset Reverb */
+    fun loadPresetReverb(): Float {
+        return sharedPreferences.getFloat(Keys.PREF_PRESET_REVERB, 0f)
+    }
+
+    /* Loads preset DRC */
+    fun loadPresetDrc(): Boolean {
+        return sharedPreferences.getBoolean(Keys.PREF_PRESET_DRC, false)
+    }
+
+    /* Loads preset Stereo Width */
+    fun loadPresetStereoWidth(): Float {
+        return sharedPreferences.getFloat(Keys.PREF_PRESET_STEREO_WIDTH, 1f)
+    }
 
     /* Resets Equalizer settings to default */
     fun resetEqualizer() {
