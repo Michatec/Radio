@@ -375,6 +375,7 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
             builder.add(SessionCommand(Keys.CMD_CANCEL_SLEEP_TIMER, Bundle.EMPTY))
             builder.add(SessionCommand(Keys.CMD_REQUEST_SLEEP_TIMER_REMAINING, Bundle.EMPTY))
             builder.add(SessionCommand(Keys.CMD_REQUEST_METADATA_HISTORY, Bundle.EMPTY))
+            builder.add(SessionCommand(Keys.CMD_GET_VISUALIZER_DATA, Bundle.EMPTY))
             return MediaSession.ConnectionResult.accept(builder.build(), connectionResult.availablePlayerCommands)
         }
 
@@ -453,6 +454,19 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
                     resultBundle.putStringArrayList(
                         Keys.EXTRA_METADATA_HISTORY,
                         ArrayList(metadataHistory)
+                    )
+                    return Futures.immediateFuture(
+                        SessionResult(
+                            SessionResult.RESULT_SUCCESS,
+                            resultBundle
+                        )
+                    )
+                }
+                Keys.CMD_GET_VISUALIZER_DATA -> {
+                    val resultBundle = Bundle()
+                    resultBundle.putFloatArray(
+                        Keys.EXTRA_VISUALIZER_DATA,
+                        nativeAudioProcessor.getVisualizer()
                     )
                     return Futures.immediateFuture(
                         SessionResult(

@@ -35,10 +35,18 @@ fun MediaController.requestSleepTimerRemaining(): ListenableFuture<SessionResult
 }
 
 
-/* Request sleep timer remaining */
+/* Request metadata history */
 fun MediaController.requestMetadataHistory(): ListenableFuture<SessionResult> {
     return sendCustomCommand(
         SessionCommand(Keys.CMD_REQUEST_METADATA_HISTORY, Bundle.EMPTY),
+        Bundle.EMPTY
+    )
+}
+
+/* Request visualizer data */
+fun MediaController.requestVisualizerData(): ListenableFuture<SessionResult> {
+    return sendCustomCommand(
+        SessionCommand(Keys.CMD_GET_VISUALIZER_DATA, Bundle.EMPTY),
         Bundle.EMPTY
     )
 }

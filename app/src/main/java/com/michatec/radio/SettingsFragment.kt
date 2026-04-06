@@ -250,6 +250,14 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             return@setOnPreferenceClickListener true
         }
 
+        val preferenceVisualizer = Preference(context)
+        preferenceVisualizer.title = getString(R.string.pref_visualizer_title)
+        preferenceVisualizer.setIcon(R.drawable.ic_music_note_24dp)
+        preferenceVisualizer.setOnPreferenceClickListener {
+            findNavController().navigate(R.id.action_settings_to_visualizer)
+            return@setOnPreferenceClickListener true
+        }
+
         // set up "App Version" preference
         val preferenceAppVersion = Preference(context)
         preferenceAppVersion.title = getString(R.string.pref_app_version_title)
@@ -299,7 +307,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         // set preference categories
         val preferenceCategoryGeneral = PreferenceCategory(activity as Context)
         preferenceCategoryGeneral.title = getString(R.string.pref_general_title)
-        
+
         val preferenceCategoryAudioEffects = PreferenceCategory(context)
         preferenceCategoryAudioEffects.title = getString(R.string.pref_audio_effects_title)
 
@@ -328,6 +336,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceCategoryAudioEffects.addPreference(preferenceDrc)
         preferenceCategoryAudioEffects.addPreference(preferencePresetSelection)
         preferenceCategoryAudioEffects.addPreference(preferenceEqualizer)
+        preferenceCategoryAudioEffects.addPreference(preferenceVisualizer)
 
         screen.addPreference(preferenceCategoryMaintenance)
         preferenceCategoryMaintenance.addPreference(preferenceUpdateStationImages)
@@ -394,13 +403,13 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
 
         // Update Bass Boost
         findPreference<Preference>(Keys.PREF_BASS_BOOST)?.isEnabled = !isPresetSelected
-        
+
         // Update Reverb
         findPreference<Preference>(Keys.PREF_REVERB)?.isEnabled = !isPresetSelected
-        
+
         // Update DRC
         findPreference<Preference>(Keys.PREF_DRC)?.isEnabled = !isPresetSelected
-        
+
         // Update Equalizer with proper key
         val preferenceEqualizer = findPreference<Preference>(Keys.PREF_EQUALIZER)
         if (preferenceEqualizer != null) {

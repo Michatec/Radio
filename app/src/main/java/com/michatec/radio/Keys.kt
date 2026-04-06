@@ -27,6 +27,7 @@ object Keys {
     const val EXTRA_START_LAST_PLAYED_STATION: String = "START_LAST_PLAYED_STATION"
     const val EXTRA_SLEEP_TIMER_REMAINING: String = "SLEEP_TIMER_REMAINING"
     const val EXTRA_METADATA_HISTORY: String = "METADATA_HISTORY"
+    const val EXTRA_VISUALIZER_DATA: String = "VISUALIZER_DATA"
 
     // arguments
     const val ARG_UPDATE_COLLECTION: String = "ArgUpdateCollection"
@@ -43,6 +44,7 @@ object Keys {
     const val CMD_PLAY_STREAM: String = "PLAY_STREAM"
     const val CMD_REQUEST_SLEEP_TIMER_REMAINING: String = "REQUEST_SLEEP_TIMER_REMAINING"
     const val CMD_REQUEST_METADATA_HISTORY: String = "REQUEST_METADATA_HISTORY"
+    const val CMD_GET_VISUALIZER_DATA: String = "GET_VISUALIZER_DATA"
 
     // preferences
     const val PREF_RADIO_BROWSER_API: String = "RADIO_BROWSER_API"

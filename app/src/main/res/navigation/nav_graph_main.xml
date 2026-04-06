@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_settings_to_equalizer"
             app:destination="@id/equalizer_destination" />
+        <action
+            android:id="@+id/action_settings_to_visualizer"
+            app:destination="@id/visualizer_destination" />
     </fragment>
 
     <!-- EQUALIZER -->
@@ -31,4 +34,9 @@
         android:name="com.michatec.radio.EqualizerFragment"
         android:label="Equalizer" />
 
+    <!-- VISUALIZER -->
+    <fragment
+        android:id="@+id/visualizer_destination"
+        android:name="com.michatec.radio.VisualizerFragment"
+        android:label="Visualizer" />
 </navigation>

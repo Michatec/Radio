@@ -1,5 +1,6 @@
 package com.michatec.radio.helpers
 
+import android.util.Log
 import androidx.annotation.OptIn
 import androidx.media3.common.C
 import androidx.media3.common.audio.AudioProcessor
@@ -13,10 +14,17 @@ import java.nio.ByteOrder
 class NativeAudioProcessor : BaseAudioProcessor() {
 
     companion object {
+        private const val TAG = "NativeAudioProcessor"
         init {
-            System.loadLibrary("dsp")
+            try {
+                System.loadLibrary("dsp")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to load dsp library", e)
+            }
         }
     }
+
+    private var directBuffer: ByteBuffer? = null
 
     // ===== JNI =====
     private external fun setDrcEnabled(enabled: Boolean)
@@ -37,7 +45,6 @@ class NativeAudioProcessor : BaseAudioProcessor() {
     fun enableBassBoost(gainDb: Float) = setBassBoost(gainDb)
     fun setWidth(width: Float) = setStereoWidth(width)
 
-    @Suppress("unused")
     fun getVisualizer(): FloatArray {
         val raw = getFftData()
         val out = FloatArray(raw.size)
@@ -47,8 +54,11 @@ class NativeAudioProcessor : BaseAudioProcessor() {
 
     // ===== AudioProcessor Overrides =====
     override fun onConfigure(inputAudioFormat: AudioFormat): AudioFormat {
-        if (inputAudioFormat.encoding != C.ENCODING_PCM_16BIT)
+        // Always try to support the input format if it is PCM 16-bit
+        if (inputAudioFormat.encoding != C.ENCODING_PCM_16BIT) {
+            Log.e(TAG, "Unsupported encoding: ${inputAudioFormat.encoding}")
             throw AudioProcessor.UnhandledAudioFormatException(inputAudioFormat)
+        }
         return inputAudioFormat
     }
 
@@ -56,20 +66,33 @@ class NativeAudioProcessor : BaseAudioProcessor() {
         val size = inputBuffer.remaining()
         if (size == 0) return
 
-        // Direct ByteBuffer -> JNI
-        inputBuffer.order(ByteOrder.nativeOrder())
-        processAudioDirect(inputBuffer, size)
+        // Always ensure we have a direct buffer for JNI
+        if (directBuffer == null || directBuffer!!.capacity() < size) {
+            directBuffer = ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder())
+        }
+        
+        directBuffer!!.clear()
+        inputBuffer.position()
+        directBuffer!!.put(inputBuffer)
+        
+        directBuffer!!.flip()
+        
+        // Process audio in JNI
+        processAudioDirect(directBuffer!!, size)
 
-        // Replace output buffer
+        // Copy processed data back to output
         val out = replaceOutputBuffer(size)
         out.order(ByteOrder.nativeOrder())
-
-        // Mark as processed and copy to output
-        val currentPos = inputBuffer.position()
-        out.put(inputBuffer)
-        inputBuffer.position(currentPos + size)
-
+        
+        directBuffer!!.position(0)
+        out.put(directBuffer!!)
         out.flip()
+
+    }
+
+    override fun onReset() {
+        super.onReset()
+        directBuffer = null
     }
 
     // ===== Presets =====

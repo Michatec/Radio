@@ -26,13 +26,17 @@ project("radio")
 # for GameActivity/NativeActivity derived applications, the same library name must be
 # used in the AndroidManifest.xml file.
 add_library(dsp SHARED
-    # List C/C++ source files with relative paths to this CMakeLists.txt.
     dsp.cpp)
+
+add_library(extra SHARED
+    extra.cpp)
 
 # Specifies libraries CMake should link to your target library. You
 # can link libraries from various origins, such as libraries defined in this
 # build script, prebuilt third-party libraries, or Android system libraries.
 target_link_libraries(dsp
-    # List libraries link to the target library
+    android
+    log)
+target_link_libraries(extra
     android
     log)
