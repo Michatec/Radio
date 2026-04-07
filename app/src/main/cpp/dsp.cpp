@@ -158,7 +158,7 @@ public:
         return x * (1.0f - m) + out * m;
     }
     inline void processBlock(float* __restrict__ left, float* __restrict__ right, int count) {
-        float m = mix.load(std::memory_order_acquire);
+        float m = mix.load(std::memory_order_relaxed);
         if (m < 0.01f) return;
         for (int i = 0; i < count; i++) {
             left[i] = process(left[i]);
@@ -175,16 +175,14 @@ public:
 private:
     float envelopeL = 0.0f, envelopeR = 0.0f;
     float attackCoef = 0.0f, releaseCoef = 0.0f;
-    bool coefficientsValid = false;
 public:
     inline void updateCoefficients() {
-        if (coefficientsValid) return;
-        float a = attack.load(std::memory_order_acquire);
-        float r = release.load(std::memory_order_acquire);
-        float sr = sampleRate.load(std::memory_order_acquire);
+        float a = attack.load(std::memory_order_relaxed);
+        float r = release.load(std::memory_order_relaxed);
+        float sr = sampleRate.load(std::memory_order_relaxed);
+
         attackCoef = expf(-1.0f / (a * sr));
         releaseCoef = expf(-1.0f / (r * sr));
-        coefficientsValid = true;
     }
     inline void processBlock(float* __restrict__ buffer, int count, float& envelope) {
         updateCoefficients();
@@ -375,17 +373,22 @@ JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_proc
         gRightBuf[static_cast<size_t>(i)] = static_cast<float>(buffer[i * 2 + 1]) * INV_32768;
     }
 
-    bool eqEnabled = gEqEnabled.load(std::memory_order_acquire);
+    bool eqEnabled = gEqEnabled.load(std::memory_order_relaxed);
     if (eqEnabled) {
         for (int i = 0; i < numFrames; i++) {
-            float xL = gLeftBuf[static_cast<size_t>(i)];
-            float xR = gRightBuf[static_cast<size_t>(i)];
+            float xL = gLeftBuf[i];
+            float xR = gRightBuf[i];
+
             for (int b = 0; b < NUM_EQ_BANDS; b++) {
+                float g = gEqL[b].currentGain.load(std::memory_order_relaxed);
+                if (std::abs(g) < 0.01f) continue;
+
                 xL = gEqL[b].process(xL);
                 xR = gEqR[b].process(xR);
             }
-            gLeftBuf[static_cast<size_t>(i)] = xL;
-            gRightBuf[static_cast<size_t>(i)] = xR;
+
+            gLeftBuf[i] = xL;
+            gRightBuf[i] = xR;
         }
     }
 
@@ -396,7 +399,7 @@ JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_proc
 
     gReverbL.processBlock(gLeftBuf.data(), gRightBuf.data(), numFrames);
 
-    float stereoWidth = gStereoWidth.load(std::memory_order_acquire);
+    float stereoWidth = gStereoWidth.load(std::memory_order_relaxed);
     if (stereoWidth != 1.0f) {
         float halfWidth = stereoWidth * 0.5f;
         for (int j = 0; j < numFrames; j++) {
