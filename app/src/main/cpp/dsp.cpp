@@ -71,8 +71,6 @@ struct alignas(16) EqBandInterpolator {
         b1 = (-2.0f * c) * invA0;
         b2 = (1.0f - alpha / A) * invA0;
     }
-    
-    inline void clearState() { z1 = 0.0f; z2 = 0.0f; }
 };
 
 struct alignas(16) BassFilter {
@@ -144,17 +142,17 @@ public:
         float out = 0.0f;
 #pragma GCC unroll 4
         for (int i = 0; i < 4; i++) {
-            float delayed = combs[i].read();
+            float delayed = combs[static_cast<size_t>(i)].read();
             out += delayed;
-            combs[i].write(x + delayed * combFeedback[i] + DENORMAL_OFFSET);
-            combs[i].advance();
+            combs[static_cast<size_t>(i)].write(x + delayed * combFeedback[static_cast<size_t>(i)] + DENORMAL_OFFSET);
+            combs[static_cast<size_t>(i)].advance();
         }
         out *= 0.25f;
         for (int i = 0; i < 2; i++) {
-            float bufOut = allpasses[i].read();
+            float bufOut = allpasses[static_cast<size_t>(i)].read();
             float xOut = -0.5f * out + bufOut;
-            allpasses[i].write(out + 0.5f * bufOut);
-            allpasses[i].advance();
+            allpasses[static_cast<size_t>(i)].write(out + 0.5f * bufOut);
+            allpasses[static_cast<size_t>(i)].advance();
             out = xOut;
         }
         return x * (1.0f - m) + out * m;
@@ -194,7 +192,7 @@ public:
         float rt = ratio.load(std::memory_order_acquire);
         for(int i=0; i<count; i++){
             float absInput = fabsf(buffer[i]);
-            envelope = (absInput > envelope) ? attackCoef*envelope + (1-attackCoef)*absInput : releaseCoef*envelope + (1-releaseCoef)*absInput;
+            envelope = (absInput > envelope) ? attackCoef*envelope + (1.0f-attackCoef)*absInput : releaseCoef*envelope + (1.0f-releaseCoef)*absInput;
             float gain = (envelope>th)? (th + (envelope-th)/rt)/(envelope+1e-9f) : 1.0f;
             buffer[i]*=gain;
         }
@@ -234,23 +232,17 @@ inline void fastFFT(std::complex<float>* __restrict__ data, int n) {
     }
 }
 
-inline void applyHannWindow(float* __restrict__ data, int size) {
-    for (int i = 0; i < size; i++) {
-        float window = 0.5f * (1.0f - cosf(2.0f * static_cast<float>(M_PI) * i / (size - 1)));
-        data[i] *= window;
-    }
-}
-
 inline void applyHannWindowToReal(std::complex<float>* __restrict__ data, int size) {
+    const auto fSizeMinus1 = static_cast<float>(size - 1);
     for (int i = 0; i < size; i++) {
-        float window = 0.5f * (1.0f - cosf(2.0f * static_cast<float>(M_PI) * i / (size - 1)));
+        float window = 0.5f * (1.0f - cosf(2.0f * static_cast<float>(M_PI) * static_cast<float>(i) / fSizeMinus1));
         data[i] = std::complex<float>(data[i].real() * window, data[i].imag());
     }
 }
 
 inline float fastSoftClip(float x) {
     float ax = fabsf(x);
-    float sign = x > 0 ? 1.0f : -1.0f;
+    float sign = x > 0.0f ? 1.0f : -1.0f;
     if (ax > 1.0f) return sign;
     return x * (1.5f - 0.5f * x * x);
 }
@@ -260,19 +252,19 @@ static EqBandInterpolator gEqR[NUM_EQ_BANDS];
 static BassFilter gBassL, gBassR;
 static CompressorOptimized gCompressor;
 static ReverbOptimized gReverbL, gReverbR;
-static alignas(16) std::array<std::complex<float>, FFT_SIZE> gFFTWork;
+static std::array<std::complex<float>, FFT_SIZE> gFFTWork;
 static int gEqUpdateCounter = 0;
 
 inline void updateAllEqBands() {
     float sr = gSampleRate.load(std::memory_order_acquire);
     for (int b = 0; b < NUM_EQ_BANDS; b++) {
         float g = gEqL[b].targetGain.load(std::memory_order_acquire);
-        gEqL[b].setCoefficients(sr, EQ_FREQUENCIES[b], g, 1.0f);
-        gEqR[b].setCoefficients(sr, EQ_FREQUENCIES[b], g, 1.0f);
+        gEqL[b].setCoefficients(sr, EQ_FREQUENCIES[static_cast<size_t>(b)], g, 1.0f);
+        gEqR[b].setCoefficients(sr, EQ_FREQUENCIES[static_cast<size_t>(b)], g, 1.0f);
     }
     bool anyActive = false;
-    for (int b = 0; b < NUM_EQ_BANDS; b++) {
-        if (std::abs(gEqL[b].targetGain.load(std::memory_order_acquire)) > 0.1f) {
+    for (auto const& band : gEqL) {
+        if (std::abs(band.targetGain.load(std::memory_order_acquire)) > 0.1f) {
             anyActive = true;
             break;
         }
@@ -296,13 +288,6 @@ JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setR
     gReverbL.mix.store(m, std::memory_order_release);
     gReverbR.mix.store(m, std::memory_order_release);
 }
-JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setEqBand(JNIEnv*, jobject, jint b, jfloat g) {
-    if (b >= 0 && b < NUM_EQ_BANDS) {
-        gEqL[b].setTargetGain(g);
-        gEqR[b].setTargetGain(g);
-        gEqUpdateCounter = 1;
-    }
-}
 JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setEqFull(JNIEnv* env, jobject thiz, jfloatArray gains) {
     if (!gains) return;
     
@@ -322,8 +307,12 @@ JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setE
     env->ReleaseFloatArrayElements(gains, gainsPtr, JNI_ABORT);
 }
 JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_setBassBoost(JNIEnv*, jobject, jfloat g) {
-    gBassL.targetGain.store(g, std::memory_order_release);
-    gBassR.targetGain.store(g, std::memory_order_release);
+    float scaledGain = g * 4.0f;
+    gBassL.targetGain.store(scaledGain, std::memory_order_release);
+    gBassR.targetGain.store(scaledGain, std::memory_order_release);
+    float sr = gSampleRate.load(std::memory_order_acquire);
+    gBassL.applyGain(sr);
+    gBassR.applyGain(sr);
     if (std::abs(g) > 0.01f) {
         gBassL.active.store(true, std::memory_order_release);
         gBassR.active.store(true, std::memory_order_release);
@@ -344,7 +333,7 @@ JNIEXPORT jfloatArray JNICALL Java_com_michatec_radio_helpers_NativeAudioProcess
 
 inline void computeLogarithmicFFT(float* output, const std::complex<float>* input, int inputSize) {
     float sr = gSampleRate.load(std::memory_order_acquire);
-    float binWidth = sr / (2.0f * inputSize);
+    float binWidth = sr / (2.0f * static_cast<float>(inputSize));
     constexpr int NUM_BANDS = 256;
     constexpr float MIN_FREQ = 20.0f;
     constexpr float MAX_FREQ = 20000.0f;
@@ -353,8 +342,8 @@ inline void computeLogarithmicFFT(float* output, const std::complex<float>* inpu
     float logRange = logMax - logMin;
     
     for (int b = 0; b < NUM_BANDS; b++) {
-        float f1 = expf(logMin + (logRange * b / NUM_BANDS));
-        float f2 = expf(logMin + (logRange * (b + 1) / NUM_BANDS));
+        float f1 = expf(logMin + (logRange * static_cast<float>(b) / static_cast<float>(NUM_BANDS)));
+        float f2 = expf(logMin + (logRange * static_cast<float>(b + 1) / static_cast<float>(NUM_BANDS)));
         int idx1 = static_cast<int>(f1 / binWidth);
         int idx2 = static_cast<int>(f2 / binWidth);
         idx1 = std::max(0, std::min(idx1, inputSize - 1));
@@ -382,27 +371,27 @@ JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_proc
     }
 
     for (int i = 0; i < numFrames; i++) {
-        gLeftBuf[i] = static_cast<float>(buffer[i * 2]) * INV_32768;
-        gRightBuf[i] = static_cast<float>(buffer[i * 2 + 1]) * INV_32768;
+        gLeftBuf[static_cast<size_t>(i)] = static_cast<float>(buffer[i * 2]) * INV_32768;
+        gRightBuf[static_cast<size_t>(i)] = static_cast<float>(buffer[i * 2 + 1]) * INV_32768;
     }
 
     bool eqEnabled = gEqEnabled.load(std::memory_order_acquire);
     if (eqEnabled) {
         for (int i = 0; i < numFrames; i++) {
-            float xL = gLeftBuf[i];
-            float xR = gRightBuf[i];
+            float xL = gLeftBuf[static_cast<size_t>(i)];
+            float xR = gRightBuf[static_cast<size_t>(i)];
             for (int b = 0; b < NUM_EQ_BANDS; b++) {
                 xL = gEqL[b].process(xL);
                 xR = gEqR[b].process(xR);
             }
-            gLeftBuf[i] = xL;
-            gRightBuf[i] = xR;
+            gLeftBuf[static_cast<size_t>(i)] = xL;
+            gRightBuf[static_cast<size_t>(i)] = xR;
         }
     }
 
     for(int i = 0; i < numFrames; i++) {
-        gLeftBuf[i] = gBassL.process(gLeftBuf[i]);
-        gRightBuf[i] = gBassR.process(gRightBuf[i]);
+        gLeftBuf[static_cast<size_t>(i)] = gBassL.process(gLeftBuf[static_cast<size_t>(i)]);
+        gRightBuf[static_cast<size_t>(i)] = gBassR.process(gRightBuf[static_cast<size_t>(i)]);
     }
 
     gReverbL.processBlock(gLeftBuf.data(), gRightBuf.data(), numFrames);
@@ -411,10 +400,10 @@ JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_proc
     if (stereoWidth != 1.0f) {
         float halfWidth = stereoWidth * 0.5f;
         for (int j = 0; j < numFrames; j++) {
-            float mid = (gLeftBuf[j] + gRightBuf[j]) * 0.5f;
-            float side = (gLeftBuf[j] - gRightBuf[j]) * halfWidth;
-            gLeftBuf[j] = mid + side;
-            gRightBuf[j] = mid - side;
+            float mid = (gLeftBuf[static_cast<size_t>(j)] + gRightBuf[static_cast<size_t>(j)]) * 0.5f;
+            float side = (gLeftBuf[static_cast<size_t>(j)] - gRightBuf[static_cast<size_t>(j)]) * halfWidth;
+            gLeftBuf[static_cast<size_t>(j)] = mid + side;
+            gRightBuf[static_cast<size_t>(j)] = mid - side;
         }
     }
 
@@ -422,14 +411,14 @@ JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_proc
 
     if (numFrames >= FFT_SIZE) {
         for (int k = 0; k < FFT_SIZE; k++) {
-            gFFTWork[k] = std::complex<float>(gLeftBuf[k], 0.0f);
+            gFFTWork[static_cast<size_t>(k)] = std::complex<float>(gLeftBuf[static_cast<size_t>(k)], 0.0f);
         }
     } else {
         for (int k = 0; k < numFrames; k++) {
-            gFFTWork[k] = std::complex<float>(gLeftBuf[k], 0.0f);
+            gFFTWork[static_cast<size_t>(k)] = std::complex<float>(gLeftBuf[static_cast<size_t>(k)], 0.0f);
         }
         for (int k = numFrames; k < FFT_SIZE; k++) {
-            gFFTWork[k] = std::complex<float>(0.0f, 0.0f);
+            gFFTWork[static_cast<size_t>(k)] = std::complex<float>(0.0f, 0.0f);
         }
     }
     
@@ -438,8 +427,8 @@ JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_proc
     computeLogarithmicFFT(gFFTData.data(), gFFTWork.data(), FFT_SIZE / 2);
 
     for (int k = 0; k < numFrames; k++) {
-        buffer[k * 2] = static_cast<jshort>(fastSoftClip(gLeftBuf[k]) * 32767.0f);
-        buffer[k * 2 + 1] = static_cast<jshort>(fastSoftClip(gRightBuf[k]) * 32767.0f);
+        buffer[k * 2] = static_cast<jshort>(fastSoftClip(gLeftBuf[static_cast<size_t>(k)]) * 32767.0f);
+        buffer[k * 2 + 1] = static_cast<jshort>(fastSoftClip(gRightBuf[static_cast<size_t>(k)]) * 32767.0f);
     }
 }
 }

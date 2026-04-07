@@ -30,7 +30,6 @@ class NativeAudioProcessor : BaseAudioProcessor() {
     private external fun setSampleRate(sampleRate: Float)
     private external fun setDrcEnabled(enabled: Boolean)
     private external fun setReverbMix(mix: Float)
-    private external fun setEqBand(band: Int, gainDb: Float)
     private external fun setEqFull(gains: FloatArray)
     private external fun setBassBoost(gainDb: Float)
     private external fun setStereoWidth(width: Float)
@@ -40,7 +39,6 @@ class NativeAudioProcessor : BaseAudioProcessor() {
     // ===== API =====
     fun enableDrc(enabled: Boolean) = setDrcEnabled(enabled)
     fun setReverb(mix: Float) = setReverbMix(mix)
-    fun setEq(band: Int, gainDb: Float) = setEqBand(band, gainDb)
     fun setEqAll(gains: FloatArray) = setEqFull(gains)
     fun enableBassBoost(gainDb: Float) = setBassBoost(gainDb)
     fun setWidth(width: Float) = setStereoWidth(width)
@@ -102,21 +100,21 @@ class NativeAudioProcessor : BaseAudioProcessor() {
         setReverb(0.10f)
         setWidth(1.1f)
         setEqAll(floatArrayOf(2f, 1f, 0f, -1f, -1f, 0f, 1f, 2f, 2f, 3f))
-        enableBassBoost(0.6f)
+        enableBassBoost(0.9f)
     }
 
     fun setPresetPop() {
         enableDrc(true)
-        setReverb(0.15f)
+        setReverb(0.10f)
         setWidth(1.05f)
         setEqAll(floatArrayOf(0f, 1f, 1f, 1f, 0f, 0f, 1f, 2f, 2f, 1f))
-        enableBassBoost(0.5f)
+        enableBassBoost(0.6f)
     }
 
     fun setPresetJazz() {
         enableDrc(false)
         setReverb(0.15f)
-        setWidth(1.0f)
+        setWidth(0.8f)
         setEqAll(floatArrayOf(0f, 0f, 1f, 1f, 0f, 0f, 1f, 1f, 0f, 0f))
         enableBassBoost(0.2f)
     }
