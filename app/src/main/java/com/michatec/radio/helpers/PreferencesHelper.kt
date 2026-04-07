@@ -263,7 +263,7 @@ object PreferencesHelper {
 
     /* Loads Reverb mix */
     fun loadReverb(): Float {
-        return if (sharedPreferences.getBoolean(Keys.PREF_REVERB, false)) 0.18f else 0.0f
+        return if (sharedPreferences.getBoolean(Keys.PREF_REVERB, false)) 0.3f else 0.0f
     }
 
 

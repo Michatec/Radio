@@ -97,7 +97,7 @@ class NativeAudioProcessor : BaseAudioProcessor() {
     // ===== Presets =====
     fun setPresetRock() {
         enableDrc(true)
-        setReverb(0.10f)
+        setReverb(0.26f)
         setWidth(1.1f)
         setEqAll(floatArrayOf(2f, 1f, 0f, -1f, -1f, 0f, 1f, 2f, 2f, 3f))
         enableBassBoost(0.9f)
@@ -105,7 +105,7 @@ class NativeAudioProcessor : BaseAudioProcessor() {
 
     fun setPresetPop() {
         enableDrc(true)
-        setReverb(0.10f)
+        setReverb(0.18f)
         setWidth(1.05f)
         setEqAll(floatArrayOf(0f, 1f, 1f, 1f, 0f, 0f, 1f, 2f, 2f, 1f))
         enableBassBoost(0.6f)

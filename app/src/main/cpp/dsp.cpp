@@ -121,48 +121,90 @@ struct alignas(16) BassFilter {
     }
 };
 
-template<int SIZE>
-struct CircularBuffer {
-    alignas(16) std::array<float, SIZE> data = {};
-    int pos = 0;
-    [[nodiscard]] inline float read() const { return data[pos]; }
-    inline void write(float v) { data[pos] = v; }
-    inline void advance() { pos = (pos + 1) % SIZE; }
-};
-
 class ReverbOptimized {
-    std::array<CircularBuffer<1116>, 4> combs;
-    std::array<CircularBuffer<556>, 2> allpasses;
-    std::array<float, 4> combFeedback = {0.841f, 0.815f, 0.796f, 0.771f};
+    struct DelayLine {
+        float buffer[48000]{};
+        int size = 48000;
+        int pos = 0;
+
+        inline float read(float delaySamples) {
+            float readPos = static_cast<float>(pos) - delaySamples;
+            if (readPos < 0.0f) readPos += static_cast<float>(size);
+
+            int i1 = static_cast<int>(readPos);
+            int i2 = (i1 + 1) % size;
+            float frac = readPos - static_cast<float>(i1);
+
+            return buffer[i1] * (1.0f - frac) + buffer[i2] * frac;
+        }
+
+        inline void write(float x) {
+            buffer[pos] = x;
+            pos++;
+            if (pos >= size) pos = 0;
+        }
+    };
+
+    DelayLine delays[8];
+
+    float feedback[8] = {
+            0.78f, 0.80f, 0.82f, 0.84f,
+            0.76f, 0.79f, 0.81f, 0.83f
+    };
+
+    float baseDelay[8] = {
+            1423.0f, 1557.0f, 1617.0f, 1789.0f,
+            1867.0f, 1999.0f, 2137.0f, 2251.0f
+    };
+
+    float modPhase[8] = {};
+    float modSpeed[8] = {
+            0.10f, 0.12f, 0.09f, 0.11f,
+            0.13f, 0.08f, 0.14f, 0.07f
+    };
+
 public:
     std::atomic<float> mix{0.0f};
-    inline float process(float x) {
-        float m = mix.load(std::memory_order_acquire);
+
+    inline float processSample(float x) {
+        float m = mix.load(std::memory_order_relaxed);
         if (m < 0.01f) return x;
         float out = 0.0f;
-#pragma GCC unroll 4
-        for (int i = 0; i < 4; i++) {
-            float delayed = combs[static_cast<size_t>(i)].read();
+
+#pragma GCC unroll 8
+        for (int i = 0; i < 8; i++) {
+            modPhase[i] += modSpeed[i];
+            if (modPhase[i] > 2.0f * static_cast<float>(M_PI)) modPhase[i] -= 2.0f * static_cast<float>(M_PI);
+
+            float mod = sinf(modPhase[i]) * 5.0f;
+
+            float delayTime = baseDelay[i] + mod;
+
+            float delayed = delays[i].read(delayTime);
+
+            float input = x + delayed * feedback[i] + DENORMAL_OFFSET;
+
+            delays[i].write(input);
+
             out += delayed;
-            combs[static_cast<size_t>(i)].write(x + delayed * combFeedback[static_cast<size_t>(i)] + DENORMAL_OFFSET);
-            combs[static_cast<size_t>(i)].advance();
         }
-        out *= 0.25f;
-        for (int i = 0; i < 2; i++) {
-            float bufOut = allpasses[static_cast<size_t>(i)].read();
-            float xOut = -0.5f * out + bufOut;
-            allpasses[static_cast<size_t>(i)].write(out + 0.5f * bufOut);
-            allpasses[static_cast<size_t>(i)].advance();
-            out = xOut;
-        }
-        return x * (1.0f - m) + out * m;
+
+        return x * (1.0f - m) + (out * 0.125f) * m;
     }
+
     inline void processBlock(float* __restrict__ left, float* __restrict__ right, int count) {
         float m = mix.load(std::memory_order_relaxed);
         if (m < 0.01f) return;
+
         for (int i = 0; i < count; i++) {
-            left[i] = process(left[i]);
-            right[i] = process(right[i]);
+            float l = processSample(left[i]);
+            float r = processSample(right[i]);
+
+            float wetL = l * 0.7f + r * 0.3f;
+            float wetR = r * 0.7f + l * 0.3f;
+
+            left[i] = wetL;
+            right[i] = wetR;
         }
     }
 };
@@ -376,8 +418,8 @@ JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_proc
     bool eqEnabled = gEqEnabled.load(std::memory_order_relaxed);
     if (eqEnabled) {
         for (int i = 0; i < numFrames; i++) {
-            float xL = gLeftBuf[i];
-            float xR = gRightBuf[i];
+            float xL = gLeftBuf[static_cast<size_t>(i)];
+            float xR = gRightBuf[static_cast<size_t>(i)];
 
             for (int b = 0; b < NUM_EQ_BANDS; b++) {
                 float g = gEqL[b].currentGain.load(std::memory_order_relaxed);
@@ -387,8 +429,8 @@ JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_proc
                 xR = gEqR[b].process(xR);
             }
 
-            gLeftBuf[i] = xL;
-            gRightBuf[i] = xR;
+            gLeftBuf[static_cast<size_t>(i)] = xL;
+            gRightBuf[static_cast<size_t>(i)] = xR;
         }
     }
 
