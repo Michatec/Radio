@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_map_fragment_to_settings_fragment"
             app:destination="@id/settings_destination" />
+        <action
+            android:id="@+id/action_map_fragment_to_visualizer_fragment"
+            app:destination="@id/visualizer_destination" />
     </fragment>
 
     <!-- SETTINGS -->

@@ -169,6 +169,9 @@ class CollectionAdapter(
                 addNewViewHolder.settingsButtonView.setOnClickListener {
                     it.findNavController().navigate(R.id.settings_destination)
                 }
+                addNewViewHolder.visualizerButtonView.setOnClickListener {
+                    it.findNavController().navigate(R.id.visualizer_destination)
+                }
             }
             // CASE STATION CARD
             is StationViewHolder -> {
@@ -186,6 +189,8 @@ class CollectionAdapter(
                 setEditViews(stationViewHolder, station)
                 setPlaybackProgress(stationViewHolder, station)
                 setDownloadProgress(stationViewHolder, station)
+
+                stationViewHolder.playButtonView.isGone = true
 
                 // highlight if reordering
                 if (reorderStationUuid == station.uuid) {
@@ -754,6 +759,8 @@ class CollectionAdapter(
             listItemAddNewLayout.findViewById(R.id.card_add_new_station)
         val settingsButtonView: ExtendedFloatingActionButton =
             listItemAddNewLayout.findViewById(R.id.card_settings)
+        val visualizerButtonView: ExtendedFloatingActionButton =
+            listItemAddNewLayout.findViewById(R.id.card_visualizer)
     }
     /*
      * End of inner class
@@ -772,7 +779,6 @@ class CollectionAdapter(
         val bufferingProgress: ProgressBar = stationCardLayout.findViewById(R.id.buffering_progress)
         val downloadProgress: ProgressBar = stationCardLayout.findViewById(R.id.download_progress)
 
-        //        val menuButtonView: ImageView = stationCardLayout.findViewById(R.id.menu_button)
         val playButtonView: ImageView = stationCardLayout.findViewById(R.id.playback_button)
         val editViews: Group = stationCardLayout.findViewById(R.id.default_edit_views)
         val stationImageChangeView: ImageView =
