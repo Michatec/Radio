@@ -9,6 +9,11 @@
         android:id="@+id/station_search_box_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:clickable="true"
+        android:nextFocusRight="@id/dialog_negative_button"
+        android:nextFocusDown="@id/station_search_result_list"
         app:iconifiedByDefault="false"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,6 +49,8 @@
         android:layout_marginTop="8dp"
         android:clipToPadding="false"
         android:paddingBottom="16dp"
+        android:nextFocusRight="@id/dialog_negative_button"
+        android:nextFocusUp="@id/station_search_box_view"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,6 +80,8 @@
             style="@style/Widget.Material3.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:nextFocusUp="@id/station_search_box_view"
+            android:nextFocusLeft="@id/station_search_result_list"
             android:text="@string/dialog_find_station_button_add" />
 
         <Button
@@ -81,6 +90,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:nextFocusLeft="@id/station_search_result_list"
             android:text="@string/dialog_generic_button_cancel" />
 
     </LinearLayout>

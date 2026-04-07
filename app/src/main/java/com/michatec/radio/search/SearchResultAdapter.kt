@@ -8,15 +8,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.media3.common.MediaItem
+import androidx.media3.common.*
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.audio.AudioSink
+import androidx.media3.exoplayer.audio.DefaultAudioSink
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textview.MaterialTextView
 import com.michatec.radio.R
 import com.michatec.radio.core.Station
+import com.michatec.radio.helpers.NativeAudioProcessor
 
 
 /*
@@ -31,6 +37,7 @@ class SearchResultAdapter(
     private var exoPlayer: ExoPlayer? = null
     private var paused: Boolean = false
     private var isItemSelected: Boolean = false
+    private var nativeAudioProcessor = NativeAudioProcessor()
 
     /* Listener Interface */
     interface SearchResultAdapterListener {
@@ -138,6 +145,7 @@ class SearchResultAdapter(
     }
 
 
+    @OptIn(UnstableApi::class)
     private fun performPrePlayback(context: Context, streamUri: String) {
         if (streamUri.contains(".m3u8")) {
             // release previous player if it exists
@@ -151,8 +159,30 @@ class SearchResultAdapter(
             // release previous player if it exists
             stopPrePlayback()
 
-            // create a new instance of ExoPlayer
-            exoPlayer = ExoPlayer.Builder(context).build()
+            // set up audio attributes for the preview player
+            val audioAttributes = androidx.media3.common.AudioAttributes.Builder()
+                .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+                .setUsage(C.USAGE_MEDIA)
+                .build()
+
+            // Create a RenderersFactory that injects the NativeAudioProcessor
+            val renderersFactory = object : DefaultRenderersFactory(context) {
+                override fun buildAudioSink(
+                    context: Context,
+                    enableFloatOutput: Boolean,
+                    enableAudioTrackPlaybackParams: Boolean
+                ): AudioSink? {
+                    return DefaultAudioSink.Builder(context)
+                        .setAudioProcessors(arrayOf(nativeAudioProcessor))
+                        .build()
+                }
+            }
+
+            // create a new instance of ExoPlayer with focus handling
+            exoPlayer = ExoPlayer.Builder(context, renderersFactory)
+                .setAudioAttributes(audioAttributes, true)
+                .setHandleAudioBecomingNoisy(true)
+                .build()
 
             // create a MediaItem with the streamUri
             val mediaItem = MediaItem.fromUri(streamUri)
@@ -199,7 +229,7 @@ class SearchResultAdapter(
             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
             .build()
 
-        val focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
+        val focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
             .setAudioAttributes(audioAttributes)
             .build()
 

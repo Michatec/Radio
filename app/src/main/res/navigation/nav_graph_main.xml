@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_map_fragment_to_visualizer_fragment"
             app:destination="@id/visualizer_destination" />
+        <action
+            android:id="@+id/action_map_fragment_to_player_to_add_station"
+            app:destination="@id/add_station_destination" />
     </fragment>
 
     <!-- SETTINGS -->
@@ -42,4 +45,11 @@
         android:id="@+id/visualizer_destination"
         android:name="com.michatec.radio.VisualizerFragment"
         android:label="Visualizer" />
+
+    <!-- ADD STATION (TV) -->
+    <fragment
+        android:id="@+id/add_station_destination"
+        android:name="com.michatec.radio.AddStationFragment"
+        android:label="Add Station"
+        tools:layout="@layout/dialog_find_station" />
 </navigation>

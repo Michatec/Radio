@@ -7,7 +7,7 @@
     android:layout_marginBottom="8dp"
     android:focusable="true"
     android:clickable="true"
-    android:nextFocusRight="@+id/dialog_positive_button"
+    android:nextFocusRight="@+id/dialog_negative_button"
     android:background="@drawable/selector_search_result_item">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,6 +20,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
             android:textColor="@color/text_default"
@@ -35,6 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
             android:textColor="@color/text_lightweight"

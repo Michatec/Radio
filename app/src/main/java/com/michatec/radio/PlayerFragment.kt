@@ -34,6 +34,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionResult
 import androidx.media3.session.SessionToken
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
@@ -342,7 +343,14 @@ class PlayerFragment : Fragment(),
 
     /* Overrides onAddNewButtonTapped from CollectionAdapterListener */
     override fun onAddNewButtonTapped() {
-        FindStationDialog(activity as Activity, this as FindStationDialog.FindStationDialogListener).show()
+        // stop playback when adding a new station
+        controller?.stop()
+
+        if (activity?.packageManager?.hasSystemFeature(PackageManager.FEATURE_LEANBACK) == true) {
+            findNavController().navigate(R.id.action_map_fragment_to_player_to_add_station)
+        } else {
+            FindStationDialog(activity as Activity, this as FindStationDialog.FindStationDialogListener).show()
+        }
     }
 
 
@@ -625,6 +633,8 @@ class PlayerFragment : Fragment(),
                 }
                 withContext(Main) {
                     if (stationList.isNotEmpty()) {
+                        // stop playback when adding a new station via intent
+                        controller?.stop()
                         AddStationDialog(activity as Activity, stationList, this@PlayerFragment as AddStationDialog.AddStationDialogListener).show()
                     } else {
                         // invalid address
