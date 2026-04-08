@@ -277,13 +277,13 @@ object PreferencesHelper {
         return when (band) {
             0 -> sharedPreferences.getInt(Keys.PREF_EQ_LOW, 0)
             1 -> sharedPreferences.getInt(Keys.PREF_EQ_BAND_1, 0)
-            2 -> sharedPreferences.getInt(Keys.PREF_EQ_MID, 0)
+            2 -> sharedPreferences.getInt(Keys.PREF_EQ_BAND_2, 0)
             3 -> sharedPreferences.getInt(Keys.PREF_EQ_BAND_3, 0)
             4 -> sharedPreferences.getInt(Keys.PREF_EQ_BAND_4, 0)
             5 -> sharedPreferences.getInt(Keys.PREF_EQ_BAND_5, 0)
-            6 -> sharedPreferences.getInt(Keys.PREF_EQ_BAND_6, 0)
-            7 -> sharedPreferences.getInt(Keys.PREF_EQ_BAND_7, 0)
-            8 -> sharedPreferences.getInt(Keys.PREF_EQ_BAND_8, 0)
+            6 -> sharedPreferences.getInt(Keys.PREF_EQ_MID, 0)
+            7 -> sharedPreferences.getInt(Keys.PREF_EQ_BAND_6, 0)
+            8 -> sharedPreferences.getInt(Keys.PREF_EQ_BAND_7, 0)
             9 -> sharedPreferences.getInt(Keys.PREF_EQ_HIGH, 0)
             else -> 0
         }
@@ -340,7 +340,15 @@ object PreferencesHelper {
     fun resetEqualizer() {
         sharedPreferences.edit {
             putInt(Keys.PREF_EQ_LOW, 0)
+            putInt(Keys.PREF_EQ_BAND_1, 0)
+            putInt(Keys.PREF_EQ_BAND_2, 0)
+            putInt(Keys.PREF_EQ_BAND_3, 0)
+            putInt(Keys.PREF_EQ_BAND_4, 0)
+            putInt(Keys.PREF_EQ_BAND_5, 0)
             putInt(Keys.PREF_EQ_MID, 0)
+            putInt(Keys.PREF_EQ_BAND_6, 0)
+            putInt(Keys.PREF_EQ_BAND_7, 0)
+            putInt(Keys.PREF_EQ_BAND_8, 0)
             putInt(Keys.PREF_EQ_HIGH, 0)
         }
     }
