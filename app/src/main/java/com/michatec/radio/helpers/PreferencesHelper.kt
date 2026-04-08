@@ -348,7 +348,6 @@ object PreferencesHelper {
             putInt(Keys.PREF_EQ_MID, 0)
             putInt(Keys.PREF_EQ_BAND_6, 0)
             putInt(Keys.PREF_EQ_BAND_7, 0)
-            putInt(Keys.PREF_EQ_BAND_8, 0)
             putInt(Keys.PREF_EQ_HIGH, 0)
         }
     }

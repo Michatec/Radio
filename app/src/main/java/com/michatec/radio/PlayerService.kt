@@ -333,7 +333,7 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
             Keys.PREF_EQ_LOW, Keys.PREF_EQ_MID, Keys.PREF_EQ_HIGH,
             Keys.PREF_EQ_BAND_1, Keys.PREF_EQ_BAND_2, Keys.PREF_EQ_BAND_3,
             Keys.PREF_EQ_BAND_4, Keys.PREF_EQ_BAND_5, Keys.PREF_EQ_BAND_6,
-            Keys.PREF_EQ_BAND_7, Keys.PREF_EQ_BAND_8,
+            Keys.PREF_EQ_BAND_7,
             Keys.PREF_PRESET_SELECTED,
             Keys.PREF_PRESET_EQ_BAND_0, Keys.PREF_PRESET_EQ_BAND_1, Keys.PREF_PRESET_EQ_BAND_2,
             Keys.PREF_PRESET_EQ_BAND_3, Keys.PREF_PRESET_EQ_BAND_4, Keys.PREF_PRESET_EQ_BAND_5,

@@ -76,7 +76,6 @@ object Keys {
     const val PREF_EQ_BAND_5: String = "EQ_BAND_5"
     const val PREF_EQ_BAND_6: String = "EQ_BAND_6"
     const val PREF_EQ_BAND_7: String = "EQ_BAND_7"
-    const val PREF_EQ_BAND_8: String = "EQ_BAND_8"
     const val PREF_PRESET_SELECTED: String = "PRESET_SELECTED"
     const val PREF_PRESET_EQ_BAND_0: String = "PRESET_EQ_BAND_0"
     const val PREF_PRESET_EQ_BAND_1: String = "PRESET_EQ_BAND_1"
