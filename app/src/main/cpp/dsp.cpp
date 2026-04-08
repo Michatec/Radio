@@ -19,7 +19,7 @@ static constexpr int NUM_EQ_BANDS = 10;
 static constexpr float INV_32768 = 1.0f / 32768.0f;
 static constexpr float SQRT_2_INV = 0.70710678f;
 static constexpr float DENORMAL_OFFSET = 1e-18f;
-static constexpr float INTERPOLATION_SPEED = 0.1f;
+static constexpr float INTERPOLATION_SPEED = 0.5f;
 
 static constexpr std::array<float, NUM_EQ_BANDS> EQ_FREQUENCIES = {
         31.25f, 62.5f, 125.0f, 250.0f, 500.0f,
@@ -47,8 +47,6 @@ struct alignas(16) EqBandInterpolator {
     inline float process(float x) {
         if (!active) return x;
         updateInterpolation();
-        float g = currentGain.load(std::memory_order_acquire);
-        if (std::abs(g) < 0.01f) return x;
         float y = x * a0 + z1;
         z1 = x * a1 + z2 - b1 * y + DENORMAL_OFFSET;
         z2 = x * a2 - b2 * y;
@@ -56,10 +54,8 @@ struct alignas(16) EqBandInterpolator {
     }
     
     inline void setCoefficients(float sr, float f, float g, float bw) {
-        const bool isActive = std::abs(g) > 0.1f;
-        active = isActive;
-        if (!isActive) return;
-        const float A = powf(10.0f, g / 40.0f);
+        active = true;
+        const float A = powf(10.0f, g / 60.0f);
         const float w = 2.0f * static_cast<float>(M_PI) * f / sr;
         const float alpha = sinf(w) * sinhf(logf(2.0f) / 2.0f * bw * w / sinf(w));
         const float c = cosf(w);
@@ -92,8 +88,6 @@ struct alignas(16) BassFilter {
     inline float process(float x) {
         if (!active.load(std::memory_order_acquire)) return x;
         updateInterpolation();
-        float g = currentGain.load(std::memory_order_acquire);
-        if (std::abs(g) < 0.01f) return x;
         float y = x * a0 + z1;
         z1 = x * a1 + z2 - b1 * y + DENORMAL_OFFSET;
         z2 = x * a2 - b2 * y;
@@ -102,7 +96,7 @@ struct alignas(16) BassFilter {
     }
 
     void setCoefficients(float sr, float f, float g, float q){
-        float A=powf(10.0f,g/40.0f);
+        float A=powf(10.0f,g/60.0f);
         float w=2.0f*static_cast<float>(M_PI)*f/sr;
         float alpha=sinf(w)/2.0f*sqrtf((A+1.0f/A)*(1.0f/q-1.0f)+2.0f);
         float c=cosf(w),sqrtA=sqrtf(A);
@@ -244,7 +238,6 @@ public:
     }
 };
 
-static std::atomic<bool> gEqEnabled{false};
 static std::atomic<float> gStereoWidth{1.0f};
 alignas(16) std::array<float, 4096> gLeftBuf, gRightBuf;
 alignas(16) std::array<float, 256> gFFTData;
@@ -302,14 +295,6 @@ inline void updateAllEqBands() {
         gEqL[b].setCoefficients(sr, EQ_FREQUENCIES[static_cast<size_t>(b)], g, 1.0f);
         gEqR[b].setCoefficients(sr, EQ_FREQUENCIES[static_cast<size_t>(b)], g, 1.0f);
     }
-    bool anyActive = false;
-    for (auto const& band : gEqL) {
-        if (std::abs(band.targetGain.load(std::memory_order_acquire)) > 0.1f) {
-            anyActive = true;
-            break;
-        }
-    }
-    gEqEnabled.store(anyActive, std::memory_order_release);
 }
 
 extern "C" {
@@ -415,23 +400,17 @@ JNIEXPORT void JNICALL Java_com_michatec_radio_helpers_NativeAudioProcessor_proc
         gRightBuf[static_cast<size_t>(i)] = static_cast<float>(buffer[i * 2 + 1]) * INV_32768;
     }
 
-    bool eqEnabled = gEqEnabled.load(std::memory_order_relaxed);
-    if (eqEnabled) {
-        for (int i = 0; i < numFrames; i++) {
-            float xL = gLeftBuf[static_cast<size_t>(i)];
-            float xR = gRightBuf[static_cast<size_t>(i)];
+    for (int i = 0; i < numFrames; i++) {
+        float xL = gLeftBuf[static_cast<size_t>(i)];
+        float xR = gRightBuf[static_cast<size_t>(i)];
 
-            for (int b = 0; b < NUM_EQ_BANDS; b++) {
-                float g = gEqL[b].currentGain.load(std::memory_order_relaxed);
-                if (std::abs(g) < 0.01f) continue;
-
-                xL = gEqL[b].process(xL);
-                xR = gEqR[b].process(xR);
-            }
-
-            gLeftBuf[static_cast<size_t>(i)] = xL;
-            gRightBuf[static_cast<size_t>(i)] = xR;
+        for (int b = 0; b < NUM_EQ_BANDS; b++) {
+            xL = gEqL[b].process(xL);
+            xR = gEqR[b].process(xR);
         }
+
+        gLeftBuf[static_cast<size_t>(i)] = xL;
+        gRightBuf[static_cast<size_t>(i)] = xR;
     }
 
     for(int i = 0; i < numFrames; i++) {
