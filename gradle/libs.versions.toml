@@ -15,7 +15,7 @@ paletteKtx = "1.0.0"
 preferenceKtx = "1.2.1"
 volley = "1.2.1"
 workRuntimeKtx = "2.11.2"
-playServicesCastFramework = "22.3.0"
+playServicesCastFramework = "22.3.1"
 
 [libraries]
 activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }

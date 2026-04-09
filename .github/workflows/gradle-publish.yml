@@ -10,7 +10,7 @@ on:
 
 env:
   ANDROID_HOME: /usr/local/lib/android/sdk/
-  APK_PATH: app/build/outputs/apk/release/Radio.apk
+  APK_PATH: app/build/outputs/apk/release/app-release.apk
   APKSIGNER: /usr/local/lib/android/sdk/build-tools/34.0.0/apksigner
   ZIPALIGN: /usr/local/lib/android/sdk/build-tools/34.0.0/zipalign
 
@@ -31,15 +31,12 @@ jobs:
           cache: gradle
 
       - name: Cache Android SDK
-        #id: cache-android-sdk
         uses: actions/cache@v5
         with:
           path: ${{ env.ANDROID_HOME }}
           key: ${{ runner.os }}-android-sdk
 
       - name: Setup Android SDK
-        ## It is not necessary to check for cache hit as it
-        ## will not download Android SDK again
         #if: steps.cache-android-sdk.outputs.cache-hit != 'true'
         uses: android-actions/setup-android@v4
         with:
@@ -67,10 +64,10 @@ jobs:
           echo "$SIGN_KEY" | base64 -d > key.der
           ${{ env.APKSIGNER }} sign --key key.der --cert cert.der app-release-aligned.apk
           rm cert.der key.der
-          mv app-release-aligned.apk app-release.apk
+          mv app-release-aligned.apk Radio.apk
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
-          name: app-release
-          path: app-release.apk
+          name: Radio
+          path: Radio.apk
