@@ -7,6 +7,8 @@ on:
   pull_request:
     branches: [ "main" ]
     
+permissions:
+  contents: write
 
 env:
   ANDROID_HOME: /usr/local/lib/android/sdk/
@@ -30,6 +32,14 @@ jobs:
           distribution: adopt
           cache: gradle
 
+      - name: Extract Build Metadata
+        id: meta
+        run: |
+          # Extract Version Name
+          VERSION_NAME=$(grep "versionName =" app/build.gradle.kts | awk -F\" '{print $2}')
+          echo "Found Version Name: $VERSION_NAME"
+          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
+
       - name: Cache Android SDK
         uses: actions/cache@v5
         with:
@@ -37,7 +47,6 @@ jobs:
           key: ${{ runner.os }}-android-sdk
 
       - name: Setup Android SDK
-        #if: steps.cache-android-sdk.outputs.cache-hit != 'true'
         uses: android-actions/setup-android@v4
         with:
           packages: 'ndk;29.0.14206865'
@@ -64,10 +73,10 @@ jobs:
           echo "$SIGN_KEY" | base64 -d > key.der
           ${{ env.APKSIGNER }} sign --key key.der --cert cert.der app-release-aligned.apk
           rm cert.der key.der
-          mv app-release-aligned.apk Radio.apk
+          mv app-release-aligned.apk Radio.${{ env.VERSION_NAME }}-release.apk
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
           name: Radio
-          path: Radio.apk
+          path: Radio.${{ env.VERSION_NAME }}-release.apk
