@@ -73,10 +73,10 @@ jobs:
           echo "$SIGN_KEY" | base64 -d > key.der
           ${{ env.APKSIGNER }} sign --key key.der --cert cert.der app-release-aligned.apk
           rm cert.der key.der
-          mv app-release-aligned.apk Radio.${{ env.VERSION_NAME }}-release.apk
+          mv app-release-aligned.apk Radio_${{ env.VERSION_NAME }}-release.apk
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
           name: Radio
-          path: Radio.${{ env.VERSION_NAME }}-release.apk
+          path: Radio_${{ env.VERSION_NAME }}-release.apk
