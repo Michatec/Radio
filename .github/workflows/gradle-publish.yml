@@ -12,7 +12,7 @@ permissions:
 
 env:
   ANDROID_HOME: /usr/local/lib/android/sdk/
-  APK_PATH: app/build/outputs/apk/release/app-release.apk
+  APK_PATH: app/build/outputs/apk/release/app-release-unsigned.apk
   APKSIGNER: /usr/local/lib/android/sdk/build-tools/34.0.0/apksigner
   ZIPALIGN: /usr/local/lib/android/sdk/build-tools/34.0.0/zipalign
 
