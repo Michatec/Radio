@@ -2,7 +2,7 @@
 activityKtx = "1.13.0"
 agp = "9.1.0"
 coreKtx = "1.18.0"
-freedroidwarn = "V1.10"
+freedroidwarn = "V1.11"
 gson = "2.13.2"
 kotlin = "2.3.20"
 leanback = "1.2.0"
