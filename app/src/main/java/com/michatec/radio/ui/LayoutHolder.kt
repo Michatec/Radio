@@ -190,36 +190,42 @@ data class LayoutHolder(var rootView: View) {
                 context,
                 sheetStreamingLinkView?.text ?: ""
             )
+            Snackbar.make(rootView, R.string.toastmessage_copied_to_clipboard, Snackbar.LENGTH_LONG).show()
         }
         sheetStreamingLinkView?.setOnClickListener {
             copyToClipboard(
                 context,
                 sheetStreamingLinkView?.text ?: ""
             )
+            Snackbar.make(rootView, R.string.toastmessage_copied_to_clipboard, Snackbar.LENGTH_LONG).show()
         }
         sheetMetadataHistoryHeadline?.setOnClickListener {
             copyToClipboard(
                 context,
                 sheetMetadataHistoryView?.text ?: ""
             )
+            Snackbar.make(rootView, R.string.toastmessage_copied_to_clipboard, Snackbar.LENGTH_LONG).show()
         }
         sheetMetadataHistoryView?.setOnClickListener {
             copyToClipboard(
                 context,
                 sheetMetadataHistoryView?.text ?: ""
             )
+            Snackbar.make(rootView, R.string.toastmessage_copied_to_clipboard, Snackbar.LENGTH_LONG).show()
         }
         sheetCopyMetadataButtonView?.setOnClickListener {
             copyToClipboard(
                 context,
                 sheetMetadataHistoryView?.text ?: ""
             )
+            Snackbar.make(rootView, R.string.toastmessage_copied_to_clipboard, Snackbar.LENGTH_LONG).show()
         }
         sheetBitrateView?.setOnClickListener {
             copyToClipboard(
                 context,
                 sheetBitrateView?.text ?: ""
             )
+            Snackbar.make(rootView, R.string.toastmessage_copied_to_clipboard, Snackbar.LENGTH_LONG).show()
         }
         sheetShareLinkButtonView?.setOnClickListener {
             val share = Intent.createChooser(Intent().apply {
@@ -238,10 +244,7 @@ data class LayoutHolder(var rootView: View) {
         val clip: ClipData = ClipData.newPlainText("simple text", clipString)
         val cm: ClipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         cm.setPrimaryClip(clip)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            // since API 33 (TIRAMISU) the OS displays its own notification when content is copied to the clipboard
-            Snackbar.make(rootView, R.string.toastmessage_copied_to_clipboard, Snackbar.LENGTH_LONG).show()
-        }
+        Snackbar.make(rootView, R.string.toastmessage_copied_to_clipboard, Snackbar.LENGTH_LONG).show()
     }
 
 
@@ -251,6 +254,7 @@ data class LayoutHolder(var rootView: View) {
         val stringBuilder: StringBuilder = StringBuilder()
         metadataHistory.forEach { stringBuilder.append("${it.trim()}\n") }
         copyToClipboard(rootView.context, stringBuilder.toString())
+        Snackbar.make(rootView, R.string.toastmessage_copied_to_clipboard, Snackbar.LENGTH_LONG).show()
     }
 
 
