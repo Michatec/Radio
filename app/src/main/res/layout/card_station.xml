@@ -69,7 +69,8 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/station_icon"
             app:layout_constraintStart_toEndOf="@+id/starred_icon"
-            app:layout_constraintTop_toTopOf="@+id/station_icon" />
+            app:layout_constraintTop_toTopOf="@+id/station_icon" 
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/starred_icon"
