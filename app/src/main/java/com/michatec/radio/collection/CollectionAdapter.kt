@@ -197,12 +197,6 @@ class CollectionAdapter(
                             ContextCompat.getColor(context, R.color.cardview_reordering)
                         )
                     )
-                } else {
-                    stationViewHolder.stationCardView.setStrokeColor(
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(context, R.color.list_card_stroke_background)
-                        )
-                    )
                 }
 
                 // show / hide edit views
