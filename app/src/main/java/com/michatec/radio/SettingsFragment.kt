@@ -165,7 +165,11 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceEnableEditingStreamUri.summaryOn = getString(R.string.pref_edit_station_stream_summary_enabled)
         preferenceEnableEditingStreamUri.summaryOff = getString(R.string.pref_edit_station_stream_summary_disabled)
         preferenceEnableEditingStreamUri.setDefaultValue(PreferencesHelper.loadEditStreamUrisEnabled(context))
-        preferenceEnableEditingStreamUri.isEnabled = PreferencesHelper.loadEditStreamUrisEnabled(context)
+        preferenceEnableEditingStreamUri.isEnabled = if (PreferencesHelper.loadEditStationsEnabled(context)) {
+            true
+        } else {
+            PreferencesHelper.loadEditStreamUrisEnabled(context)
+        }
 
 
         // set up "Edit Stations" preference
