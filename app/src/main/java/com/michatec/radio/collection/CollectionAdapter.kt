@@ -339,6 +339,7 @@ class CollectionAdapter(
 
 
     /* Shows / hides the edit view for a station */
+    /* TODO: Remove @SuppressLint("NotifyDataSetChanged"), remove NotifyDataSetChanged */
     @SuppressLint("NotifyDataSetChanged")
     private fun toggleEditViews(position: Int, stationUuid: String) {
         when (stationUuid) {

@@ -73,6 +73,7 @@ class FindStationDialog (
 
 
     /* Overrides onRadioBrowserSearchResults from RadioBrowserSearchListener */
+    /* TODO: Remove @SuppressLint("NotifyDataSetChanged"), remove NotifyDataSetChanged */
     @SuppressLint("NotifyDataSetChanged")
     override fun onRadioBrowserSearchResults(results: Array<RadioBrowserResult>) {
         if (results.isNotEmpty()) {
