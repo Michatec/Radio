@@ -190,13 +190,17 @@ class CollectionAdapter(
                 setPlaybackProgress(stationViewHolder, station)
                 setDownloadProgress(stationViewHolder, station)
 
-                stationViewHolder.playButtonView.isGone = true
-
                 // highlight if reordering
                 if (reorderStationUuid == station.uuid) {
                     stationViewHolder.stationCardView.setStrokeColor(
                         ColorStateList.valueOf(
                             ContextCompat.getColor(context, R.color.cardview_reordering)
+                        )
+                    )
+                } else {
+                    stationViewHolder.stationCardView.setStrokeColor(
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(context, R.color.list_card_stroke_background)
                         )
                     )
                 }
