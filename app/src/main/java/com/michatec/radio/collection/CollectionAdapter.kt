@@ -3,7 +3,6 @@ package com.michatec.radio.collection
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.res.ColorStateList
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
@@ -11,12 +10,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Group
-import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -180,7 +179,6 @@ class CollectionAdapter(
 
                 // get reference to StationViewHolder
                 val stationViewHolder: StationViewHolder = holder
-
                 // set up station views
                 setStarredIcon(stationViewHolder, station)
                 setStationName(stationViewHolder, station)
@@ -190,13 +188,12 @@ class CollectionAdapter(
                 setPlaybackProgress(stationViewHolder, station)
                 setDownloadProgress(stationViewHolder, station)
 
-                // highlight if reordering
                 if (reorderStationUuid == station.uuid) {
-                    stationViewHolder.stationCardView.setStrokeColor(
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(context, R.color.cardview_reordering)
-                        )
-                    )
+                    stationViewHolder.reorderCheckbox.isVisible = true
+                    stationViewHolder.reorderCheckbox.isChecked = true
+                } else {
+                    stationViewHolder.reorderCheckbox.isGone = true
+                    stationViewHolder.reorderCheckbox.isChecked = false
                 }
 
                 // show / hide edit views
@@ -774,6 +771,7 @@ class CollectionAdapter(
         val stationImageView: ImageView = stationCardLayout.findViewById(R.id.station_icon)
         val stationNameView: TextView = stationCardLayout.findViewById(R.id.station_name)
         val stationStarredView: ImageView = stationCardLayout.findViewById(R.id.starred_icon)
+        val reorderCheckbox: CheckBox = stationCardLayout.findViewById(R.id.reorder_checkbox)
         val bufferingProgress: ProgressBar = stationCardLayout.findViewById(R.id.buffering_progress)
         val downloadProgress: ProgressBar = stationCardLayout.findViewById(R.id.download_progress)
 

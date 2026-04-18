@@ -61,6 +61,16 @@
             app:shapeAppearanceOverlay="@style/RoundedCorners"
             app:srcCompat="@drawable/ic_image_white_36dp" />
 
+        <CheckBox
+            android:id="@+id/reorder_checkbox"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:foregroundTint="@color/icon_default"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/station_icon"
+            app:layout_constraintStart_toEndOf="@+id/starred_icon"
+            app:layout_constraintTop_toTopOf="@+id/station_icon" />
+
         <ImageView
             android:id="@+id/starred_icon"
             android:layout_width="wrap_content"
@@ -86,7 +96,7 @@
             android:textColor="@color/text_lightweight"
             app:layout_constraintBottom_toBottomOf="@+id/station_icon"
             app:layout_constraintEnd_toStartOf="@+id/playback_button"
-            app:layout_constraintStart_toEndOf="@+id/starred_icon"
+            app:layout_constraintStart_toEndOf="@+id/reorder_checkbox"
             app:layout_constraintTop_toTopOf="@+id/station_icon"
             tools:text="@string/sample_text_station_name" />
 
