@@ -1,13 +1,12 @@
 package com.michatec.radio.ui
 
-import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.AnimatedVectorDrawable
-import android.os.Build
+import java.util.Locale
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -129,7 +128,6 @@ data class LayoutHolder(var rootView: View) {
 
 
     /* Updates the player views */
-    @SuppressLint("DefaultLocale")
     fun updatePlayerViews(context: Context, station: Station, isPlaying: Boolean) {
         if (!isPlaying) {
             metadataView?.text = station.name
@@ -162,9 +160,9 @@ data class LayoutHolder(var rootView: View) {
             } else {
                 val kiloBytesPerSecond = station.bitrate / 8F
                 val dataRateString = if (kiloBytesPerSecond >= 1000) {
-                    String.format("%.2f mb/s", kiloBytesPerSecond / 1000F)
+                    String.format(Locale.ROOT, "%.2f mb/s", kiloBytesPerSecond / 1000F)
                 } else {
-                    String.format("%.0f kb/s", kiloBytesPerSecond)
+                    String.format(Locale.ROOT, "%.0f kb/s", kiloBytesPerSecond)
                 }
                 // show the bitrate and codec if the result is available in the radio-browser.info API
                 buildString {
