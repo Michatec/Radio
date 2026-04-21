@@ -34,7 +34,7 @@
         android:clickable="true"
         android:stateListAnimator="@null"
         app:backgroundTint="@color/list_card_background"
-        app:icon="@drawable/ic_music_note_24dp"
+        app:icon="@drawable/ic_visualizer_24dp"
         app:iconTint="@color/icon_default"
         app:rippleColor="@color/list_card_stroke_background"
         app:strokeColor="@color/list_card_stroke_background"

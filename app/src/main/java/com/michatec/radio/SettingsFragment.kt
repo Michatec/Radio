@@ -224,7 +224,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         // set up "Preset Selection" preference
         val preferencePresetSelection = Preference(context)
         preferencePresetSelection.title = getString(R.string.pref_preset_selection_title)
-        preferencePresetSelection.setIcon(R.drawable.ic_music_note_24dp)
+        preferencePresetSelection.setIcon(R.drawable.ic_presets_24dp)
         preferencePresetSelection.key = Keys.PREF_PRESET_SELECTED
         val presetSummary = currentPreset.ifEmpty {
             getString(R.string.pref_preset_none)
@@ -241,7 +241,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         // set up "Equalizer" preference entry
         val preferenceEqualizer = Preference(context)
         preferenceEqualizer.title = getString(R.string.pref_equalizer_title)
-        preferenceEqualizer.setIcon(R.drawable.ic_music_note_24dp)
+        preferenceEqualizer.setIcon(R.drawable.ic_equalizer_24dp)
         preferenceEqualizer.key = Keys.PREF_EQUALIZER
         if (currentPreset.isEmpty()) {
             preferenceEqualizer.summary = getString(R.string.pref_equalizer_summary)
@@ -257,7 +257,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
 
         val preferenceVisualizer = Preference(context)
         preferenceVisualizer.title = getString(R.string.pref_visualizer_title)
-        preferenceVisualizer.setIcon(R.drawable.ic_music_note_24dp)
+        preferenceVisualizer.setIcon(R.drawable.ic_visualizer_24dp)
         preferenceVisualizer.summary = getString(R.string.pref_visualizer_summary)
         preferenceVisualizer.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_settings_to_visualizer)
