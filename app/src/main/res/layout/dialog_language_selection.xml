@@ -14,12 +14,19 @@
         android:textStyle="bold"
         android:paddingBottom="12dp" />
 
-    <RadioGroup
-        android:id="@+id/language_radio_group"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:scrollbars="vertical">
 
-    </RadioGroup>
+        <RadioGroup
+            android:id="@+id/language_radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </RadioGroup>
+
+    </ScrollView>
 
 </LinearLayout>
