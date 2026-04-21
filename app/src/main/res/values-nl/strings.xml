@@ -16,6 +16,7 @@
     <string name="descr_player_playback_button">Afspelen/pauzeren</string>
     <string name="descr_player_station_image">Zenderafbeelding</string>
     <!-- Dialogs -->
+    <string name="dialog_add_station_title">Zender Toevoegen</string>
     <string name="dialog_edit_station_name">Zendernaam</string>
     <string name="dialog_edit_stream_uri">Stream adres</string>
     <string name="dialog_error_message_default">Er is een fout opgetreden</string>
@@ -29,6 +30,7 @@
     <string name="dialog_generic_button_okay">OK</string>
     <string name="dialog_generic_details_button">Toon details</string>
     <string name="dialog_opml_import_details_default">Geen details beschikbaar</string>
+    <string name="dialog_restore_collection_replace_existing">Huidige collectie van radiozenders vervangen met de radiozender uit de back-up?</string>
     <string name="dialog_yes_no_message_remove_station">Verwijder deze zender?</string>
     <string name="dialog_yes_no_message_update_station_images">Laatste versie van alle zenderafbeeldingen downloaden?</string>
     <string name="dialog_yes_no_positive_button_default">Ja</string>
@@ -43,6 +45,7 @@
     <string name="notification_skip_to_previous">Vorige</string>
     <string name="notification_skip_to_next">Volgende</string>
     <!-- Onboarding -->
+    <string name="onboarding_app_description">Dompel jezelf onder in het geluid van je keuze!</string>
     <string name="onboarding_app_get_started">Aan de slag</string>
     <!-- Player -->
     <string name="player_sheet_h2_station_metadata">Nu aan het afspelen</string>
@@ -64,6 +67,11 @@
     <string name="pref_general_title">Algemeen</string>
     <string name="pref_m3u_export_summary">Sla je radiozenders op in een M3U afspeellijstbestand dat in andere spelers kan worden geïmporteerd.</string>
     <string name="pref_m3u_export_title">Exporteer M3U</string>
+    <string name="pref_pls_export_summary">Sla je radiozenders op in een PLS afspeellijstbestand dat in andere spelers kan worden geïmporteerd.</string>
+    <string name="pref_pls_export_title">Exporteer PLS</string>
+    <string name="pref_license_title">Deze applicatie is open source</string>
+    <string name="pref_license_summary">Gelicentieerd onder de GPLv3 licentie</string>
+    <string name="pref_links_title">Links</string>
     <string name="pref_maintenance_title">Onderhoud</string>
     <string name="pref_station_export_summary">Sla de gehele collectie radiozenders, inclusief afbeeldingen, in de apparaatopslag op.</string>
     <string name="pref_station_export_title">Exporteer Zender</string>
@@ -86,6 +94,12 @@
     <!-- Toasts -->
     <string name="toastmessage_backed_up">back-up is succesvol gemaakt.</string>
     <string name="toastmessage_copied_to_clipboard">Gekopieerd naar het klembord.</string>
+    <string name="toastmessage_connection_failed">De verbinding kon niet tot stand worden gebracht of hersteld.</string>
+    <string name="toastmessage_error_restart_playback_failed">Kan afspelen niet starten of herstarten.</string>
+    <string name="toastmessage_preview_playback_started">Voorbeeld-afspelen is gestart.</string>
+    <string name="toastmessage_preview_playback_failed">Kan voorbeeld niet afspelen.</string>
+    <string name="toastmessage_save_pls">Radiozenders opslaan als PLS…</string>
+    <string name="toastmessage_station_duplicate">Deze zender is een duplicaat.</string>
     <string name="toastmessage_error_download_error">Download fout</string>
     <string name="toastmessage_install_file_helper">Installeer alstublieft een bestandsbeheer applicatie.</string>
     <string name="toastmessage_restored">Zenders zijn succesvol hersteld.</string>
@@ -99,4 +113,45 @@
     <!-- Snackbars -->
     <string name="snackbar_show">Weergeven</string>
     <string name="snackbar_update_available">is beschikbaar!</string>
+    <!-- Language Selection -->
+    <string name="pref_language_selection_title">Taal</string>
+    <string name="pref_language_selection_summary">Huidige taal</string>
+    <string name="pref_language_system">🗺️ Systeem</string>
+    <!-- Settings -->
+    <string name="pref_update_collection_title">Zenders Bijwerken</string>
+    <string name="pref_update_collection_summary">Download de laatste versie van alle zenders.</string>
+    <string name="dialog_yes_no_message_update_collection">Download de laatste versie van alle zenders?</string>
+    <string name="dialog_yes_no_positive_button_update_collection">Bijwerken</string>
+    <string name="pref_audio_effects_title">Audio Effecten</string>
+    <string name="pref_bass_boost_title">Bass Boost</string>
+    <string name="pref_bass_boost_summary">Verhoog de bassversterking.</string>
+    <string name="pref_reverb_title">Reverb</string>
+    <string name="pref_reverb_summary">Pas de reverb mix aan.</string>
+    <string name="pref_drc_title">Dynamisch Bereik Compressie</string>
+    <string name="pref_drc_summary">Comprimeer het dynamisch bereik voor consistent volume.</string>
+    <string name="pref_eq_low_title">Equalizer: 31 Hz</string>
+    <string name="pref_eq_mid_title">Equalizer: 125 Hz</string>
+    <string name="pref_eq_high_title">Equalizer: 4 kHz</string>
+    <string name="pref_eq_band_1_title">Equalizer: 62 Hz</string>
+    <string name="pref_eq_band_2_title">Equalizer: 250 Hz</string>
+    <string name="pref_eq_band_3_title">Equalizer: 500 Hz</string>
+    <string name="pref_eq_band_4_title">Equalizer: 1 kHz</string>
+    <string name="pref_eq_band_5_title">Equalizer: 2 kHz</string>
+    <string name="pref_eq_band_6_title">Equalizer: 8 kHz</string>
+    <string name="pref_eq_band_7_title">Equalizer: 16 kHz</string>
+    <string name="pref_equalizer_title">Equalizer</string>
+    <string name="pref_equalizer_summary">Pas audio frequenties aan.</string>
+    <string name="pref_equalizer_summary_off">Het aanpassen van audio frequenties is uitgeschakeld.</string>
+    <string name="pref_equalizer_reset_title">Reset Equalizer</string>
+    <string name="pref_preset_selection_title">Selecteer Voorinstelling</string>
+    <string name="pref_preset_selection_summary">Kies een audio voorinstelling.</string>
+    <string name="pref_preset_none">Geen (Handmatig)</string>
+    <string name="pref_preset_rock">Rock</string>
+    <string name="pref_preset_pop">Pop</string>
+    <string name="pref_preset_jazz">Jazz</string>
+    <string name="pref_preset_flat">Plat</string>
+    <string name="loading">Laden…</string>
+    <string name="media_route_menu_title">Cast</string>
+    <string name="pref_visualizer_title">Spectrum Analyser</string>
+    <string name="pref_visualizer_summary">Toon de Spectrum Analyser.</string>
 </resources>

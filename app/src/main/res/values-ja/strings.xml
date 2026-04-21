@@ -60,6 +60,7 @@
     <string name="pref_buffer_size_title">大きなバッファを使用</string>
     <string name="pref_edit_station_stream_summary_disabled">ストリームリンクの編集は無効です。</string>
     <string name="pref_edit_station_stream_summary_enabled">ストリームリンクの編集は有効です。正しいURLを入力してください。</string>
+    <string name="pref_edit_station_stream_title">ストリームリンクを編集</string>
     <string name="pref_edit_station_summary_disabled">局情報の編集は無効です。</string>
     <string name="pref_edit_station_summary_enabled">局情報の編集は有効です。長押しで編集モードに入ります。</string>
     <string name="pref_edit_station_title">局を編集</string>
@@ -111,4 +112,45 @@
     <!-- スナックバー -->
     <string name="snackbar_show">表示</string>
     <string name="snackbar_update_available">が利用可能です！</string>
+    <!-- 言語選択 -->
+    <string name="pref_language_selection_title">言語</string>
+    <string name="pref_language_selection_summary">現在の言語</string>
+    <string name="pref_language_system">🗺️ システム</string>
+    <!-- 設定 -->
+    <string name="pref_update_collection_title">局を更新</string>
+    <string name="pref_update_collection_summary">すべての局の最新バージョンをダウンロードします。</string>
+    <string name="dialog_yes_no_message_update_collection">すべての局の最新バージョンをダウンロードしますか？</string>
+    <string name="dialog_yes_no_positive_button_update_collection">更新</string>
+    <string name="pref_audio_effects_title">オーディオエフェクト</string>
+    <string name="pref_bass_boost_title">バスブースト</string>
+    <string name="pref_bass_boost_summary">低音を増強します。</string>
+    <string name="pref_reverb_title">リバーブ</string>
+    <string name="pref_reverb_summary">リバーブミスを調整します。</string>
+    <string name="pref_drc_title">ダイナミックレンジ圧縮</string>
+    <string name="pref_drc_summary">音量的一定のためダイナミックレンジを圧縮します。</string>
+    <string name="pref_eq_low_title">イコライザー：31 Hz</string>
+    <string name="pref_eq_mid_title">イコライザー：125 Hz</string>
+    <string name="pref_eq_high_title">イコライザー：4 kHz</string>
+    <string name="pref_eq_band_1_title">イコライザー：62 Hz</string>
+    <string name="pref_eq_band_2_title">イコライザー：250 Hz</string>
+    <string name="pref_eq_band_3_title">イコライザー：500 Hz</string>
+    <string name="pref_eq_band_4_title">イコライザー：1 kHz</string>
+    <string name="pref_eq_band_5_title">イコライザー：2 kHz</string>
+    <string name="pref_eq_band_6_title">イコライザー：8 kHz</string>
+    <string name="pref_eq_band_7_title">イコライザー：16 kHz</string>
+    <string name="pref_equalizer_title">イコライザー</string>
+    <string name="pref_equalizer_summary">オーディオ周波数を調整します。</string>
+    <string name="pref_equalizer_summary_off">オーディオ周波数の調整は無効です。</string>
+    <string name="pref_equalizer_reset_title">イコライザーリセット</string>
+    <string name="pref_preset_selection_title">プリセットを選択</string>
+    <string name="pref_preset_selection_summary">オーディオプリセットを選択</string>
+    <string name="pref_preset_none">なし（マニュアル）</string>
+    <string name="pref_preset_rock">ロック</string>
+    <string name="pref_preset_pop">ポップ</string>
+    <string name="pref_preset_jazz">ジャズ</string>
+    <string name="pref_preset_flat">フラット</string>
+    <string name="loading">読み込み中…</string>
+    <string name="media_route_menu_title">キャスト</string>
+    <string name="pref_visualizer_title">スペクトラムアナライザー</string>
+    <string name="pref_visualizer_summary">スペクトラムアナライザーを表示します。</string>
 </resources>

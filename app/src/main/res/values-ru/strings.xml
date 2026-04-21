@@ -16,6 +16,7 @@
     <string name="descr_player_playback_button">Играть/пауза</string>
     <string name="descr_player_station_image">Изображение станции</string>
     <!-- Dialogs -->
+    <string name="dialog_add_station_title">Добавить станцию</string>
     <string name="dialog_edit_station_name">Имя станции</string>
     <string name="dialog_edit_stream_uri">Адрес потока</string>
     <string name="dialog_error_message_default">Произошла ошибка</string>
@@ -29,6 +30,7 @@
     <string name="dialog_generic_button_okay">ОК</string>
     <string name="dialog_generic_details_button">Показать детали</string>
     <string name="dialog_opml_import_details_default">Детали недоступны</string>
+    <string name="dialog_restore_collection_replace_existing">Заменить текущую коллекцию радиостанций радиостанцией из резервной копии?</string>
     <string name="dialog_yes_no_message_remove_station">Удалить эту станцию?</string>
     <string name="dialog_yes_no_message_update_station_images">Скачать последнюю версию всех изображений станций?</string>
     <string name="dialog_yes_no_positive_button_default">Да</string>
@@ -43,6 +45,7 @@
     <string name="notification_skip_to_previous">Предыдущий</string>
     <string name="notification_skip_to_next">Следующий</string>
     <!-- Onboarding -->
+    <string name="onboarding_app_description">Погрузитесь в звук по вашему выбору!</string>
     <string name="onboarding_app_get_started">Начать</string>
     <!-- Player -->
     <string name="player_sheet_h2_station_metadata">Сейчас играет</string>
@@ -91,6 +94,7 @@
     <!-- Toasts -->
     <string name="toastmessage_backed_up">резервная копия создана.</string>
     <string name="toastmessage_copied_to_clipboard">Скопировано в буфер обмена.</string>
+    <string name="toastmessage_connection_failed">Не удалось установить или восстановить соединение.</string>
     <string name="toastmessage_error_download_error">Ошибка загрузки</string>
     <string name="toastmessage_error_restart_playback_failed">Невозможно запустить или перезапустить воспроизведение.</string>
     <string name="toastmessage_install_file_helper">Пожалуйста, установите файловый менеджер.</string>
@@ -109,4 +113,45 @@
     <!-- Snackbars -->
     <string name="snackbar_show">Показать</string>
     <string name="snackbar_update_available">доступно!</string>
+    <!-- Language Selection -->
+    <string name="pref_language_selection_title">Язык</string>
+    <string name="pref_language_selection_summary">Текущий язык</string>
+    <string name="pref_language_system">🗺️ Система</string>
+    <!-- Settings -->
+    <string name="pref_update_collection_title">Обновление станций</string>
+    <string name="pref_update_collection_summary">Скачать последнюю версию всех станций.</string>
+    <string name="dialog_yes_no_message_update_collection">Скачать последнюю версию всех станций?</string>
+    <string name="dialog_yes_no_positive_button_update_collection">Обновить</string>
+    <string name="pref_audio_effects_title">Звуковые эффекты</string>
+    <string name="pref_bass_boost_title">Усиление басов</string>
+    <string name="pref_bass_boost_summary">Увеличить усиление басов.</string>
+    <string name="pref_reverb_title">Реверберация</string>
+    <string name="pref_reverb_summary">Настроить микс реверберации.</string>
+    <string name="pref_drc_title">Динамическое сжатие</string>
+    <string name="pref_drc_summary">Сжать динамический диапазон для постоянной громкости.</string>
+    <string name="pref_eq_low_title">Эквалайзер: 31 Гц</string>
+    <string name="pref_eq_mid_title">Эквалайзер: 125 Гц</string>
+    <string name="pref_eq_high_title">Эквалайзер: 4 кГц</string>
+    <string name="pref_eq_band_1_title">Эквалайзер: 62 Гц</string>
+    <string name="pref_eq_band_2_title">Эквалайзер: 250 Гц</string>
+    <string name="pref_eq_band_3_title">Эквалайзер: 500 Гц</string>
+    <string name="pref_eq_band_4_title">Эквалайзер: 1 кГц</string>
+    <string name="pref_eq_band_5_title">Эквалайзер: 2 кГц</string>
+    <string name="pref_eq_band_6_title">Эквалайзер: 8 кГц</string>
+    <string name="pref_eq_band_7_title">Эквалайзер: 16 кГц</string>
+    <string name="pref_equalizer_title">Эквалайзер</string>
+    <string name="pref_equalizer_summary">Настроить звуковые частоты.</string>
+    <string name="pref_equalizer_summary_off">Настройка звуковых частот отключена.</string>
+    <string name="pref_equalizer_reset_title">Сбросить эквалайзер</string>
+    <string name="pref_preset_selection_title">Выбрать пресет</string>
+    <string name="pref_preset_selection_summary">Выберите звуковой пресет.</string>
+    <string name="pref_preset_none">Нет (Ручной)</string>
+    <string name="pref_preset_rock">Рок</string>
+    <string name="pref_preset_pop">Поп</string>
+    <string name="pref_preset_jazz">Джаз</string>
+    <string name="pref_preset_flat">Плоский</string>
+    <string name="loading">Загрузка…</string>
+    <string name="media_route_menu_title">Трансляция</string>
+    <string name="pref_visualizer_title">Анализатор спектра</string>
+    <string name="pref_visualizer_summary">Показать анализатор спектра.</string>
 </resources>

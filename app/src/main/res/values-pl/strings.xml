@@ -16,6 +16,7 @@
     <string name="descr_player_playback_button">Odtwórz/zatrzymaj</string>
     <string name="descr_player_station_image">Ikona stacji</string>
     <!-- Dialogs -->
+    <string name="dialog_add_station_title">Dodaj Stację</string>
     <string name="dialog_edit_station_name">Nazwa stacji</string>
     <string name="dialog_edit_stream_uri">Adres strumienia</string>
     <string name="dialog_error_message_default">Wystąpił błąd</string>
@@ -29,6 +30,7 @@
     <string name="dialog_generic_button_okay">OK</string>
     <string name="dialog_generic_details_button">Pokaż szczegóły</string>
     <string name="dialog_opml_import_details_default">Brak dostępnych szczegółów</string>
+    <string name="dialog_restore_collection_replace_existing">Zastąpić bieżącą kolekcję stacji radiowych stacją z kopii zapasowej?</string>
     <string name="dialog_yes_no_message_remove_station">Usunąć stację?</string>
     <string name="dialog_yes_no_message_update_station_images">Pobrać najnowszą wersję obrazów wszystkich stacji?</string>
     <string name="dialog_yes_no_positive_button_default">Tak</string>
@@ -43,6 +45,7 @@
     <string name="notification_skip_to_previous">Poprzedni</string>
     <string name="notification_skip_to_next">Następny</string>
     <!-- Onboarding -->
+    <string name="onboarding_app_description">Zanurz się w dźwięku swojego wyboru!</string>
     <string name="onboarding_app_get_started">Zaczynamy</string>
     <!-- Player -->
     <string name="player_sheet_h2_station_metadata">Obecnie odtwarzane</string>
@@ -64,6 +67,11 @@
     <string name="pref_general_title">Ogólne</string>
     <string name="pref_m3u_export_summary">Zapisz swoje stacje radiowe w pliku listy odtwarzania M3U, który można zaimportować do innych odtwarzaczy.</string>
     <string name="pref_m3u_export_title">Eksportuj M3U</string>
+    <string name="pref_pls_export_summary">Zapisz swoje stacje radiowe w pliku listy odtwarzania PLS, który można zaimportować do innych odtwarzaczy.</string>
+    <string name="pref_pls_export_title">Eksportuj PLS</string>
+    <string name="pref_license_title">Ta aplikacja jest open source</string>
+    <string name="pref_license_summary">Licencjonowane na licencji GPLv3</string>
+    <string name="pref_links_title">Linki</string>
     <string name="pref_maintenance_title">Zarządzanie</string>
     <string name="pref_station_export_summary">Zapisz do pamięci urządzenia całą kolekcję stacji radiowych, w tym obrazy.</string>
     <string name="pref_station_export_title">Eksportuj stacje</string>
@@ -86,6 +94,10 @@
     <!-- Toasts -->
     <string name="toastmessage_backed_up">kopia zapasowa została wykonana.</string>
     <string name="toastmessage_copied_to_clipboard">Skopiowano do schowka.</string>
+    <string name="toastmessage_connection_failed">Nie można nawiązać lub przywrócić połączenia.</string>
+    <string name="toastmessage_preview_playback_started">Rozpoczęto odtwarzanie podglądu.</string>
+    <string name="toastmessage_preview_playback_failed">Nie można odtworzyć podglądu.</string>
+    <string name="toastmessage_save_pls">Zapisywanie stacji radiowych jako PLS…</string>
     <string name="toastmessage_error_download_error">Błąd pobierania</string>
     <string name="toastmessage_error_restart_playback_failed">Nie można ponownie uruchomić odtwarzania.</string>
     <string name="toastmessage_install_file_helper">Proszę zainstalować menedżer plików.</string>
@@ -101,4 +113,45 @@
     <!-- Snackbars -->
     <string name="snackbar_show">Wyświetl</string>
     <string name="snackbar_update_available">jest dostępna!</string>
+    <!-- Language Selection -->
+    <string name="pref_language_selection_title">Język</string>
+    <string name="pref_language_selection_summary">Aktualny język</string>
+    <string name="pref_language_system">🗺️ System</string>
+    <!-- Settings -->
+    <string name="pref_update_collection_title">Aktualizacja Stacji</string>
+    <string name="pref_update_collection_summary">Pobierz najnowszą wersję wszystkich stacji.</string>
+    <string name="dialog_yes_no_message_update_collection">Pobrać najnowszą wersję wszystkich stacji?</string>
+    <string name="dialog_yes_no_positive_button_update_collection">Aktualizuj</string>
+    <string name="pref_audio_effects_title">Efekty Dźwiękowe</string>
+    <string name="pref_bass_boost_title">Wzmocnienie Basów</string>
+    <string name="pref_bass_boost_summary">Zwiększ wzmocnienie basów.</string>
+    <string name="pref_reverb_title">Pogłos</string>
+    <string name="pref_reverb_summary">Dostosuj miks pogłosu.</string>
+    <string name="pref_drc_title">Kompresja Zakresu Dynamiki</string>
+    <string name="pref_drc_summary">Kompresuj zakres dynamiki dla spójnej głośności.</string>
+    <string name="pref_eq_low_title">Korektor: 31 Hz</string>
+    <string name="pref_eq_mid_title">Korektor: 125 Hz</string>
+    <string name="pref_eq_high_title">Korektor: 4 kHz</string>
+    <string name="pref_eq_band_1_title">Korektor: 62 Hz</string>
+    <string name="pref_eq_band_2_title">Korektor: 250 Hz</string>
+    <string name="pref_eq_band_3_title">Korektor: 500 Hz</string>
+    <string name="pref_eq_band_4_title">Korektor: 1 kHz</string>
+    <string name="pref_eq_band_5_title">Korektor: 2 kHz</string>
+    <string name="pref_eq_band_6_title">Korektor: 8 kHz</string>
+    <string name="pref_eq_band_7_title">Korektor: 16 kHz</string>
+    <string name="pref_equalizer_title">Korektor</string>
+    <string name="pref_equalizer_summary">Dostosuj częstotliwości audio.</string>
+    <string name="pref_equalizer_summary_off">Dostosowanie częstotliwości audio jest wyłączone.</string>
+    <string name="pref_equalizer_reset_title">Resetuj Korektor</string>
+    <string name="pref_preset_selection_title">Wybierz Preset</string>
+    <string name="pref_preset_selection_summary">Wybierz preset audio.</string>
+    <string name="pref_preset_none">Brak (Ręczny)</string>
+    <string name="pref_preset_rock">Rock</string>
+    <string name="pref_preset_pop">Pop</string>
+    <string name="pref_preset_jazz">Jazz</string>
+    <string name="pref_preset_flat">Płaski</string>
+    <string name="loading">Ładowanie…</string>
+    <string name="media_route_menu_title">Przesyłanie</string>
+    <string name="pref_visualizer_title">Analizator Widma</string>
+    <string name="pref_visualizer_summary">Pokaż Analizator Widma.</string>
 </resources>

@@ -16,6 +16,7 @@
     <string name="descr_player_playback_button">Αναπαραγωγή/Παύση</string>
     <string name="descr_player_station_image">Εικόνα σταθμού</string>
     <!-- Dialogs -->
+    <string name="dialog_add_station_title">Προσθήκη Σταθμού</string>
     <string name="dialog_edit_station_name">Όνομα σταθμού</string>
     <string name="dialog_edit_stream_uri">Διεύθυνση ροής</string>
     <string name="dialog_error_message_default">Προέκυψε ένα σφάλμα</string>
@@ -29,6 +30,7 @@
     <string name="dialog_generic_button_okay">ΟΚ</string>
     <string name="dialog_generic_details_button">Εμφάνιση λεπτομερειών</string>
     <string name="dialog_opml_import_details_default">Δεν υπάρχουν διαθέσιμες λεπτομέρειες</string>
+    <string name="dialog_restore_collection_replace_existing">Αντικατάσταση της τρέχουσας συλλογής ραδιοφωνικών σταθμών με τον ραδιοφωνικό σταθμό από το αντίγραφο ασφαλείας;</string>
     <string name="dialog_yes_no_message_remove_station">Αφαίρεση αυτού του σταθμού;</string>
     <string name="dialog_yes_no_message_update_station_images">Να κατεβεί η τελευταία έκδοση όλων των εικόνων σταθμών;</string>
     <string name="dialog_yes_no_positive_button_default">Ναι</string>
@@ -43,6 +45,7 @@
     <string name="notification_skip_to_previous">Προηγούμενο</string>
     <string name="notification_skip_to_next">Επόμενο</string>
     <!-- Onboarding -->
+    <string name="onboarding_app_description">Βυθιστείτε στον ήχο της επιλογής σας!</string>
     <string name="onboarding_app_get_started">Ας ξεκινήσουμε</string>
     <!-- Player -->
     <string name="player_sheet_h2_station_metadata">Παίζεται τώρα</string>
@@ -91,6 +94,7 @@
     <!-- Toasts -->
     <string name="toastmessage_backed_up">έχει δημιουργηθεί επιτυχώς το αντίγραφο ασφαλείας.</string>
     <string name="toastmessage_copied_to_clipboard">Αντιγράφηκε στο πρόχειρο.</string>
+    <string name="toastmessage_connection_failed">Η σύνδεση δεν μπόρεσε να δημιουργηθεί ή να επαναφερθεί.</string>
     <string name="toastmessage_error_download_error">Σφάλμα λήψης</string>
     <string name="toastmessage_error_restart_playback_failed">Αδυναμία εκκίνησης ή επανεκκίνησης της αναπαραγωγής.</string>
     <string name="toastmessage_install_file_helper">Παρακαλώ εγκαταστήστε ένα πρόγραμμα διαχείρισης αρχείων.</string>
@@ -109,4 +113,45 @@
     <!-- Snackbars -->
     <string name="snackbar_show">Εμφάνισε</string>
     <string name="snackbar_update_available">είναι διαθέσιμη!</string>
+    <!-- Language Selection -->
+    <string name="pref_language_selection_title">Γλώσσα</string>
+    <string name="pref_language_selection_summary">Τρέχουσα γλώσσα</string>
+    <string name="pref_language_system">🗺️ Σύστημα</string>
+    <!-- Settings -->
+    <string name="pref_update_collection_title">Ενημέρωση Σταθμών</string>
+    <string name="pref_update_collection_summary">Κατεβάστε την τελευταία έκδοση όλων των σταθμών.</string>
+    <string name="dialog_yes_no_message_update_collection">Κατεβάστε την τελευταία έκδοση όλων των σταθμών;</string>
+    <string name="dialog_yes_no_positive_button_update_collection">Ενημέρωση</string>
+    <string name="pref_audio_effects_title">Ηχητικά Εφέ</string>
+    <string name="pref_bass_boost_title">Ενίσχυση Μπάσων</string>
+    <string name="pref_bass_boost_summary">Αύξηση της ενίσχυσης μπάσων.</string>
+    <string name="pref_reverb_title">Αντήχηση</string>
+    <string name="pref_reverb_summary">Προσαρμογή μίξης αντήχησης.</string>
+    <string name="pref_drc_title">Συμπίεση Δυναμικού Εύρους</string>
+    <string name="pref_drc_summary">Συμπίεση δυναμικού εύρους για σταθερή ένταση.</string>
+    <string name="pref_eq_low_title">Ισοσταθμιστής: 31 Hz</string>
+    <string name="pref_eq_mid_title">Ισοσταθμιστής: 125 Hz</string>
+    <string name="pref_eq_high_title">Ισοσταθμιστής: 4 kHz</string>
+    <string name="pref_eq_band_1_title">Ισοσταθμιστής: 62 Hz</string>
+    <string name="pref_eq_band_2_title">Ισοσταθμιστής: 250 Hz</string>
+    <string name="pref_eq_band_3_title">Ισοσταθμιστής: 500 Hz</string>
+    <string name="pref_eq_band_4_title">Ισοσταθμιστής: 1 kHz</string>
+    <string name="pref_eq_band_5_title">Ισοσταθμιστής: 2 kHz</string>
+    <string name="pref_eq_band_6_title">Ισοσταθμιστής: 8 kHz</string>
+    <string name="pref_eq_band_7_title">Ισοσταθμιστής: 16 kHz</string>
+    <string name="pref_equalizer_title">Ισοσταθμιστής</string>
+    <string name="pref_equalizer_summary">Προσαρμογή ηχητικών συχνοτήτων.</string>
+    <string name="pref_equalizer_summary_off">Η προσαρμογή ηχητικών συχνοτήτων είναι απενεργοποιημένη.</string>
+    <string name="pref_equalizer_reset_title">Επαναφορά Ισοσταθμιστή</string>
+    <string name="pref_preset_selection_title">Επιλογή Προκαθορισμένου</string>
+    <string name="pref_preset_selection_summary">Επιλέξτε ένα ηχητικό προκαθορισμένο.</string>
+    <string name="pref_preset_none">Κανένα (Χειροκίνητο)</string>
+    <string name="pref_preset_rock">Rock</string>
+    <string name="pref_preset_pop">Pop</string>
+    <string name="pref_preset_jazz">Jazz</string>
+    <string name="pref_preset_flat">Επίπεδο</string>
+    <string name="loading">Φόρτωση…</string>
+    <string name="media_route_menu_title">Μετάδοση</string>
+    <string name="pref_visualizer_title">Αναλυτής Φάσματος</string>
+    <string name="pref_visualizer_summary">Εμφάνιση του Αναλυτή Φάσματος.</string>
 </resources>

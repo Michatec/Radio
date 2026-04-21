@@ -16,6 +16,7 @@
     <string name="descr_player_playback_button">Відтворити/призупинити</string>
     <string name="descr_player_station_image">Зображення станції</string>
     <!-- Dialogs -->
+    <string name="dialog_add_station_title">Додати станцію</string>
     <string name="dialog_edit_station_name">Назва станції</string>
     <string name="dialog_edit_stream_uri">Адреса трансляції</string>
     <string name="dialog_error_message_default">Виникла помилка</string>
@@ -29,6 +30,7 @@
     <string name="dialog_generic_button_okay">Добре</string>
     <string name="dialog_generic_details_button">Показати подробиці</string>
     <string name="dialog_opml_import_details_default">Подробиці недоступні</string>
+    <string name="dialog_restore_collection_replace_existing">Замінити поточну колекцію радіостанцій радіостанцією з резервної копії?</string>
     <string name="dialog_yes_no_message_remove_station">Видалити цю станцію?</string>
     <string name="dialog_yes_no_message_update_station_images">Завантажити останню версію всіх зображень станцій?</string>
     <string name="dialog_yes_no_positive_button_default">Так</string>
@@ -43,6 +45,7 @@
     <string name="notification_skip_to_previous">Попередня</string>
     <string name="notification_skip_to_next">Наступна</string>
     <!-- Onboarding -->
+    <string name="onboarding_app_description">Пориньте у звук на ваш вибір!</string>
     <string name="onboarding_app_get_started">Початок роботи</string>
     <!-- Player -->
     <string name="player_sheet_h2_station_metadata">Зараз грає</string>
@@ -110,4 +113,45 @@
     <!-- Snackbars -->
     <string name="snackbar_show">Показати</string>
     <string name="snackbar_update_available">доступне!</string>
+    <!-- Language Selection -->
+    <string name="pref_language_selection_title">Мова</string>
+    <string name="pref_language_selection_summary">Поточна мова</string>
+    <string name="pref_language_system">🗺️ Система</string>
+    <!-- Settings -->
+    <string name="pref_update_collection_title">Оновлення станцій</string>
+    <string name="pref_update_collection_summary">Завантажити останню версію всіх станцій.</string>
+    <string name="dialog_yes_no_message_update_collection">Завантажити останню версію всіх станцій?</string>
+    <string name="dialog_yes_no_positive_button_update_collection">Оновити</string>
+    <string name="pref_audio_effects_title">Звукові ефекти</string>
+    <string name="pref_bass_boost_title">Підсилення басів</string>
+    <string name="pref_bass_boost_summary">Збільшити підсилення басів.</string>
+    <string name="pref_reverb_title">Реверберація</string>
+    <string name="pref_reverb_summary">Налаштувати мікс реверберації.</string>
+    <string name="pref_drc_title">Динамічна компресія</string>
+    <string name="pref_drc_summary">Стиснути динамічний діапазон для стабільної гучності.</string>
+    <string name="pref_eq_low_title">Еквалайзер: 31 Гц</string>
+    <string name="pref_eq_mid_title">Еквалайзер: 125 Гц</string>
+    <string name="pref_eq_high_title">Еквалайзер: 4 кГц</string>
+    <string name="pref_eq_band_1_title">Еквалайзер: 62 Гц</string>
+    <string name="pref_eq_band_2_title">Еквалайзер: 250 Гц</string>
+    <string name="pref_eq_band_3_title">Еквалайзер: 500 Гц</string>
+    <string name="pref_eq_band_4_title">Еквалайзер: 1 кГц</string>
+    <string name="pref_eq_band_5_title">Еквалайзер: 2 кГц</string>
+    <string name="pref_eq_band_6_title">Еквалайзер: 8 кГц</string>
+    <string name="pref_eq_band_7_title">Еквалайзер: 16 кГц</string>
+    <string name="pref_equalizer_title">Еквалайзер</string>
+    <string name="pref_equalizer_summary">Налаштувати звукові частоти.</string>
+    <string name="pref_equalizer_summary_off">Налаштування звукових частот вимкнено.</string>
+    <string name="pref_equalizer_reset_title">Скинути еквалайзер</string>
+    <string name="pref_preset_selection_title">Вибрати пресет</string>
+    <string name="pref_preset_selection_summary">Виберіть звуковий пресет.</string>
+    <string name="pref_preset_none">Немає (Ручний)</string>
+    <string name="pref_preset_rock">Рок</string>
+    <string name="pref_preset_pop">Поп</string>
+    <string name="pref_preset_jazz">Джаз</string>
+    <string name="pref_preset_flat">Плаский</string>
+    <string name="loading">Завантаження…</string>
+    <string name="media_route_menu_title">Трансляція</string>
+    <string name="pref_visualizer_title">Аналізатор спектру</string>
+    <string name="pref_visualizer_summary">Показати аналізатор спектру.</string>
 </resources>
