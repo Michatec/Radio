@@ -58,6 +58,21 @@
     <string name="player_sheet_h2_station_metadata">Currently playing</string>
     <string name="player_sheet_h2_stream_url">Streaming link</string>
 
+    <!-- Language Selection -->
+    <string name="pref_language_selection_title">Language</string>
+    <string name="pref_language_selection_summary">Current language</string>
+    <string name="pref_language_system">🗺️ System</string>
+    <string name="pref_language_en" translatable="false">🇬🇧 English</string>
+    <string name="pref_language_de" translatable="false">🇩🇪 Deutsch</string>
+    <string name="pref_language_fr" translatable="false">🇫🇷 Français</string>
+    <string name="pref_language_ru" translatable="false">🇷🇺 Русский</string>
+    <string name="pref_language_ja" translatable="false">🇯🇵 日本語</string>
+    <string name="pref_language_nl" translatable="false">🇳🇱 Nederlands</string>
+    <string name="pref_language_pl" translatable="false">🇵🇱 Polski</string>
+    <string name="pref_language_el" translatable="false">🇬🇷 Ελληνικά</string>
+    <string name="pref_language_da" translatable="false">🇩🇰 Dansk</string>
+
+
     <!-- Settings -->
     <string name="pref_update_collection_title">Update Stations</string>
     <string name="pref_update_collection_summary">Download latest version of all station.</string>

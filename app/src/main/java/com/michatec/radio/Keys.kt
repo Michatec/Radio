@@ -91,6 +91,7 @@ object Keys {
     const val PREF_PRESET_REVERB: String = "PRESET_REVERB"
     const val PREF_PRESET_DRC: String = "PRESET_DRC"
     const val PREF_PRESET_STEREO_WIDTH: String = "PRESET_STEREO_WIDTH"
+    const val PREF_LANGUAGE_SELECTED: String = "PRESET_LANGUAGE_SELECTED"
 
     // default const values
     const val DEFAULT_SIZE_OF_METADATA_HISTORY: Int = 25

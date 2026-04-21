@@ -316,6 +316,16 @@ object PreferencesHelper {
         }
     }
 
+    /* Loads selected language */
+    fun loadSelectedLanguage(): String {
+        return sharedPreferences.getString(Keys.PREF_LANGUAGE_SELECTED, "system") ?: "system"
+    }
+
+    /* Saves selected language */
+    fun saveSelectedLanguage(language: String) {
+        sharedPreferences.edit { putString(Keys.PREF_LANGUAGE_SELECTED, language) }
+    }
+
     /* Loads preset Bass Boost */
     fun loadPresetBassBoost(): Float {
         return sharedPreferences.getFloat(Keys.PREF_PRESET_BASS_BOOST, 0f)

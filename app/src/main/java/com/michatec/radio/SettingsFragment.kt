@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.*
 import com.google.android.material.snackbar.Snackbar
 import com.michatec.radio.dialogs.ErrorDialog
+import com.michatec.radio.dialogs.LanguageSelectionDialog
 import com.michatec.radio.dialogs.PresetSelectionDialog
 import com.michatec.radio.dialogs.ThemeSelectionDialog
 import com.michatec.radio.dialogs.YesNoDialog
@@ -31,7 +32,7 @@ import java.util.*
 /*
  * SettingsFragment class
  */
-class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListener, ThemeSelectionDialog.ThemeSelectionDialogListener, PresetSelectionDialog.PresetSelectionDialogListener {
+class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListener, ThemeSelectionDialog.ThemeSelectionDialogListener, PresetSelectionDialog.PresetSelectionDialogListener, LanguageSelectionDialog.LanguageSelectionDialogListener {
 
 
     /* Define log tag */
@@ -308,6 +309,18 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             return@setOnPreferenceClickListener true
         }
 
+        val preferenceLanguageSelection = Preference(context)
+        preferenceLanguageSelection.title = getString(R.string.pref_language_selection_title)
+        preferenceLanguageSelection.setIcon(R.drawable.ic_language_24dp)
+        preferenceLanguageSelection.key = Keys.PREF_LANGUAGE_SELECTED
+        preferenceLanguageSelection.summary = "${getString(R.string.pref_language_selection_summary)}: ${
+            LanguageHelper.getCurrentLanguage(activity as Context)
+        }"
+        preferenceLanguageSelection.setOnPreferenceClickListener {
+            LanguageSelectionDialog(this).show(activity as Context)
+            return@setOnPreferenceClickListener true
+        }
+
 
         // set preference categories
         val preferenceCategoryGeneral = PreferenceCategory(activity as Context)
@@ -334,6 +347,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
 
         screen.addPreference(preferenceCategoryGeneral)
         preferenceCategoryGeneral.addPreference(preferenceThemeSelection)
+        preferenceCategoryGeneral.addPreference(preferenceLanguageSelection)
 
         screen.addPreference(preferenceCategoryAudioEffects)
         preferenceCategoryAudioEffects.addPreference(preferenceBassBoost)
@@ -398,6 +412,20 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
 
             // Enable/disable manual EQ controls based on preset selection
             updateEqControlStates()
+        }
+    }
+
+    /* Overrides onLanguageSelectionDialog from LanguageSelectionDialogListener */
+    override fun onLanguageSelectionDialog(dialogResult: Boolean, selectedLanguage: String) {
+        if (dialogResult) {
+            // update summary
+            val languagePreference = findPreference<Preference>(Keys.PREF_LANGUAGE_SELECTED)
+            val languageSummary = if (selectedLanguage.isEmpty()) {
+                getString(R.string.pref_language_system)
+            } else {
+                LanguageHelper.getCurrentLanguage(activity as Context)
+            }
+            languagePreference?.summary = "${getString(R.string.pref_language_selection_summary)}: $languageSummary"
         }
     }
 

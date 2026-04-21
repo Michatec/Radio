@@ -1,7 +1,9 @@
 package com.michatec.radio
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,10 +16,13 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.navigateUp
+import com.michatec.radio.dialogs.LanguageSelectionDialog
 import com.michatec.radio.helpers.AppThemeHelper
 import com.michatec.radio.helpers.FileHelper
+import com.michatec.radio.helpers.LanguageHelper
 import com.michatec.radio.helpers.PreferencesHelper
 import org.woheller69.freeDroidWarn.FreeDroidWarn
+import java.util.Locale
 
 /*
  * MainActivity class
@@ -26,6 +31,21 @@ class MainActivity : AppCompatActivity() {
 
     /* Main class variables */
     private lateinit var appBarConfiguration: AppBarConfiguration
+
+    /* Overrides attachBaseContext from AppCompatActivity */
+    override fun attachBaseContext(newBase: Context) {
+        val languageCode = PreferencesHelper.loadSelectedLanguage()
+        val context = if (languageCode.isEmpty() || languageCode == "system") {
+            // Use system default locale
+            newBase
+        } else {
+            val locale = Locale.forLanguageTag(languageCode)
+            val config = Configuration(newBase.resources.configuration)
+            config.setLocale(locale)
+            newBase.createConfigurationContext(config)
+        }
+        super.attachBaseContext(context)
+    }
 
     /* Overrides onCreate from AppCompatActivity */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,6 +131,9 @@ class MainActivity : AppCompatActivity() {
             when (key) {
                 Keys.PREF_THEME_SELECTION -> {
                     AppThemeHelper.setTheme(PreferencesHelper.loadThemeSelection())
+                }
+                Keys.PREF_LANGUAGE_SELECTED -> {
+                    LanguageHelper.setLanguage(this, PreferencesHelper.loadSelectedLanguage())
                 }
             }
         }
