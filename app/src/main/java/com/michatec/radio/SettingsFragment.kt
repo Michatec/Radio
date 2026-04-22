@@ -149,7 +149,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
 
 
         // set up "Buffer Size" preference
-        val preferenceBufferSize = SwitchPreferenceCompat(activity as Context)
+        val preferenceBufferSize = MarqueeSwitchPreference(context)
         preferenceBufferSize.title = getString(R.string.pref_buffer_size_title)
         preferenceBufferSize.setIcon(R.drawable.ic_network_check_24dp)
         preferenceBufferSize.key = Keys.PREF_LARGE_BUFFER_SIZE
@@ -159,7 +159,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
 
 
         // set up "Edit Stream Address" preference
-        val preferenceEnableEditingStreamUri = SwitchPreferenceCompat(activity as Context)
+        val preferenceEnableEditingStreamUri = MarqueeSwitchPreference(context)
         preferenceEnableEditingStreamUri.title = getString(R.string.pref_edit_station_stream_title)
         preferenceEnableEditingStreamUri.setIcon(R.drawable.ic_music_note_24dp)
         preferenceEnableEditingStreamUri.key = Keys.PREF_EDIT_STREAMS_URIS
@@ -174,7 +174,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
 
 
         // set up "Edit Stations" preference
-        val preferenceEnableEditingGeneral = SwitchPreferenceCompat(activity as Context)
+        val preferenceEnableEditingGeneral = MarqueeSwitchPreference(context)
         preferenceEnableEditingGeneral.title = getString(R.string.pref_edit_station_title)
         preferenceEnableEditingGeneral.setIcon(R.drawable.ic_edit_24dp)
         preferenceEnableEditingGeneral.key = Keys.PREF_EDIT_STATIONS
