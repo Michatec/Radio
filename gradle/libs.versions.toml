@@ -1,6 +1,6 @@
 [versions]
 activityKtx = "1.13.0"
-agp = "9.2.0"
+agp = "9.2.1"
 coreKtx = "1.18.0"
 freedroidwarn = "V1.12"
 gson = "2.14.0"
