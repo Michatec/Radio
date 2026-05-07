@@ -171,7 +171,7 @@ class SearchResultAdapter(
                     context: Context,
                     enableFloatOutput: Boolean,
                     enableAudioTrackPlaybackParams: Boolean
-                ): AudioSink? {
+                ): AudioSink {
                     return DefaultAudioSink.Builder(context)
                         .setAudioProcessors(arrayOf(nativeAudioProcessor))
                         .build()

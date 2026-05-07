@@ -11,6 +11,7 @@ import android.widget.FrameLayout
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import com.michatec.radio.R
+import androidx.core.view.isEmpty
 
 class ExtrasHelper {
     companion object {
@@ -69,7 +70,7 @@ class ExtrasHelper {
                 if (currentParent != container) {
                     currentParent?.removeView(visualizerView)
                     // If we injected into a standard preference, don't clear everything, just add
-                    if (container is FrameLayout || container.childCount == 0) {
+                    if (container is FrameLayout || container.isEmpty()) {
                         container.removeAllViews()
                     }
                     container.addView(visualizerView)

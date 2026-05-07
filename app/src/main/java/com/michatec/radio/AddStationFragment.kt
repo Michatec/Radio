@@ -120,7 +120,7 @@ class AddStationFragment : Fragment(),
                 if (searchEditText != null) {
                     searchEditText.requestFocus()
                     val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT)
+                    imm.showSoftInput(searchEditText, 0)
                 }
             }
         }

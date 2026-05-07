@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.media.MediaBrowserServiceCompat.BrowserRoot.EXTRA_RECENT
 import androidx.media3.cast.CastPlayer
 import androidx.media3.common.*
 import androidx.media3.common.util.UnstableApi
@@ -29,6 +28,7 @@ import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.michatec.radio.core.Collection
+import com.michatec.radio.core.Station
 import com.michatec.radio.helpers.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
@@ -132,7 +132,7 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
                 context: Context,
                 enableFloatOutput: Boolean,
                 enableAudioTrackPlaybackParams: Boolean
-            ): AudioSink? {
+            ): AudioSink {
                 return DefaultAudioSink.Builder(context)
                     .setAudioProcessors(arrayOf(nativeAudioProcessor))
                     .build()
@@ -169,6 +169,14 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
 
             override fun getDuration(): Long {
                 return C.TIME_UNSET // this will hide progress bar for HLS stations in the notification
+            }
+
+            override fun seekToNext() {
+                playNextStation()
+            }
+
+            override fun seekToPrevious() {
+                playPreviousStation()
             }
         }
         player.addListener(playerListener)
@@ -347,6 +355,37 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
     }
 
 
+    /* Switches to the next radio station in collection */
+    private fun playNextStation() {
+        val currentMediaId = player.currentMediaItem?.mediaId ?: PreferencesHelper.loadLastPlayedStationUuid()
+        val currentPosition = CollectionHelper.getStationPosition(collection, currentMediaId)
+        if (currentPosition != -1) {
+            val nextPosition = if (currentPosition < collection.stations.size - 1) currentPosition + 1 else 0
+            playStation(collection.stations[nextPosition])
+        }
+    }
+
+
+    /* Switches to the previous radio station in collection */
+    private fun playPreviousStation() {
+        val currentMediaId = player.currentMediaItem?.mediaId ?: PreferencesHelper.loadLastPlayedStationUuid()
+        val currentPosition = CollectionHelper.getStationPosition(collection, currentMediaId)
+        if (currentPosition != -1) {
+            val previousPosition = if (currentPosition > 0) currentPosition - 1 else collection.stations.size - 1
+            playStation(collection.stations[previousPosition])
+        }
+    }
+
+
+    /* Starts playback of a radio station */
+    private fun playStation(station: Station) {
+        val mediaItem = CollectionHelper.buildMediaItem(this, station)
+        player.setMediaItem(mediaItem)
+        player.prepare()
+        player.play()
+    }
+
+
     /*
      * Custom MediaSession Callback that handles player commands
      */
@@ -407,8 +446,8 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
             browser: MediaSession.ControllerInfo,
             params: LibraryParams?
         ): ListenableFuture<LibraryResult<MediaItem>> {
-            return if (params?.extras?.containsKey(EXTRA_RECENT) == true) {
-                // special case: system requested media resumption via EXTRA_RECENT
+            return if (params?.isRecent == true) {
+                // special case: system requested media resumption via isRecent
                 playLastStation = true
                 Futures.immediateFuture(LibraryResult.ofItem(CollectionHelper.getRecent(this@PlayerService, collection), params))
             } else {
@@ -552,8 +591,7 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
                         stopSelf()
                     }
                     Player.STATE_READY -> {
-                        // Playback is paused. For radio, we can stop the service to remove the notification.
-                        stopSelf()
+                        // Playback is paused. For radio, we keep the service running to allow resumption from headphones.
                     }
                     Player.STATE_BUFFERING -> {
                         // DO NOT stop the service while buffering (especially important for Cast)
@@ -561,17 +599,6 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
                 }
             }
         }
-
-        override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-            super.onPlayWhenReadyChanged(playWhenReady, reason)
-            if (!playWhenReady) {
-                // Only stop if not buffering and not ready to play (i.e. truly stopped/paused)
-                if (player.playbackState != Player.STATE_BUFFERING) {
-                    stopSelf()
-                }
-            }
-        }
-
 
         override fun onPlayerError(error: PlaybackException) {
             super.onPlayerError(error)

@@ -16,7 +16,7 @@ class MarqueeSwitchPreference(context: Context) : SwitchPreferenceCompat(context
         val title = holder.findViewById(android.R.id.title) as? TextView
         title?.apply {
             ellipsize = TextUtils.TruncateAt.MARQUEE
-            setSingleLine(true)
+            isSingleLine = true
             marqueeRepeatLimit = -1 // Repeat indefinitely
             isSelected = true       // Required for marquee to start
             setHorizontallyScrolling(true)

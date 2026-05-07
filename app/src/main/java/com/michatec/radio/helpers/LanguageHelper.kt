@@ -2,7 +2,6 @@ package com.michatec.radio.helpers
 
 import android.app.Activity
 import android.content.Context
-import android.content.res.Configuration
 import android.util.Log
 import com.michatec.radio.R
 import java.util.Locale
