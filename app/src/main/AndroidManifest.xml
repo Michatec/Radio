@@ -48,6 +48,7 @@
         <activity
             android:name=".ExpandedControllerActivity"
             android:exported="false"
+            android:theme="@style/CustomCastExpandedControllerStyle"
             android:launchMode="singleTask" />
 
         <!-- Main activity for radio station playback on phone and TV -->
