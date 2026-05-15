@@ -123,6 +123,8 @@
     <string name="pref_audio_effects_title">Lydeffekter</string>
     <string name="pref_bass_boost_title">Bas-forstærkning</string>
     <string name="pref_bass_boost_summary">Øg basforstærkningen.</string>
+    <string name="pref_security_title">Sikkerhed</string>
+    <string name="pref_security_summary">Lær mere om sikkerheden for denne applikation</string>
     <string name="pref_reverb_title">Hall</string>
     <string name="pref_reverb_summary">Juster hall-blanding.</string>
     <string name="pref_drc_title">Dynamisk rækkeviddekomprimering</string>

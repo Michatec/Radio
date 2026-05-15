@@ -123,6 +123,8 @@
     <string name="dialog_yes_no_message_update_collection">Κατεβάστε την τελευταία έκδοση όλων των σταθμών;</string>
     <string name="dialog_yes_no_positive_button_update_collection">Ενημέρωση</string>
     <string name="pref_audio_effects_title">Ηχητικά Εφέ</string>
+    <string name="pref_security_title">Ασφάλεια</string>
+    <string name="pref_security_summary">Μάθετε περισσότερα για την ασφάλεια αυτής της εφαρμογής</string>
     <string name="pref_bass_boost_title">Ενίσχυση Μπάσων</string>
     <string name="pref_bass_boost_summary">Αύξηση της ενίσχυσης μπάσων.</string>
     <string name="pref_reverb_title">Αντήχηση</string>

@@ -123,6 +123,8 @@
     <string name="dialog_yes_no_message_update_collection">Pobrać najnowszą wersję wszystkich stacji?</string>
     <string name="dialog_yes_no_positive_button_update_collection">Aktualizuj</string>
     <string name="pref_audio_effects_title">Efekty Dźwiękowe</string>
+    <string name="pref_security_title">Bezpieczeństwo</string>
+    <string name="pref_security_summary">Dowiedz się więcej o bezpieczeństwie tej aplikacji</string>
     <string name="pref_bass_boost_title">Wzmocnienie Basów</string>
     <string name="pref_bass_boost_summary">Zwiększ wzmocnienie basów.</string>
     <string name="pref_reverb_title">Pogłos</string>

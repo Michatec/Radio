@@ -123,6 +123,8 @@
     <string name="dialog_yes_no_message_update_collection">Завантажити останню версію всіх станцій?</string>
     <string name="dialog_yes_no_positive_button_update_collection">Оновити</string>
     <string name="pref_audio_effects_title">Звукові ефекти</string>
+    <string name="pref_security_title">Безпека</string>
+    <string name="pref_security_summary">Дізнайтеся більше про безпеку цього додатку</string>
     <string name="pref_bass_boost_title">Підсилення басів</string>
     <string name="pref_bass_boost_summary">Збільшити підсилення басів.</string>
     <string name="pref_reverb_title">Реверберація</string>

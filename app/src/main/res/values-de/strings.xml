@@ -126,6 +126,8 @@
     <string name="pref_bass_boost_title">Bass-Boost</string>
     <string name="pref_bass_boost_summary">Erhöhen Sie die Bassverstärkung.</string>
     <string name="pref_reverb_title">Hall</string>
+    <string name="pref_security_title">Sicherheit</string>
+    <string name="pref_security_summary">Erfahren Sie mehr über die Sicherheit dieser Anwendung</string>
     <string name="pref_reverb_summary">Reverb-Mix anpassen.</string>
     <string name="pref_drc_title">Dynamikkompression</string>
     <string name="pref_drc_summary">Den Dynamikbereich für eine gleichbleibende Lautstärke komprimieren.</string>

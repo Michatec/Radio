@@ -123,6 +123,8 @@
     <string name="dialog_yes_no_message_update_collection">Download de laatste versie van alle zenders?</string>
     <string name="dialog_yes_no_positive_button_update_collection">Bijwerken</string>
     <string name="pref_audio_effects_title">Audio Effecten</string>
+    <string name="pref_security_title">Securiteit</string>
+    <string name="pref_security_summary">Meer informatie over de beveiliging van deze toepassing</string>
     <string name="pref_bass_boost_title">Bass Boost</string>
     <string name="pref_bass_boost_summary">Verhoog de bassversterking.</string>
     <string name="pref_reverb_title">Reverb</string>

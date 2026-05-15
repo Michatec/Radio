@@ -123,6 +123,8 @@
     <string name="dialog_yes_no_positive_button_update_collection">更新</string>
     <string name="pref_audio_effects_title">オーディオエフェクト</string>
     <string name="pref_bass_boost_title">バスブースト</string>
+    <string name="pref_security_title">セキュリティ</string>
+    <string name="pref_security_summary">このアプリケーションのセキュリティについて詳しく知る</string>
     <string name="pref_bass_boost_summary">低音を増強します。</string>
     <string name="pref_reverb_title">リバーブ</string>
     <string name="pref_reverb_summary">リバーブミスを調整します。</string>

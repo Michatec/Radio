@@ -309,6 +309,21 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             return@setOnPreferenceClickListener true
         }
 
+        // set up "Security" preference
+        val preferenceSecurity = Preference(context)
+        preferenceSecurity.title = getString(R.string.pref_security_title)
+        preferenceSecurity.setIcon(R.drawable.ic_security_24dp)
+        preferenceSecurity.summary = getString(R.string.pref_security_summary)
+        preferenceSecurity.setOnPreferenceClickListener {
+            // open web browser
+            val intent = Intent().apply {
+                action = Intent.ACTION_VIEW
+                data = "https://github.com/michatec/Radio/blob/master/SECURITY.md".toUri()
+            }
+            startActivity(intent)
+            return@setOnPreferenceClickListener true
+        }
+
         val preferenceLanguageSelection = Preference(context)
         preferenceLanguageSelection.title = getString(R.string.pref_language_selection_title)
         preferenceLanguageSelection.setIcon(R.drawable.ic_language_24dp)
@@ -375,6 +390,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         screen.addPreference(preferenceCategoryLinks)
         preferenceCategoryLinks.addPreference(preferenceGitHub)
         preferenceCategoryLinks.addPreference(preferenceLicense)
+        preferenceCategoryLinks.addPreference(preferenceSecurity)
 
         preferenceScreen = screen
     }
