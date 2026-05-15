@@ -31,6 +31,7 @@ android {
             isCrunchPngs = false
             proguardFiles.addAll(listOf(getDefaultProguardFile("proguard-android-optimize.txt"), file("proguard-rules.pro")))
             applicationIdSuffix = ".debug"
+            buildConfigField("boolean", "IS_DEBUG_ENABLED", "true")
         }
 
         release {
@@ -38,6 +39,7 @@ android {
             isShrinkResources = true
             isCrunchPngs = true
             proguardFiles.addAll(listOf(getDefaultProguardFile("proguard-android-optimize.txt"), file("proguard-rules.pro")))
+            buildConfigField("boolean", "IS_DEBUG_ENABLED", "true")
         }
     }
 

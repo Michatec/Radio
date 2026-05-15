@@ -60,6 +60,7 @@ import com.michatec.radio.extensions.*
 import com.michatec.radio.helpers.*
 import com.michatec.radio.ui.LayoutHolder
 import com.michatec.radio.ui.PlayerState
+import com.michatec.radio.BuildConfig
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -831,7 +832,7 @@ class PlayerFragment : Fragment(),
                 } else {
                     activity?.packageManager?.getPackageInfo(requireActivity().packageName, 0)?.versionName
                 }
-            if (latestVersion != current) {
+            if (latestVersion != current && !BuildConfig.IS_DEBUG_ENABLED) {
                 // We have an update available, tell our user about it
                 view?.let {
                     Snackbar.make(it, getString(R.string.app_name) + " " + latestVersion + " " + getString(R.string.snackbar_update_available), 10000)
