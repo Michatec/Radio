@@ -110,7 +110,7 @@ When **Edit Stations** is enabled:
 <details>
 <summary>⭐ Star History</summary>
 
-[![Star History Chart](https://api.star-history.com/chart?repos=michatec/greek-iptv&type=date&legend=top-left)](https://www.star-history.com/?repos=michatec%2Fgreek-iptv&type=date&legend=top-left)
+[![Star History Chart](https://api.star-history.com/chart?repos=michatec/radio&type=date&legend=top-left)](https://www.star-history.com/?repos=michatec%2Fradio&type=date&legend=top-left)
 
 </details>
 
