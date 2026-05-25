@@ -105,6 +105,15 @@ When **Edit Stations** is enabled:
 
 </details>
 
+----------------------------------------
+
+<details>
+<summary>⭐ Star History</summary>
+
+[![Star History Chart](https://api.star-history.com/chart?repos=michatec/greek-iptv&type=date&legend=top-left)](https://www.star-history.com/?repos=michatec%2Fgreek-iptv&type=date&legend=top-left)
+
+</details>
+
 <div align="right">
 <table><td>
 <a href="#start-of-content">↥ Scroll to top</a>
