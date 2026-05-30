@@ -45,6 +45,7 @@
     <string name="notification_skip_to_previous">前へ</string>
     <string name="notification_skip_to_next">次へ</string>
     <string name="notification_test_content">テスト通知です。</string>
+    <string name="notification_channel_description">アプリに関するすべての通知。</string>
     <!-- オンボーディング -->
     <string name="onboarding_app_description">お気に入りのサウンドの世界に飛び込もう！</string>
     <string name="onboarding_app_get_started">今すぐ始める</string>

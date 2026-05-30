@@ -45,6 +45,7 @@
     <string name="notification_skip_to_previous">Vorige</string>
     <string name="notification_skip_to_next">Volgende</string>
     <string name="notification_test_content">Dit is een testmelding.</string>
+    <string name="notification_channel_description">Alle meldingen over de app.</string>
     <!-- Onboarding -->
     <string name="onboarding_app_description">Dompel jezelf onder in het geluid van je keuze!</string>
     <string name="onboarding_app_get_started">Aan de slag</string>

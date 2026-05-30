@@ -45,6 +45,7 @@
     <string name="notification_skip_to_previous">Предыдущий</string>
     <string name="notification_skip_to_next">Следующий</string>
     <string name="notification_test_content">Это тестовое уведомление.</string>
+    <string name="notification_channel_description">Все уведомления о приложении.</string>
     <!-- Onboarding -->
     <string name="onboarding_app_description">Погрузитесь в звук по вашему выбору!</string>
     <string name="onboarding_app_get_started">Начать</string>

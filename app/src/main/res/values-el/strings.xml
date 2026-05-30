@@ -45,6 +45,7 @@
     <string name="notification_skip_to_previous">Προηγούμενο</string>
     <string name="notification_skip_to_next">Επόμενο</string>
     <string name="notification_test_content">Αυτή είναι μια δοκιμαστική ειδοποίηση.</string>
+    <string name="notification_channel_description">Όλες οι ειδοποιήσεις σχετικά με την εφαρμογή.</string>
     <!-- Onboarding -->
     <string name="onboarding_app_description">Βυθιστείτε στον ήχο της επιλογής σας!</string>
     <string name="onboarding_app_get_started">Ας ξεκινήσουμε</string>

@@ -51,6 +51,7 @@
     <string name="notification_skip_to_previous">Previous</string>
     <string name="notification_skip_to_next">Next</string>
     <string name="notification_test_content">This is a test notification.</string>
+    <string name="notification_channel_description">All notifications about the app.</string>
 
     <!-- Onboarding -->
     <string name="onboarding_app_description">Immerse yourself in the sound of your choice!</string>
