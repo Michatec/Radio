@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 
     // request notification permission (for Android 13+)
     private val permissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
+        ActivityResultContracts.RequestPermission(Manifest.permission.POST_NOTIFICATIONS)
     ) { isGranted ->
         if (!isGranted) {
             Snackbar.make(
