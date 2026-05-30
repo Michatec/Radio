@@ -42,7 +42,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
 
     // Check if the device running the app is an Android TV instance
     private val isAndroidTV: Boolean by lazy {
-        packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
+        PackageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
     }
 
     /* Overrides onViewCreated from PreferenceFragmentCompat */
