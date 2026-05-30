@@ -44,6 +44,7 @@
     <string name="notification_stop">Stop</string>
     <string name="notification_skip_to_previous">Forrige</string>
     <string name="notification_skip_to_next">Næste</string>
+    <string name="notification_test_content">Dette er en testmeddelelse.</string>
     <!-- Onboarding -->
     <string name="onboarding_app_description">Fordyb dig i lyden du elsker!</string>
     <string name="onboarding_app_get_started">Kom i gang</string>
@@ -111,6 +112,7 @@
     <!-- Snackbars -->
     <string name="snackbar_show">Vis</string>
     <string name="snackbar_update_available">er tilgængelig!</string>
+    <string name="snackbar_failed_permission_notification">Kunne ikke anmode om meddelelsestilladelse.</string>
     <!-- Language Selection -->
     <string name="pref_language_selection_title">Sprog</string>
     <string name="pref_language_selection_summary">Aktuelt sprog</string>

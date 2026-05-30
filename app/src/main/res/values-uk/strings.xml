@@ -44,6 +44,7 @@
     <string name="notification_stop">Зупинити</string>
     <string name="notification_skip_to_previous">Попередня</string>
     <string name="notification_skip_to_next">Наступна</string>
+    <string name="notification_test_content">Це тестове сповіщення.</string>
     <!-- Onboarding -->
     <string name="onboarding_app_description">Пориньте у звук на ваш вибір!</string>
     <string name="onboarding_app_get_started">Початок роботи</string>
@@ -113,6 +114,7 @@
     <!-- Snackbars -->
     <string name="snackbar_show">Показати</string>
     <string name="snackbar_update_available">доступне!</string>
+    <string name="snackbar_failed_permission_notification">Не вдалося запитати дозвіл на сповіщення.</string>
     <!-- Language Selection -->
     <string name="pref_language_selection_title">Мова</string>
     <string name="pref_language_selection_summary">Поточна мова</string>

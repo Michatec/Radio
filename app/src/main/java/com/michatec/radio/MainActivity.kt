@@ -1,5 +1,7 @@
 package com.michatec.radio
 
+import android.Manifest
+import android.os.Build
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -13,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
+import androidx.activity.result.contract.ActivityResultContracts
+import com.google.android.material.snackbar.Snackbar
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.navigateUp
@@ -30,6 +34,25 @@ class MainActivity : AppCompatActivity() {
 
     /* Main class variables */
     private lateinit var appBarConfiguration: AppBarConfiguration
+
+    // request notification permission (for Android 13+)
+    private val permissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            NotificationSys.showNotification(
+                this, 
+                R.string.app_name, 
+                R.string.notification_test_content
+            )
+        } else {
+            Snackbar.make(
+                findViewById(android.R.id.content),
+                R.string.snackbar_failed_permission_notification, 
+                Snackbar.LENGTH_LONG
+            ).show()
+        }
+    }
 
     /* Overrides attachBaseContext from AppCompatActivity */
     override fun attachBaseContext(newBase: Context) {
@@ -82,6 +105,17 @@ class MainActivity : AppCompatActivity() {
 
         // register listener for changes in shared preferences
         PreferencesHelper.registerPreferenceChangeListener(sharedPreferenceChangeListener)
+
+        // request permissions
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            NotificationSys.showNotification(
+                this, 
+                R.string.app_name, 
+                R.string.notification_test_content
+            )
+        }
     }
 
     /* Hides the loading/splash overlay */

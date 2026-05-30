@@ -44,6 +44,7 @@
     <string name="notification_stop">Διακοπή</string>
     <string name="notification_skip_to_previous">Προηγούμενο</string>
     <string name="notification_skip_to_next">Επόμενο</string>
+    <string name="notification_test_content">Αυτή είναι μια δοκιμαστική ειδοποίηση.</string>
     <!-- Onboarding -->
     <string name="onboarding_app_description">Βυθιστείτε στον ήχο της επιλογής σας!</string>
     <string name="onboarding_app_get_started">Ας ξεκινήσουμε</string>
@@ -113,6 +114,7 @@
     <!-- Snackbars -->
     <string name="snackbar_show">Εμφάνισε</string>
     <string name="snackbar_update_available">είναι διαθέσιμη!</string>
+    <string name="snackbar_failed_permission_notification">Απέτυχε η αίτηση δικαιώματος ειδοποίησης.</string>
     <!-- Language Selection -->
     <string name="pref_language_selection_title">Γλώσσα</string>
     <string name="pref_language_selection_summary">Τρέχουσα γλώσσα</string>

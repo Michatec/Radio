@@ -44,6 +44,7 @@
     <string name="notification_stop">停止</string>
     <string name="notification_skip_to_previous">前へ</string>
     <string name="notification_skip_to_next">次へ</string>
+    <string name="notification_test_content">テスト通知です。</string>
     <!-- オンボーディング -->
     <string name="onboarding_app_description">お気に入りのサウンドの世界に飛び込もう！</string>
     <string name="onboarding_app_get_started">今すぐ始める</string>
@@ -112,6 +113,7 @@
     <!-- スナックバー -->
     <string name="snackbar_show">表示</string>
     <string name="snackbar_update_available">が利用可能です！</string>
+    <string name="snackbar_failed_permission_notification">通知の権限リクエストに失敗しました。</string>
     <!-- 言語選択 -->
     <string name="pref_language_selection_title">言語</string>
     <string name="pref_language_selection_summary">現在の言語</string>

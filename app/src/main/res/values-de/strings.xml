@@ -44,6 +44,7 @@
     <string name="notification_stop">Stopp</string>
     <string name="notification_skip_to_previous">Zurück</string>
     <string name="notification_skip_to_next">Nächste</string>
+    <string name="notification_test_content">Dies ist eine Testbenachrichtigung.</string>
     <!-- Onboarding -->
     <string name="onboarding_app_description">Tauche ein in den Sound deiner Wahl!</string>
     <string name="onboarding_app_get_started">Jetzt starten</string>
@@ -122,6 +123,7 @@
     <!-- Snackbars -->
     <string name="snackbar_show">Zeigen</string>
     <string name="snackbar_update_available">ist verfügbar!</string>
+    <string name="snackbar_failed_permission_notification">Fehler bei der Anfrage nach Benachrichtigungsberechtigung.</string>
     <string name="pref_audio_effects_title">Audio-Effekte</string>
     <string name="pref_bass_boost_title">Bass-Boost</string>
     <string name="pref_bass_boost_summary">Erhöhen Sie die Bassverstärkung.</string>

@@ -2,6 +2,7 @@
 <resources>
     <!-- App Name -->
     <string name="app_version_name" translatable="false">\"Red\"</string>
+    <string name="app_name" translatable="false">Radio</string>
 
     <!-- Accessibility Descriptions -->
     <string name="descr_app_icon">App icon depicting an old radio</string>
@@ -49,6 +50,7 @@
     <string name="notification_stop">Stop</string>
     <string name="notification_skip_to_previous">Previous</string>
     <string name="notification_skip_to_next">Next</string>
+    <string name="notification_test_content">This is a test notification.</string>
 
     <!-- Onboarding -->
     <string name="onboarding_app_description">Immerse yourself in the sound of your choice!</string>
@@ -184,8 +186,8 @@
     <string name="snackbar_update_available">is available!</string>
     <string name="snackbar_url_app_home_page" translatable="false">https://github.com/michatec/Radio/releases/latest</string>
     <string name="snackbar_github_update_check_url" translatable="false">https://api.github.com/repos/michatec/Radio/releases/latest</string>
-    <string name="app_name" translatable="false">Radio</string>
     <string name="icon_launcher" translatable="false">Icon launcher.</string>
+    <string name="snackbar_failed_permission_notification">Failed to request notification permission.</string>
 
     <!-- Extras -->
     <string name="loading">Loading…</string>

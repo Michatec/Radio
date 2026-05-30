@@ -44,6 +44,7 @@
     <string name="notification_stop">Zatrzymaj</string>
     <string name="notification_skip_to_previous">Poprzedni</string>
     <string name="notification_skip_to_next">Następny</string>
+    <string name="notification_test_content">To jest powiadomienie testowe.</string>
     <!-- Onboarding -->
     <string name="onboarding_app_description">Zanurz się w dźwięku swojego wyboru!</string>
     <string name="onboarding_app_get_started">Zaczynamy</string>
@@ -113,6 +114,7 @@
     <!-- Snackbars -->
     <string name="snackbar_show">Wyświetl</string>
     <string name="snackbar_update_available">jest dostępna!</string>
+    <string name="snackbar_failed_permission_notification">Nie udało się poprosić o pozwolenie na powiadomienia.</string>
     <!-- Language Selection -->
     <string name="pref_language_selection_title">Język</string>
     <string name="pref_language_selection_summary">Aktualny język</string>

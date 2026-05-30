@@ -44,6 +44,7 @@
     <string name="notification_stop">Остановить</string>
     <string name="notification_skip_to_previous">Предыдущий</string>
     <string name="notification_skip_to_next">Следующий</string>
+    <string name="notification_test_content">Это тестовое уведомление.</string>
     <!-- Onboarding -->
     <string name="onboarding_app_description">Погрузитесь в звук по вашему выбору!</string>
     <string name="onboarding_app_get_started">Начать</string>
@@ -113,6 +114,7 @@
     <!-- Snackbars -->
     <string name="snackbar_show">Показать</string>
     <string name="snackbar_update_available">доступно!</string>
+    <string name="snackbar_failed_permission_notification">Не удалось запросить разрешение на уведомления.</string>
     <!-- Language Selection -->
     <string name="pref_language_selection_title">Язык</string>
     <string name="pref_language_selection_summary">Текущий язык</string>
