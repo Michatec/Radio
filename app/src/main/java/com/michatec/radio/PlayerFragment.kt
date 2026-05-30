@@ -96,6 +96,11 @@ class PlayerFragment : Fragment(),
     private var tempStationUuid: String = String()
     private var itemTouchHelper: ItemTouchHelper? = null
 
+    // Check if the device running the app is an Android TV instance
+    private val isAndroidTV: Boolean by lazy {
+        context?.packageManager?.hasSystemFeature(PackageManager.FEATURE_LEANBACK) == true
+    }
+
 
     /* Overrides onCreate from Fragment */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -849,6 +854,22 @@ class PlayerFragment : Fragment(),
                                 requireActivity(),
                                 R.color.default_neutral_white))
                         .show()
+                }
+
+                if (!isAndroidTV) {
+                    val releaseUrl = getString(R.string.snackbar_url_app_home_page)
+    
+                    // Create the clean browser intent that will trigger ONLY when the notification is tapped
+                    val updateIntent = Intent(Intent.ACTION_VIEW, Uri.parse(releaseUrl)).apply {
+                        putExtra("SOURCE", "SELF")
+                    }
+
+                    NotificationSys.showNotification(
+                        requireContext(),
+                        "${getString(R.string.app_name)} $latestVersion",
+                        getString(R.string.snackbar_update_available),
+                        intent = updateIntent
+                    )
                 }
             }
         }, { error ->

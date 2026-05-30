@@ -28,18 +28,18 @@ object NotificationSys {
         }
     }
 
-    fun showNotification(context: Context, title: String, content: String) {
+    fun showNotification(context: Context, title: String, content: String, intent: Intent? = null) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         createNotificationChannel(context)
 
-        val intent = Intent(context, MainActivity::class.java).apply {
+        val targetIntent = intent ?: Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
 
         val pendingIntent = PendingIntent.getActivity(
             context, 
             0, 
-            intent, 
+            targetIntent, 
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
@@ -55,9 +55,9 @@ object NotificationSys {
         notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
-    fun showNotification(context: Context, titleResId: Int, contentResId: Int) {
+    fun showNotification(context: Context, titleResId: Int, contentResId: Int, intent: Intent? = null) {
         val title = context.getString(titleResId)
         val content = context.getString(contentResId)
-        showNotification(context, title, content)
+        showNotification(context, title, content, intent)
     }
 }
