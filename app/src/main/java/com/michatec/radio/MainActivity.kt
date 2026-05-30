@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
 
     // Check if the device running the app is an Android TV instance
     private val isAndroidTV: Boolean by lazy {
-        PackageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
+        packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
     }
 
     // request notification permission (for Android 13+)
