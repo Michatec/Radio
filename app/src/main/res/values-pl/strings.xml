@@ -86,6 +86,8 @@
     <string name="pref_theme_selection_title">Motyw aplikacji</string>
     <string name="pref_update_station_images_summary">Pobierz najnowszą wersję wszystkich obrazów stacji w swojej kolekcji.</string>
     <string name="pref_update_station_images_title">Aktualizuj zdjęcia stacji</string>
+    <string name="pref_test_notification_title">Testowe powiadomienie</string>
+    <string name="pref_test_notification_summary">Sprawdź, czy system powiadomień działa.</string>
     <!-- Sample Text -->
     <!-- App Shortcuts -->
     <string name="shortcut_last_station_disabled_message">Skrót do odtwarzania ostatniej stacji jest wyłączony.</string>

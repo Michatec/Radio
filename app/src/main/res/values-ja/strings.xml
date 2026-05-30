@@ -86,6 +86,8 @@
     <string name="pref_theme_selection_title">アプリテーマ</string>
     <string name="pref_update_station_images_summary">すべての局画像を最新に更新します。</string>
     <string name="pref_update_station_images_title">局画像を更新</string>
+    <string name="pref_test_notification_title">テスト通知</string>
+    <string name="pref_test_notification_summary">通知システムが動作するかテストします。</string>
     <!-- ショートカット -->
     <string name="shortcut_last_station_disabled_message">最後に再生した局のショートカットは無効になっています。</string>
     <string name="shortcut_last_station_long_label">最後の局を再生</string>

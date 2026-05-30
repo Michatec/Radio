@@ -95,6 +95,8 @@
     <string name="pref_theme_selection_title">App-Design</string>
     <string name="pref_update_station_images_summary">Die neueste Version aller Senderbilder herunterladen.</string>
     <string name="pref_update_station_images_title">Senderbilder aktualisieren</string>
+    <string name="pref_test_notification_title">Test-Benachrichtigung</string>
+    <string name="pref_test_notification_summary">Testen, ob das Benachrichtigungssystem funktioniert.</string>
     <!-- Sample Text -->
     <!-- App Shortcuts -->
     <string name="shortcut_last_station_disabled_message">Verknüpfung für Wiedergabe des letzten Senders deaktiviert.</string>

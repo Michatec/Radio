@@ -86,6 +86,8 @@
     <string name="pref_theme_selection_title">App Thema</string>
     <string name="pref_update_station_images_summary">Download de laatste versie van alle zenderafbeeldingen.</string>
     <string name="pref_update_station_images_title">Update Zenderafbeeldingen</string>
+    <string name="pref_test_notification_title">Testmelding</string>
+    <string name="pref_test_notification_summary">Test of het meldingsysteem werkt.</string>
     <!-- Sample Text -->
     <!-- App Shortcuts -->
     <string name="shortcut_last_station_disabled_message">Snelkoppeling voor het afspelen van de laatste zender uitgeschakeld.</string>

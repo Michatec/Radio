@@ -86,6 +86,8 @@
     <string name="pref_theme_selection_title">Тема приложения</string>
     <string name="pref_update_station_images_summary">Скачать последнюю версию всех изображений станций.</string>
     <string name="pref_update_station_images_title">Обновить изображения станций</string>
+    <string name="pref_test_notification_title">Тест уведомления</string>
+    <string name="pref_test_notification_summary">Проверить, работает ли система уведомлений.</string>
     <!-- Sample Text -->
     <!-- App Shortcuts -->
     <string name="shortcut_last_station_disabled_message">Ярлык для воспроизведения последней станции отключён.</string>

@@ -35,17 +35,16 @@ class MainActivity : AppCompatActivity() {
     /* Main class variables */
     private lateinit var appBarConfiguration: AppBarConfiguration
 
+    // Check if the device running the app is an Android TV instance
+    private val isAndroidTV: Boolean by lazy {
+        packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
+    }
+
     // request notification permission (for Android 13+)
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        if (isGranted) {
-            NotificationSys.showNotification(
-                this, 
-                R.string.app_name, 
-                R.string.notification_test_content
-            )
-        } else {
+        if (!isGranted) {
             Snackbar.make(
                 findViewById(android.R.id.content),
                 R.string.snackbar_failed_permission_notification, 
@@ -95,7 +94,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         // TV-specific loading logic: Hide the overlay once the app is ready
-        if (packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)) {
+        if (isAndroidTV) {
             Handler(Looper.getMainLooper()).postDelayed({
                 hideLoadingOverlay()
             }, 1200)
@@ -107,14 +106,8 @@ class MainActivity : AppCompatActivity() {
         PreferencesHelper.registerPreferenceChangeListener(sharedPreferenceChangeListener)
 
         // request permissions
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (!isAndroidTV && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        } else {
-            NotificationSys.showNotification(
-                this, 
-                R.string.app_name, 
-                R.string.notification_test_content
-            )
         }
     }
 

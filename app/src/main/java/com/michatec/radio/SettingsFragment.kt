@@ -22,6 +22,8 @@ import com.michatec.radio.dialogs.PresetSelectionDialog
 import com.michatec.radio.dialogs.ThemeSelectionDialog
 import com.michatec.radio.dialogs.YesNoDialog
 import com.michatec.radio.helpers.*
+import com.michatec.radio.NotificationSys
+import android.content.pm.PackageManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -37,6 +39,11 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
 
     /* Define log tag */
     private val TAG: String = SettingsFragment::class.java.simpleName
+
+    // Check if the device running the app is an Android TV instance
+    private val isAndroidTV: Boolean by lazy {
+        packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
+    }
 
     /* Overrides onViewCreated from PreferenceFragmentCompat */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -309,6 +316,21 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             return@setOnPreferenceClickListener true
         }
 
+        // set up "Test Notification" preference
+        val preferenceTestNotification = Preference(context)
+        preferenceTestNotification.title = getString(R.string.pref_test_notification_title)
+        preferenceTestNotification.setIcon(R.drawable.ic_notification_app_icon_white_24dp)
+        preferenceTestNotification.summary = getString(R.string.pref_test_notification_summary)
+        preferenceTestNotification.setOnPreferenceClickListener {
+            // show test notification
+            NotificationSys.showNotification(
+                context,
+                getString(R.string.pref_test_notification_title),
+                getString(R.string.notification_test_content)
+            )
+            return@setOnPreferenceClickListener true
+        }
+
         // set up "Security" preference
         val preferenceSecurity = Preference(context)
         preferenceSecurity.title = getString(R.string.pref_security_title)
@@ -363,6 +385,10 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         screen.addPreference(preferenceCategoryGeneral)
         preferenceCategoryGeneral.addPreference(preferenceThemeSelection)
         preferenceCategoryGeneral.addPreference(preferenceLanguageSelection)
+
+        if (!isAndroidTV) {
+            preferenceCategoryGeneral.addPreference(preferenceTestNotification)
+        }
 
         screen.addPreference(preferenceCategoryAudioEffects)
         preferenceCategoryAudioEffects.addPreference(preferenceBassBoost)

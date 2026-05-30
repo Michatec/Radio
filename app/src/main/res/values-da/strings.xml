@@ -86,6 +86,8 @@
     <string name="pref_theme_selection_title">App-tema</string>
     <string name="pref_update_station_images_summary">Download nyeste stationsbilleder.</string>
     <string name="pref_update_station_images_title">Opdater stationsbilleder</string>
+    <string name="pref_test_notification_title">Testmeddelelse</string>
+    <string name="pref_test_notification_summary">Test om meddelelsessystemet virker.</string>
     <!-- App-genveje -->
     <string name="shortcut_last_station_disabled_message">Genvej til seneste station er deaktiveret.</string>
     <string name="shortcut_last_station_long_label">Afspil seneste station</string>
