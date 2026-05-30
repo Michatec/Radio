@@ -319,7 +319,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         // set up "Test Notification" preference
         val preferenceTestNotification = Preference(context)
         preferenceTestNotification.title = getString(R.string.pref_test_notification_title)
-        preferenceTestNotification.setIcon(R.drawable.ic_notification_app_icon_white_24dp)
+        preferenceTestNotification.setIcon(R.drawable.ic_notification_app_icon_24dp)
         preferenceTestNotification.summary = getString(R.string.pref_test_notification_summary)
         preferenceTestNotification.setOnPreferenceClickListener {
             // show test notification
