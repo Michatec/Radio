@@ -45,7 +45,7 @@
     <string name="notification_skip_to_previous">Forrige</string>
     <string name="notification_skip_to_next">Næste</string>
     <string name="notification_test_content">Dette er en testmeddelelse.</string>
-    <string name="notification_channel_description">Alle meddelelser om app'en.</string>
+    <string name="notification_channel_description">Alle meddelelser om app’en.</string>
     <!-- Onboarding -->
     <string name="onboarding_app_description">Fordyb dig i lyden du elsker!</string>
     <string name="onboarding_app_get_started">Kom i gang</string>
