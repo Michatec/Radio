@@ -6,21 +6,20 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import com.michatec.radio.R
 
 object NotificationSys {
-    private const val CHANNEL_ID = "com.michatec.radio.channel"
+    private const val CHANNEL_ID = "com.michatec.radio.channel_messages"
     private const val CHANNEL_NAME = "Notifications"
-    private const val NOTIFICATION_ID = 1001
+    private const val NOTIFICATION_ID = 5000
 
     fun createNotificationChannel(context: Context) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (notificationManager.getNotificationChannel(CHANNEL_ID) == null) {
             val channel = NotificationChannel(
-                CHANNEL_ID, 
-                CHANNEL_NAME, 
-                NotificationManager.IMPORTANCE_DEFAULT
+                CHANNEL_ID,
+                CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_LOW
             ).apply {
                 description = context.getString(R.string.notification_channel_description)
             }
@@ -37,9 +36,9 @@ object NotificationSys {
         }
 
         val pendingIntent = PendingIntent.getActivity(
-            context, 
-            0, 
-            targetIntent, 
+            context,
+            0,
+            targetIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
@@ -53,11 +52,5 @@ object NotificationSys {
             .build()
 
         notificationManager.notify(NOTIFICATION_ID, notification)
-    }
-
-    fun showNotification(context: Context, titleResId: Int, contentResId: Int, intent: Intent? = null) {
-        val title = context.getString(titleResId)
-        val content = context.getString(contentResId)
-        showNotification(context, title, content, intent)
     }
 }

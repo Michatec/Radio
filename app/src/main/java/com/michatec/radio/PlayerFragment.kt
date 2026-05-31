@@ -1,5 +1,6 @@
 package com.michatec.radio
 
+import android.Manifest
 import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
@@ -13,6 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
@@ -60,7 +62,6 @@ import com.michatec.radio.extensions.*
 import com.michatec.radio.helpers.*
 import com.michatec.radio.ui.LayoutHolder
 import com.michatec.radio.ui.PlayerState
-import com.michatec.radio.BuildConfig
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -99,6 +100,10 @@ class PlayerFragment : Fragment(),
     // Check if the device running the app is an Android TV instance
     private val isAndroidTV: Boolean by lazy {
         context?.packageManager?.hasSystemFeature(PackageManager.FEATURE_LEANBACK) == true
+    }
+
+    private fun isPermissionGranted(context: Context, permission: String): Boolean {
+        return context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
     }
 
 
@@ -840,7 +845,7 @@ class PlayerFragment : Fragment(),
             if (latestVersion != current && !BuildConfig.IS_DEBUG_ENABLED) {
                 // We have an update available, tell our user about it
                 view?.let {
-                    Snackbar.make(it, getString(R.string.app_name) + " " + latestVersion + " " + getString(R.string.snackbar_update_available), 10000)
+                    val snackbar = Snackbar.make(it, getString(R.string.app_name) + " " + latestVersion + " " + getString(R.string.snackbar_update_available), 10000)
                         .setAction(R.string.snackbar_show) {
                             val releaseurl = getString(R.string.snackbar_url_app_home_page)
                             val i = Intent(Intent.ACTION_VIEW)
@@ -853,17 +858,19 @@ class PlayerFragment : Fragment(),
                             ContextCompat.getColor(
                                 requireActivity(),
                                 R.color.default_neutral_white))
-                        .show()
-                }
 
-                if (!isAndroidTV) {
+                    if (!isAndroidTV) {
+                        val params = snackbar.view.layoutParams as FrameLayout.LayoutParams
+                        params.bottomMargin = 300
+                        snackbar.view.layoutParams = params
+                    }
+                    snackbar.show()
+                }
+                if (!isAndroidTV && isPermissionGranted(requireContext(), Manifest.permission.POST_NOTIFICATIONS)) {
                     val releaseUrl = getString(R.string.snackbar_url_app_home_page)
-    
-                    // Create the clean browser intent that will trigger ONLY when the notification is tapped
-                    val updateIntent = Intent(Intent.ACTION_VIEW, Uri.parse(releaseUrl)).apply {
+                    val updateIntent = Intent(Intent.ACTION_VIEW, releaseUrl.toUri()).apply {
                         putExtra("SOURCE", "SELF")
                     }
-
                     NotificationSys.showNotification(
                         requireContext(),
                         "${getString(R.string.app_name)} $latestVersion",

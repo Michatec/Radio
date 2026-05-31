@@ -22,7 +22,6 @@ import com.michatec.radio.dialogs.PresetSelectionDialog
 import com.michatec.radio.dialogs.ThemeSelectionDialog
 import com.michatec.radio.dialogs.YesNoDialog
 import com.michatec.radio.helpers.*
-import com.michatec.radio.NotificationSys
 import android.content.pm.PackageManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -43,6 +42,10 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
     // Check if the device running the app is an Android TV instance
     private val isAndroidTV: Boolean by lazy {
         context?.packageManager?.hasSystemFeature(PackageManager.FEATURE_LEANBACK) == true
+    }
+
+    private fun isPermissionGranted(context: Context, permission: String): Boolean {
+        return context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
     }
 
     /* Overrides onViewCreated from PreferenceFragmentCompat */
@@ -386,7 +389,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceCategoryGeneral.addPreference(preferenceThemeSelection)
         preferenceCategoryGeneral.addPreference(preferenceLanguageSelection)
 
-        if (!isAndroidTV) {
+        if (!isAndroidTV && isPermissionGranted(activity as Context, android.Manifest.permission.POST_NOTIFICATIONS)) {
             preferenceCategoryGeneral.addPreference(preferenceTestNotification)
         }
 

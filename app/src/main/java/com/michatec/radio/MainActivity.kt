@@ -1,25 +1,30 @@
 package com.michatec.radio
 
 import android.Manifest
-import android.os.Build
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import android.view.View
+import android.widget.FrameLayout
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
-import androidx.activity.result.contract.ActivityResultContracts
-import com.google.android.material.snackbar.Snackbar
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.navigateUp
+import com.google.android.material.snackbar.Snackbar
 import com.michatec.radio.helpers.AppThemeHelper
 import com.michatec.radio.helpers.FileHelper
 import com.michatec.radio.helpers.LanguageHelper
@@ -45,11 +50,24 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (!isGranted) {
-            Snackbar.make(
+            val snackbar = Snackbar.make(
                 findViewById(android.R.id.content),
-                R.string.snackbar_failed_permission_notification, 
+                R.string.snackbar_failed_permission_notification,
                 Snackbar.LENGTH_LONG
-            ).show()
+            )
+            val params = snackbar.view.layoutParams as FrameLayout.LayoutParams
+            params.bottomMargin = 300
+            // If the user permanently denied the permission, show a link to settings
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)) {
+                snackbar.setAction(R.string.fragment_settings_title) {
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        data = Uri.fromParts("package", packageName, null)
+                    }
+                    startActivity(intent)
+                }
+            }
+            snackbar.view.layoutParams = params
+            snackbar.show()
         }
     }
 
