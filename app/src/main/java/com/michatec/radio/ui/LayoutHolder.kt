@@ -42,7 +42,7 @@ data class LayoutHolder(var rootView: View) {
     /* Main class variables */
     var recyclerView: RecyclerView = rootView.findViewById(R.id.station_list)
     val layoutManager: LinearLayoutManager
-    private var bottomSheet: ConstraintLayout? = rootView.findViewById(R.id.bottom_sheet)
+    var bottomSheet: ConstraintLayout? = rootView.findViewById(R.id.bottom_sheet)
 
     //private var sheetMetadataViews: Group
     private var sleepTimerRunningViews: Group? = rootView.findViewById(R.id.sleep_timer_running_views)

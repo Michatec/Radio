@@ -14,7 +14,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
@@ -150,7 +149,11 @@ class PlayerFragment : Fragment(),
         pickSingleMediaLauncher =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { imageUri ->
                 if (imageUri == null) {
-                    Snackbar.make(requireView(), R.string.toastalert_failed_picking_media, Snackbar.LENGTH_LONG).show()
+                    val snackbar = Snackbar.make(requireView(), R.string.toastalert_failed_picking_media, Snackbar.LENGTH_LONG)
+                    if (!isAndroidTV) {
+                        snackbar.setAnchorView(layout.bottomSheet)
+                    }
+                    snackbar.show()
                 } else {
                     collection = CollectionHelper.setStationImageWithStationUuid(
                         activity as Context,
@@ -501,11 +504,17 @@ class PlayerFragment : Fragment(),
                     // display the TimePicker dialog
                     timePicker.show(requireActivity().supportFragmentManager, "tag")
                 }
-                else -> Snackbar.make(
-                    requireView(),
-                    R.string.toastmessage_sleep_timer_unable_to_start,
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                else -> {
+                    val snackbar = Snackbar.make(
+                        requireView(),
+                        R.string.toastmessage_sleep_timer_unable_to_start,
+                        Snackbar.LENGTH_SHORT
+                    )
+                    if (!isAndroidTV) {
+                        snackbar.setAnchorView(layout.bottomSheet)
+                    }
+                    snackbar.show()
+                }
             }
         }
 
@@ -860,9 +869,7 @@ class PlayerFragment : Fragment(),
                                 R.color.default_neutral_white))
 
                     if (!isAndroidTV) {
-                        val params = snackbar.view.layoutParams as FrameLayout.LayoutParams
-                        params.bottomMargin = 300
-                        snackbar.view.layoutParams = params
+                        snackbar.setAnchorView(layout.bottomSheet)
                     }
                     snackbar.show()
                 }

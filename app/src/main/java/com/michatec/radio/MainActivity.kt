@@ -13,7 +13,6 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.view.View
-import android.widget.FrameLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -55,8 +54,6 @@ class MainActivity : AppCompatActivity() {
                 R.string.snackbar_failed_permission_notification,
                 Snackbar.LENGTH_LONG
             )
-            val params = snackbar.view.layoutParams as FrameLayout.LayoutParams
-            params.bottomMargin = 300
             // If the user permanently denied the permission, show a link to settings
             if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)) {
                 snackbar.setAction(R.string.fragment_settings_title) {
@@ -66,7 +63,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
             }
-            snackbar.view.layoutParams = params
+            snackbar.setAnchorView(findViewById(R.id.bottom_sheet))
             snackbar.show()
         }
     }
