@@ -331,7 +331,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
                 context,
                 getString(R.string.pref_test_notification_title),
                 getString(R.string.notification_test_content),
-                id = 1003
+                id = 1004
             )
             return@setOnPreferenceClickListener true
         }
@@ -415,7 +415,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
                     context,
                     getString(R.string.pref_share_app_thank_title),
                     getString(R.string.pref_share_app_thank_message),
-                    id = 1002
+                    id = 1003
                 )
             }
             return@setOnPreferenceClickListener true

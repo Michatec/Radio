@@ -886,7 +886,7 @@ class PlayerFragment : Fragment(),
                         "${getString(R.string.app_name)} $latestVersion",
                         getString(R.string.snackbar_update_available),
                         intent = updateIntent,
-                        id = 1001
+                        id = 1002
                     )
                 }
             }
