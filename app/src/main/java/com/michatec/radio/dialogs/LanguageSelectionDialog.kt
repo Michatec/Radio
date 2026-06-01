@@ -39,6 +39,7 @@ class LanguageSelectionDialog(private var languageSelectionDialogListener: Langu
         Language("de", R.string.pref_language_de),
         Language("fr", R.string.pref_language_fr),
         Language("ru", R.string.pref_language_ru),
+        Language("uk", R.string.pref_language_uk),
         Language("ja", R.string.pref_language_ja),
         Language("nl", R.string.pref_language_nl),
         Language("pl", R.string.pref_language_pl),

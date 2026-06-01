@@ -265,6 +265,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             return@setOnPreferenceClickListener true
         }
 
+        // set up "Visualizer" preference entry
         val preferenceVisualizer = Preference(context)
         preferenceVisualizer.title = getString(R.string.pref_visualizer_title)
         preferenceVisualizer.setIcon(R.drawable.ic_visualizer_24dp)
@@ -349,6 +350,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             return@setOnPreferenceClickListener true
         }
 
+        // set up "Language Selection" preference
         val preferenceLanguageSelection = Preference(context)
         preferenceLanguageSelection.title = getString(R.string.pref_language_selection_title)
         preferenceLanguageSelection.setIcon(R.drawable.ic_language_24dp)
@@ -361,6 +363,61 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             return@setOnPreferenceClickListener true
         }
 
+        // set up "Custom Theme" preference
+        val preferenceCustomTheme = Preference(context)
+        preferenceCustomTheme.title = getString(R.string.pref_custom_theme_title)
+        preferenceCustomTheme.setIcon(R.drawable.ic_rbrush_24dp)
+        preferenceCustomTheme.summary = getString(R.string.pref_custom_theme_summary)
+        preferenceCustomTheme.isEnabled = PreferencesHelper.loadCustomThemeEnabled()
+        preferenceCustomTheme.setOnPreferenceClickListener {
+            findNavController().navigate(R.id.action_settings_to_cstheme)
+            return@setOnPreferenceClickListener true
+        }
+
+        // set up "Custom Theme Enabled" preference
+        val preferenceCustomThemeEnabled = MarqueeSwitchPreference(context)
+        preferenceCustomThemeEnabled.title = getString(R.string.pref_custom_theme_enabled_title)
+        preferenceCustomThemeEnabled.setIcon(R.drawable.ic_rbrush_24dp)
+        preferenceCustomThemeEnabled.summaryOn = getString(R.string.pref_custom_theme_enabled_summary)
+        preferenceCustomThemeEnabled.summaryOff = getString(R.string.pref_custom_theme_disabled_summary)
+        preferenceCustomThemeEnabled.key = Keys.PREF_CUSTOM_THEME_ENABLED
+        preferenceCustomThemeEnabled.setDefaultValue(PreferencesHelper.loadCustomThemeEnabled())
+        preferenceCustomThemeEnabled.setOnPreferenceChangeListener { _, newValue ->
+            when (newValue) {
+                true -> {
+                    // enable custom theme
+                    preferenceCustomTheme.isEnabled = true
+                }
+                false -> {
+                    // disable custom theme
+                    preferenceCustomTheme.isEnabled = false
+                }
+            }
+            return@setOnPreferenceChangeListener true
+        }
+
+        // set up "Share the App" preference
+        val preferenceShareApp = Preference(context)
+        preferenceShareApp.title = getString(R.string.pref_share_app_title)
+        preferenceShareApp.setIcon(R.drawable.ic_share_24dp)
+        preferenceShareApp.summary = getString(R.string.pref_share_app_summary)
+        preferenceShareApp.setOnPreferenceClickListener {
+            val shareIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                type = "text/plain"
+                putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.app_name))
+                putExtra(Intent.EXTRA_TEXT, getString(R.string.pref_share_app_share_text))
+            }
+            startActivity(shareIntent)
+            if (!isAndroidTV && isPermissionGranted(activity as Context, android.Manifest.permission.POST_NOTIFICATIONS)) {
+                NotificationSys.showNotification(
+                    context,
+                    getString(R.string.pref_share_app_thank_title),
+                    getString(R.string.pref_share_app_thank_message)
+                )
+            }
+            return@setOnPreferenceClickListener true
+        }
 
         // set preference categories
         val preferenceCategoryGeneral = PreferenceCategory(activity as Context)
@@ -384,10 +441,13 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
 
         // setup preference screen
         screen.addPreference(preferenceAppVersion)
+        screen.addPreference(preferenceShareApp)
 
         screen.addPreference(preferenceCategoryGeneral)
         preferenceCategoryGeneral.addPreference(preferenceThemeSelection)
         preferenceCategoryGeneral.addPreference(preferenceLanguageSelection)
+        preferenceCategoryGeneral.addPreference(preferenceCustomThemeEnabled)
+        preferenceCategoryGeneral.addPreference(preferenceCustomTheme)
 
         if (!isAndroidTV && isPermissionGranted(activity as Context, android.Manifest.permission.POST_NOTIFICATIONS)) {
             preferenceCategoryGeneral.addPreference(preferenceTestNotification)

@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
+import android.util.TypedValue
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -28,6 +29,7 @@ import com.michatec.radio.helpers.AppThemeHelper
 import com.michatec.radio.helpers.FileHelper
 import com.michatec.radio.helpers.LanguageHelper
 import com.michatec.radio.helpers.PreferencesHelper
+import com.michatec.radio.helpers.ThemeHelper
 import org.woheller69.freeDroidWarn.FreeDroidWarn
 import java.util.Locale
 
@@ -38,6 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     /* Main class variables */
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var mainRoot: View
 
     // Check if the device running the app is an Android TV instance
     private val isAndroidTV: Boolean by lazy {
@@ -94,6 +97,8 @@ class MainActivity : AppCompatActivity() {
 
         // set up views
         setContentView(R.layout.activity_main)
+        mainRoot = findViewById(R.id.main_root)
+        applyCustomTheme()
 
         // create .nomedia file - if not yet existing
         FileHelper.createNomediaFile(getExternalFilesDir(null))
@@ -136,6 +141,33 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun applyCustomTheme() {
+        val enabled = PreferencesHelper.loadCustomThemeEnabled()
+        if (enabled) {
+            var color = PreferencesHelper.loadCustomThemeColor(this)
+            val index = PreferencesHelper.loadCustomThemeIndex()
+            
+            if (index != -1) {
+                // Color belongs to a predefined group. Update it based on current mode.
+                val colors = ThemeHelper.getPredefinedColors(this)
+                if (index < colors.size) {
+                    val updatedColor = colors[index]
+                    if (updatedColor != color) {
+                        color = updatedColor
+                        // Save the updated color to keep preferences in sync with the current mode
+                        PreferencesHelper.saveCustomThemeColor(color)
+                    }
+                }
+            }
+            mainRoot.setBackgroundColor(color)
+        } else {
+            // Reset to default theme background color
+            val typedValue = TypedValue()
+            theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
+            mainRoot.setBackgroundColor(typedValue.data)
+        }
+    }
+
 
     /* Overrides onResume from AppCompatActivity */
     override fun onResume() {
@@ -175,6 +207,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 Keys.PREF_LANGUAGE_SELECTED -> {
                     LanguageHelper.setLanguage(this, PreferencesHelper.loadSelectedLanguage())
+                }
+                Keys.PREF_CUSTOM_THEME_COLOR, Keys.PREF_CUSTOM_THEME_ENABLED, Keys.PREF_CUSTOM_THEME_INDEX -> {
+                    applyCustomTheme()
                 }
             }
         }

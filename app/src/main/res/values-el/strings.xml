@@ -161,4 +161,23 @@
     <string name="media_route_menu_title">Μετάδοση</string>
     <string name="pref_visualizer_title">Αναλυτής Φάσματος</string>
     <string name="pref_visualizer_summary">Εμφάνιση του Αναλυτή Φάσματος.</string>
+
+    <string name="pref_share_app_title">Κοινοποίηση Εφαρμογής</string>
+    <string name="pref_share_app_summary">Προτείνετε αυτήν την εφαρμογή σε έναν φίλο.</string>
+    <string name="pref_share_app_share_text">Δείτε αυτήν την καταπληκτική εφαρμογή ραδιοφώνου: https://github.com/michatec/Radio</string>
+    <string name="pref_share_app_thank_title">Σας ευχαριστούμε!</string>
+    <string name="pref_share_app_thank_message">Ένα μεγάλο ευχαριστώ από τους προγραμματιστές.</string>
+
+    <!-- Custom Theme -->
+    <string name="pref_custom_theme_enabled_summary">Ενεργοποιεί την καρτέλα προσαρμοσμένου θέματος.</string>
+    <string name="pref_custom_theme_disabled_summary">Απενεργοποιεί την καρτέλα προσαρμοσμένου θέματος.</string>
+    <string name="pref_custom_theme_summary">Προσαρμόστε το χρώμα φόντου της εφαρμογής.</string>
+    <string name="pref_custom_theme_title">Προσαρμοσμένο Θέμα</string>
+    <string name="pref_custom_theme_enabled_title">Ενεργοποίηση Προσαρμοσμένου Θέματος</string>
+    <string name="theme_predefined_colors">Προκαθορισμένα Χρώματα (Φωτεινό/Σκοτεινό):</string>
+    <string name="theme_custom_rgb">Προσαρμοσμένο RGB (παρακαλώ προσαρμόστε στην εφαρμογή):</string>
+    <string name="theme_red">Κόκκινο</string>
+    <string name="theme_green">Πράσινο</string>
+    <string name="theme_blue">Μπλε</string>
+    <string name="hex_code">Κωδικός Hex</string>
 </resources>

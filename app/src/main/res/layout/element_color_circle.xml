@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="60dp"
+    android:layout_height="60dp"
+    android:layout_margin="4dp"
+    android:focusable="true"
+    android:clickable="true"
+    android:background="@drawable/selector_color_circle">
+
+    <View
+        android:id="@+id/color_circle"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:background="@drawable/shape_color_circle" />
+
+</FrameLayout>

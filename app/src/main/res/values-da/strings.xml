@@ -159,4 +159,23 @@
     <string name="media_route_menu_title">Cast</string>
     <string name="pref_visualizer_title">Spektrumanalysator</string>
     <string name="pref_visualizer_summary">Vis spektrumanalysatoren.</string>
+
+    <string name="pref_share_app_title">Del app</string>
+    <string name="pref_share_app_summary">Anbefal denne app til en ven.</string>
+    <string name="pref_share_app_share_text">Tjek denne fantastiske radio-app ud: https://github.com/michatec/Radio</string>
+    <string name="pref_share_app_thank_title">Tak skal du have!</string>
+    <string name="pref_share_app_thank_message">En stor tak til dig fra udviklerne.</string>
+
+    <!-- Custom Theme -->
+    <string name="pref_custom_theme_enabled_summary">Aktiverer fanen for brugerdefineret tema.</string>
+    <string name="pref_custom_theme_disabled_summary">Deaktiverer fanen for brugerdefineret tema.</string>
+    <string name="pref_custom_theme_summary">Tilpas applikationens baggrundsfarve.</string>
+    <string name="pref_custom_theme_title">Brugerdefineret tema</string>
+    <string name="pref_custom_theme_enabled_title">Aktiver brugerdefineret tema</string>
+    <string name="theme_predefined_colors">Foruddefinerede farver (Lys/Mørk):</string>
+    <string name="theme_custom_rgb">Brugerdefineret RGB (tilpas venligst til appen):</string>
+    <string name="theme_red">Rød</string>
+    <string name="theme_green">Grøn</string>
+    <string name="theme_blue">Blå</string>
+    <string name="hex_code">Hex-kode</string>
 </resources>

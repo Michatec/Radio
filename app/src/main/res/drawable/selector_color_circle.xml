@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Highlight when focused (TV navigation) -->
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#44888888" />
+            <stroke android:width="3dp" android:color="?attr/colorPrimary" />
+            <corners android:radius="12dp" />
+        </shape>
+    </item>
+    <!-- Highlight when selected (Active color) -->
+    <item android:state_selected="true">
+        <shape android:shape="rectangle">
+            <stroke android:width="3dp" android:color="?attr/colorSecondary" />
+            <corners android:radius="12dp" />
+        </shape>
+    </item>
+    <item android:drawable="@android:color/transparent" />
+</selector>

@@ -161,4 +161,23 @@
     <string name="media_route_menu_title">Przesyłanie</string>
     <string name="pref_visualizer_title">Analizator Widma</string>
     <string name="pref_visualizer_summary">Pokaż Analizator Widma.</string>
+
+    <string name="pref_share_app_title">Udostępnij aplikację</string>
+    <string name="pref_share_app_summary">Poleć tę aplikację znajomemu.</string>
+    <string name="pref_share_app_share_text">Sprawdź tę świetną aplikację radiową: https://github.com/michatec/Radio</string>
+    <string name="pref_share_app_thank_title">Dziękujemy!</string>
+    <string name="pref_share_app_thank_message">Wielkie podziękowania od deweloperów.</string>
+
+    <!-- Custom Theme -->
+    <string name="pref_custom_theme_enabled_summary">Włącza kartę motywu niestandardowego.</string>
+    <string name="pref_custom_theme_disabled_summary">Wyłącza kartę motywu niestandardowego.</string>
+    <string name="pref_custom_theme_summary">Dostosuj kolor tła aplikacji.</string>
+    <string name="pref_custom_theme_title">Motyw niestandardowy</string>
+    <string name="pref_custom_theme_enabled_title">Włącz motyw niestandardowy</string>
+    <string name="theme_predefined_colors">Predefiniowane kolory (Jasny/Ciemny):</string>
+    <string name="theme_custom_rgb">Niestandardowy RGB (proszę dostosować do aplikacji):</string>
+    <string name="theme_red">Czerwony</string>
+    <string name="theme_green">Zielony</string>
+    <string name="theme_blue">Niebieski</string>
+    <string name="hex_code">Kod Hex</string>
 </resources>

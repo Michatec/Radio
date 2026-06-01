@@ -161,4 +161,23 @@
     <string name="media_route_menu_title">Трансляция</string>
     <string name="pref_visualizer_title">Анализатор спектра</string>
     <string name="pref_visualizer_summary">Показать анализатор спектра.</string>
+
+    <string name="pref_share_app_title">Поделиться приложением</string>
+    <string name="pref_share_app_summary">Рекомендовать это приложение другу.</string>
+    <string name="pref_share_app_share_text">Посмотрите это классное радио-приложение: https://github.com/michatec/Radio</string>
+    <string name="pref_share_app_thank_title">Спасибо!</string>
+    <string name="pref_share_app_thank_message">Большое спасибо от разработчиков.</string>
+
+    <!-- Custom Theme -->
+    <string name="pref_custom_theme_enabled_summary">Включает вкладку пользовательской темы.</string>
+    <string name="pref_custom_theme_disabled_summary">Отключает вкладку пользовательской темы.</string>
+    <string name="pref_custom_theme_summary">Настройка цвета фона приложения.</string>
+    <string name="pref_custom_theme_title">Пользовательская тема</string>
+    <string name="pref_custom_theme_enabled_title">Включить пользовательскую тему</string>
+    <string name="theme_predefined_colors">Предустановленные цвета (Светлые/Темные):</string>
+    <string name="theme_custom_rgb">Пользовательский RGB (пожалуйста, адаптируйте к приложению):</string>
+    <string name="theme_red">Красный</string>
+    <string name="theme_green">Зеленый</string>
+    <string name="theme_blue">Синий</string>
+    <string name="hex_code">Hex-код</string>
 </resources>

@@ -159,4 +159,23 @@
     <string name="media_route_menu_title">Diffuser</string>
     <string name="pref_visualizer_title">Analyseur de spectre</string>
     <string name="pref_visualizer_summary">Afficher l analyseur de spectre.</string>
+
+    <string name="pref_share_app_title">Partager l\'application</string>
+    <string name="pref_share_app_summary">Recommandez cette application à un ami.</string>
+    <string name="pref_share_app_share_text">Découvrez cette super application radio : https://github.com/michatec/Radio</string>
+    <string name="pref_share_app_thank_title">Merci beaucoup !</string>
+    <string name="pref_share_app_thank_message">Un grand merci de la part des développeurs.</string>
+
+    <!-- Custom Theme -->
+    <string name="pref_custom_theme_enabled_summary">Active l\'onglet du thème personnalisé.</string>
+    <string name="pref_custom_theme_disabled_summary">Désactive l\'onglet du thème personnalisé.</string>
+    <string name="pref_custom_theme_summary">Personnalisez la couleur d\'arrière-plan de l\'application.</string>
+    <string name="pref_custom_theme_title">Thème personnalisé</string>
+    <string name="pref_custom_theme_enabled_title">Activer le thème personnalisé</string>
+    <string name="theme_predefined_colors">Couleurs prédéfinies (Clair/Sombre) :</string>
+    <string name="theme_custom_rgb">RGB personnalisé (veuillez l\'adapter à l\'application) :</string>
+    <string name="theme_red">Rouge</string>
+    <string name="theme_green">Vert</string>
+    <string name="theme_blue">Bleu</string>
+    <string name="hex_code">Code Hex</string>
 </resources>

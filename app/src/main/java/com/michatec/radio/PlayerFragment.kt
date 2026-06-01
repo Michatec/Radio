@@ -308,6 +308,9 @@ class PlayerFragment : Fragment(),
         if (key == Keys.PREF_PLAYER_METADATA_HISTORY) {
             requestMetadataUpdate()
         }
+        if (key == Keys.PREF_CUSTOM_THEME_COLOR || key == Keys.PREF_CUSTOM_THEME_ENABLED || key == Keys.PREF_CUSTOM_THEME_INDEX) {
+            layout.applyCustomTheme(activity as Context)
+        }
     }
 
 

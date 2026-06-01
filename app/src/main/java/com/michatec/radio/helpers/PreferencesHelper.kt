@@ -4,12 +4,14 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.util.Log
+import android.util.TypedValue
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.google.gson.Gson
 import com.michatec.radio.Keys
 import com.michatec.radio.ui.PlayerState
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 
 /*
@@ -362,4 +364,33 @@ object PreferencesHelper {
         }
     }
 
+    /* Loads custom theme color */
+    fun loadCustomThemeColor(context: Context): Int {
+        val typedValue = TypedValue()
+        context.theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
+        return sharedPreferences.getInt(Keys.PREF_CUSTOM_THEME_COLOR, typedValue.data)
+    }
+
+    /* Saves custom theme color */
+    fun saveCustomThemeColor(color: Int) {
+        sharedPreferences.edit { putInt(Keys.PREF_CUSTOM_THEME_COLOR, color) }
+    }
+
+    /* Loads custom theme index (predefined color index) */
+    fun loadCustomThemeIndex(): Int {
+        return sharedPreferences.getInt(Keys.PREF_CUSTOM_THEME_INDEX, -1)
+    }
+
+    /* Saves custom theme color and index together */
+    fun saveCustomTheme(color: Int, index: Int) {
+        sharedPreferences.edit {
+            putInt(Keys.PREF_CUSTOM_THEME_COLOR, color)
+            putInt(Keys.PREF_CUSTOM_THEME_INDEX, index)
+        }
+    }
+
+    /* Loads whether custom theme is enabled */
+    fun loadCustomThemeEnabled(): Boolean {
+        return sharedPreferences.getBoolean(Keys.PREF_CUSTOM_THEME_ENABLED, false)
+    }
 }

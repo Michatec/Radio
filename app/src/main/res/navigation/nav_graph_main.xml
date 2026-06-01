@@ -32,6 +32,9 @@
         <action
             android:id="@+id/action_settings_to_visualizer"
             app:destination="@id/visualizer_destination" />
+        <action
+            android:id="@+id/action_settings_to_cstheme"
+            app:destination="@id/custom_theme_destination" />
     </fragment>
 
     <!-- EQUALIZER -->
@@ -52,4 +55,11 @@
         android:name="com.michatec.radio.AddStationFragment"
         android:label="Add Station"
         tools:layout="@layout/dialog_find_station" />
+
+    <!-- CUSTOM THEME -->
+    <fragment
+        android:id="@+id/custom_theme_destination"
+        android:name="com.michatec.radio.CustomThemeFragment"
+        android:label="Custom Theme"
+        tools:layout="@layout/fragment_custom_theme" />
 </navigation>

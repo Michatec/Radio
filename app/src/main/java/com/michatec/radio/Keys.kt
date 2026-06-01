@@ -92,6 +92,9 @@ object Keys {
     const val PREF_PRESET_DRC: String = "PRESET_DRC"
     const val PREF_PRESET_STEREO_WIDTH: String = "PRESET_STEREO_WIDTH"
     const val PREF_LANGUAGE_SELECTED: String = "PRESET_LANGUAGE_SELECTED"
+    const val PREF_CUSTOM_THEME_COLOR: String = "CUSTOM_THEME_COLOR"
+    const val PREF_CUSTOM_THEME_ENABLED: String = "CUSTOM_THEME_ENABLED"
+    const val PREF_CUSTOM_THEME_INDEX: String = "CUSTOM_THEME_INDEX"
 
     // default const values
     const val DEFAULT_SIZE_OF_METADATA_HISTORY: Int = 25

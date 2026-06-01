@@ -161,4 +161,23 @@
     <string name="media_route_menu_title">Трансляція</string>
     <string name="pref_visualizer_title">Аналізатор спектру</string>
     <string name="pref_visualizer_summary">Показати аналізатор спектру.</string>
+
+    <string name="pref_share_app_title">Поділитися застосунком</string>
+    <string name="pref_share_app_summary">Рекомендувати цей застосунок другу.</string>
+    <string name="pref_share_app_share_text">Подивіться на цей чудовий радіозастосунок: https://github.com/michatec/Radio</string>
+    <string name="pref_share_app_thank_title">Дякуємо!</string>
+    <string name="pref_share_app_thank_message">Велике спасибі вам від розробників.</string>
+
+    <!-- Custom Theme -->
+    <string name="pref_custom_theme_enabled_summary">Вмикає вкладку користувацької теми.</string>
+    <string name="pref_custom_theme_disabled_summary">Вимикає вкладку користувацької теми.</string>
+    <string name="pref_custom_theme_summary">Налаштуйте колір фону застосунку.</string>
+    <string name="pref_custom_theme_title">Користувацька тема</string>
+    <string name="pref_custom_theme_enabled_title">Увімкнути користувацьку тему</string>
+    <string name="theme_predefined_colors">Попередньо визначені кольори (Світлі/Темні):</string>
+    <string name="theme_custom_rgb">Власний RGB (будь ласка, адаптуйте до застосунку):</string>
+    <string name="theme_red">Червоний</string>
+    <string name="theme_green">Зелений</string>
+    <string name="theme_blue">Синій</string>
+    <string name="hex_code">Hex-код</string>
 </resources>

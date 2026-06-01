@@ -160,5 +160,24 @@
     <string name="media_route_menu_title">Streamen</string>
     <string name="pref_visualizer_title">Spektrumanzeige</string>
     <string name="pref_visualizer_summary">Sehe die Spektrumanzeige.</string>
+    <string name="pref_share_app_title">App teilen</string>
+    <string name="pref_share_app_summary">Empfehle diese App einem Freund.</string>
+    <string name="pref_share_app_share_text">Schau dir diese tolle Radio-App an: https://github.com/michatec/Radio</string>
+    <string name="pref_share_app_thank_title">Vielen Dank!</string>
+    <string name="pref_share_app_thank_message">Ein großes Dankeschön von den Entwicklern.</string>
+
     <string name="loading">Lade…</string>
+
+    <!-- Custom Theme -->
+    <string name="pref_custom_theme_enabled_summary">Aktiviert den Tab für das benutzerdefinierte Design.</string>
+    <string name="pref_custom_theme_disabled_summary">Deaktiviert den Tab für das benutzerdefinierte Design.</string>
+    <string name="pref_custom_theme_summary">Passen Sie die Hintergrundfarbe der Anwendung an.</string>
+    <string name="pref_custom_theme_title">Benutzerdefiniertes Design</string>
+    <string name="pref_custom_theme_enabled_title">Benutzerdefiniertes Design aktivieren</string>
+    <string name="theme_predefined_colors">Vordefinierte Farben (Hell/Dunkel):</string>
+    <string name="theme_custom_rgb">Benutzerdefiniertes RGB (bitte an die App anpassen):</string>
+    <string name="theme_red">Rot</string>
+    <string name="theme_green">Grün</string>
+    <string name="theme_blue">Blau</string>
+    <string name="hex_code">Hex-Code</string>
 </resources>

@@ -160,4 +160,23 @@
     <string name="media_route_menu_title">キャスト</string>
     <string name="pref_visualizer_title">スペクトラムアナライザー</string>
     <string name="pref_visualizer_summary">スペクトラムアナライザーを表示します。</string>
+
+    <string name="pref_share_app_title">アプリを共有</string>
+    <string name="pref_share_app_summary">このアプリを友達に勧める。</string>
+    <string name="pref_share_app_share_text">この素晴らしいラジオアプリをチェックしてみてください: https://github.com/michatec/Radio</string>
+    <string name="pref_share_app_thank_title">ありがとうございます！</string>
+    <string name="pref_share_app_thank_message">開発者一同より、心から感謝申し上げます。</string>
+
+    <!-- Custom Theme -->
+    <string name="pref_custom_theme_enabled_summary">カスタムテーマタブを有効にします。</string>
+    <string name="pref_custom_theme_disabled_summary">カスタムテーマタブを無効にします。</string>
+    <string name="pref_custom_theme_summary">アプリケーションの背景色をカスタマイズします。</string>
+    <string name="pref_custom_theme_title">カスタムテーマ</string>
+    <string name="pref_custom_theme_enabled_title">カスタムテーマを有効にする</string>
+    <string name="theme_predefined_colors">事前定義された色（ライト/ダーク）:</string>
+    <string name="theme_custom_rgb">カスタムRGB（アプリに合わせて調整してください）:</string>
+    <string name="theme_red">赤</string>
+    <string name="theme_green">緑</string>
+    <string name="theme_blue">青</string>
+    <string name="hex_code">Hexコード</string>
 </resources>

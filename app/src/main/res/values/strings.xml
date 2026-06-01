@@ -74,6 +74,7 @@
     <string name="pref_language_pl" translatable="false">🇵🇱 Polski</string>
     <string name="pref_language_el" translatable="false">🇬🇷 Ελληνικά</string>
     <string name="pref_language_da" translatable="false">🇩🇰 Dansk</string>
+    <string name="pref_language_uk" translatable="false">🇺🇦 Українська</string>
 
 
     <!-- Settings -->
@@ -148,6 +149,11 @@
     <string name="pref_update_station_images_title">Update Station Images</string>
     <string name="pref_test_notification_title">Test Notification</string>
     <string name="pref_test_notification_summary">Test whether the notification system works.</string>
+    <string name="pref_share_app_title">Share App</string>
+    <string name="pref_share_app_summary">Recommend this app to a friend.</string>
+    <string name="pref_share_app_share_text">Check out this awesome radio app: https://github.com/michatec/Radio</string>
+    <string name="pref_share_app_thank_title">Thank You!</string>
+    <string name="pref_share_app_thank_message">A big thank you to you from the developers.</string>
 
     <!-- Sample Text -->
     <string name="sample_text_sleep_timer_remaining_time" translatable="false">00:00</string>
@@ -197,4 +203,17 @@
     <string name="media_route_menu_title">Cast</string>
     <string name="pref_visualizer_title">Spectrum Analyzer</string>
     <string name="pref_visualizer_summary">Show the Spectrum Analyzer.</string>
+
+    <!-- Custom Theme -->
+    <string name="pref_custom_theme_enabled_summary">Enables the custom theme tab.</string>
+    <string name="pref_custom_theme_disabled_summary">Disables the custom theme tab.</string>
+    <string name="pref_custom_theme_summary">Customize the application background color.</string>
+    <string name="pref_custom_theme_title">Custom Theme</string>
+    <string name="pref_custom_theme_enabled_title">Enable Custom Theme</string>
+    <string name="theme_predefined_colors">Predefined Colors (Light/Dark):</string>
+    <string name="theme_custom_rgb">Custom RGB (please adapt to the app):</string>
+    <string name="theme_red">Red</string>
+    <string name="theme_green">Green</string>
+    <string name="theme_blue">Blue</string>
+    <string name="hex_code">Hex Code</string>
 </resources>

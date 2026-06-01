@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.AnimatedVectorDrawable
-import java.util.Locale
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -31,7 +30,9 @@ import com.michatec.radio.core.Station
 import com.michatec.radio.helpers.DateTimeHelper
 import com.michatec.radio.helpers.ImageHelper
 import com.michatec.radio.helpers.PreferencesHelper
+import com.michatec.radio.helpers.ThemeHelper
 import com.michatec.radio.helpers.UiHelper
+import java.util.Locale
 
 
 /*
@@ -122,6 +123,9 @@ data class LayoutHolder(var rootView: View) {
             CastButtonFactory.setUpMediaRouteButton(rootView.context, it)
         }
 
+        // Apply custom theme color
+        applyCustomTheme(rootView.context)
+
         // set layout for player
         setupBottomSheet()
     }
@@ -181,6 +185,9 @@ data class LayoutHolder(var rootView: View) {
 
         // update bitrate
         sheetBitrateView?.text = bitrateText
+
+        // update custom theme
+        applyCustomTheme(context)
 
         // update click listeners
         sheetStreamingLinkHeadline?.setOnClickListener {
@@ -307,6 +314,28 @@ data class LayoutHolder(var rootView: View) {
     fun showBufferingIndicator(buffering: Boolean) {
         bufferingIndicator.isVisible = buffering
         isBuffering = buffering
+    }
+
+    /* Applies custom theme color to the UI */
+    fun applyCustomTheme(context: Context) {
+        val enabled = PreferencesHelper.loadCustomThemeEnabled()
+        if (enabled) {
+            var customColor = PreferencesHelper.loadCustomThemeColor(context)
+            val index = PreferencesHelper.loadCustomThemeIndex()
+            
+            if (index != -1) {
+                val colors = ThemeHelper.getPredefinedColors(context)
+                if (index < colors.size) {
+                    customColor = colors[index]
+                }
+            }
+
+            rootView.setBackgroundColor(customColor)
+            recyclerView.setBackgroundColor(customColor)
+        } else {
+            rootView.setBackgroundResource(android.R.color.transparent)
+            recyclerView.setBackgroundResource(android.R.color.transparent)
+        }
     }
 
     /* Toggles visibility of the download progress indicator */
