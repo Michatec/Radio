@@ -27,7 +27,7 @@ object NotificationSys {
         }
     }
 
-    fun showNotification(context: Context, title: String, content: String, intent: Intent? = null) {
+    fun showNotification(context: Context, title: String, content: String, intent: Intent? = null, id: Int = NOTIFICATION_ID) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         createNotificationChannel(context)
 
@@ -51,6 +51,6 @@ object NotificationSys {
             .setAutoCancel(true)
             .build()
 
-        notificationManager.notify(NOTIFICATION_ID, notification)
+        notificationManager.notify(id, notification)
     }
 }
