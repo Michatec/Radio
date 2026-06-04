@@ -19,7 +19,7 @@ We appreciate responsible disclosure and will credit researchers who report vali
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 14.5    | :white_check_mark: |
+| > 14.5  | :white_check_mark: |
 | < 14.5  | :x:                |
 
 Only the latest stable release receives security updates. Users on older versions are encouraged to update.
