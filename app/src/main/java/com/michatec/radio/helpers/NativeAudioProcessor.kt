@@ -74,7 +74,6 @@ class NativeAudioProcessor : BaseAudioProcessor() {
                 directBuffer = ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder())
             }
             directBuffer!!.clear()
-            inputBuffer.position()
             directBuffer!!.put(inputBuffer)
             directBuffer!!.flip()
             bufferToProcess = directBuffer!!
@@ -84,7 +83,6 @@ class NativeAudioProcessor : BaseAudioProcessor() {
 
         val out = replaceOutputBuffer(size)
         out.order(ByteOrder.nativeOrder())
-        bufferToProcess.position(0)
         out.put(bufferToProcess)
         out.flip()
     }

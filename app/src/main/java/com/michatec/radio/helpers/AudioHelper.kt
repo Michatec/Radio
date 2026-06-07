@@ -8,8 +8,9 @@ import androidx.media3.extractor.metadata.icy.IcyHeaders
 import androidx.media3.extractor.metadata.icy.IcyInfo
 import androidx.media3.extractor.metadata.id3.Id3Frame
 import androidx.media3.extractor.metadata.id3.TextInformationFrame
+import androidx.media3.extractor.metadata.vorbis.VorbisComment
 import com.michatec.radio.Keys
-import kotlin.math.min
+import java.util.Locale
 
 
 /*
@@ -28,29 +29,43 @@ object AudioHelper {
         var title = ""
         var artist = ""
         var album = ""
+
         for (i in 0 until metadata.length()) {
-            // extract IceCast metadata
+            // extract metadata
             when (val entry = metadata.get(i)) {
                 is IcyInfo -> {
-                    title = entry.title.toString()
+                    val streamTitle = entry.title
+                    if (!streamTitle.isNullOrEmpty()) {
+                        if (streamTitle.contains(" - ")) {
+                            artist = streamTitle.substringBefore(" - ").trim()
+                            title = streamTitle.substringAfter(" - ").trim()
+                        } else {
+                            title = streamTitle
+                        }
+                    }
                 }
 
                 is IcyHeaders -> {
-                    Log.i(TAG, "icyHeaders:" + entry.name + " - " + entry.genre)
+                    Log.i(TAG, "icyHeaders: ${entry.name} - ${entry.genre}")
                 }
 
                 is Id3Frame -> {
-                    when (entry) {
-                        is TextInformationFrame -> {
-                            when (entry.id) {
-                                "TIT2" -> title = entry.values.getOrNull(0) ?: "" // Title
-                                "TPE1" -> artist = entry.values.getOrNull(0) ?: "" // Artist
-                                "TALB" -> album = entry.values.getOrNull(0) ?: "" // Album
-                            }
+                    if (entry is TextInformationFrame) {
+                        when (entry.id) {
+                            "TIT2" -> entry.values.getOrNull(0)?.let { if (it.isNotEmpty()) title = it.trim() } // Title
+                            "TPE1" -> entry.values.getOrNull(0)?.let { if (it.isNotEmpty()) artist = it.trim() } // Artist
+                            "TALB" -> entry.values.getOrNull(0)?.let { if (it.isNotEmpty()) album = it.trim() } // Album
                         }
-                        else -> {
-                            Log.d(TAG, "Unhandled ID3 frame: ${entry.javaClass.simpleName}")
-                        }
+                    } else {
+                        Log.d(TAG, "Unhandled ID3 frame: ${entry.javaClass.simpleName}")
+                    }
+                }
+
+                is VorbisComment -> {
+                    when (entry.key.uppercase(Locale.ROOT)) {
+                        "TITLE" -> if (entry.value.isNotEmpty()) title = entry.value.trim()
+                        "ARTIST" -> if (entry.value.isNotEmpty()) artist = entry.value.trim()
+                        "ALBUM" -> if (entry.value.isNotEmpty()) album = entry.value.trim()
                     }
                 }
 
@@ -59,19 +74,21 @@ object AudioHelper {
                 }
             }
         }
+
         // Build metadata string
-        var metadataString = title
-        if (artist.isNotEmpty() && title.isNotEmpty()) {
-            metadataString = "$artist - $title"
+        var metadataString = when {
+            artist.isNotEmpty() && title.isNotEmpty() -> "$artist - $title"
+            artist.isNotEmpty() -> artist
+            title.isNotEmpty() -> title
+            else -> ""
         }
+
         if (album.isNotEmpty() && metadataString.isNotEmpty()) {
             metadataString += " ($album)"
         }
+
         // ensure a max length of the metadata string
-        if (metadataString.isNotEmpty()) {
-            metadataString = metadataString.take(min(metadataString.length, Keys.DEFAULT_MAX_LENGTH_OF_METADATA_ENTRY))
-        }
-        return metadataString
+        return metadataString.take(Keys.DEFAULT_MAX_LENGTH_OF_METADATA_ENTRY)
     }
 
 

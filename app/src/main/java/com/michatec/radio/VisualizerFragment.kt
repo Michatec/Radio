@@ -99,15 +99,15 @@ class VisualizerFragment : PreferenceFragmentCompat() {
                             if (data != null && data.isNotEmpty()) {
                                 visualizerPref?.update(data)
                             }
-                        } else {
-                            Log.e(TAG, "Custom command failed with result code: ${result.resultCode}")
                         }
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Error fetching visualizer data", e)
+                    } catch (_: Exception) {
+                    } finally {
+                        handler.postDelayed(this, 20)
                     }
                 }, MoreExecutors.directExecutor())
+            } else {
+                handler.postDelayed(this, 100)
             }
-            handler.postDelayed(this, 18) // ~60 FPS
         }
     }
 

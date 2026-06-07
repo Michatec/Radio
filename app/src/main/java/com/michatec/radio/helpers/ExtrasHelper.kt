@@ -27,12 +27,17 @@ class ExtrasHelper {
         @JvmStatic
         private external fun visualize(surface: Surface, data: FloatArray)
 
-        fun render(surface: Surface, data: FloatArray) {
-            if (!surface.isValid) return
-            try {
-                visualize(surface, data)
-            } catch (e: Exception) {
-                Log.e(TAG, "Native visualize failed", e)
+        private val renderLock = Any()
+
+        fun render(surface: Surface?, data: FloatArray) {
+            if (surface == null) return
+            synchronized(renderLock) {
+                if (!surface.isValid) return
+                try {
+                    visualize(surface, data)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Native visualize failed", e)
+                }
             }
         }
     }
@@ -97,22 +102,25 @@ class ExtrasHelper {
         }
 
         fun update(data: FloatArray) {
-            val s = surface
-            if (s != null && s.isValid) {
-                render(s, data)
-            }
+            render(surface, data)
         }
 
         override fun surfaceCreated(holder: SurfaceHolder) {
-            surface = holder.surface
+            synchronized(renderLock) {
+                surface = holder.surface
+            }
         }
 
         override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-            surface = holder.surface
+            synchronized(renderLock) {
+                surface = holder.surface
+            }
         }
 
         override fun surfaceDestroyed(holder: SurfaceHolder) {
-            surface = null
+            synchronized(renderLock) {
+                surface = null
+            }
         }
     }
 }
