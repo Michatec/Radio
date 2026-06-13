@@ -151,7 +151,7 @@ class PlayerFragment : Fragment(),
                 if (imageUri == null) {
                     val snackbar = Snackbar.make(requireView(), R.string.toastalert_failed_picking_media, Snackbar.LENGTH_LONG)
                     if (!isAndroidTV) {
-                        snackbar.setAnchorView(layout.bottomSheet)
+                        snackbar.anchorView = layout.bottomSheet
                     }
                     snackbar.show()
                 } else {
@@ -872,7 +872,7 @@ class PlayerFragment : Fragment(),
                                 R.color.default_neutral_white))
 
                     if (!isAndroidTV) {
-                        snackbar.setAnchorView(layout.bottomSheet)
+                        snackbar.anchorView = layout.bottomSheet
                     }
                     snackbar.show()
                 }

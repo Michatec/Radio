@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
             }
-            snackbar.setAnchorView(findViewById(R.id.bottom_sheet))
+            snackbar.anchorView = findViewById(R.id.bottom_sheet)
             snackbar.show()
         }
     }
