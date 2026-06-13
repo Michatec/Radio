@@ -15,6 +15,7 @@
 **Radio is free software. It is released under the [GPLv3 open source license](https://opensource.org/licenses/GPL-3.0).**
 </div>
 
+### Screenshot
 <div style="display: flex; width: 100vw; flex-wrap: wrap; justify-content: space-around;">
     <img src="metadata/en-US/phoneScreenshots/01-radio.png" style="height: 300px; margin: 10px 0px 10px 0px;" />
 </div>
