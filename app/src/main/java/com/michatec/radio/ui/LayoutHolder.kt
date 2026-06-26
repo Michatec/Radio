@@ -49,6 +49,7 @@ data class LayoutHolder(var rootView: View) {
     private var sleepTimerRunningViews: Group? = rootView.findViewById(R.id.sleep_timer_running_views)
     private var downloadProgressIndicator: ProgressBar? = rootView.findViewById(R.id.download_progress_indicator)
     private var stationImageView: ImageView? = rootView.findViewById(R.id.station_icon)
+    private var shaderEffectView: ShaderEffectView? = rootView.findViewById(R.id.player_shader_effect)
     private var stationNameView: TextView? = rootView.findViewById(R.id.player_station_name)
     private var metadataView: TextView? = rootView.findViewById(R.id.player_station_metadata)
     var playButtonView: ImageButton = rootView.findViewById(R.id.player_play_button)
@@ -73,6 +74,7 @@ data class LayoutHolder(var rootView: View) {
     private var metadataHistory: MutableList<String>
     private var metadataHistoryPosition: Int
     private var isBuffering: Boolean
+    private var hasStationImage: Boolean = false
 
 
     /* Init block */
@@ -148,8 +150,17 @@ data class LayoutHolder(var rootView: View) {
         stationNameView?.setFadingEdgeLength(8)
 
         // update cover
+        hasStationImage = station.smallImage.isNotEmpty()
+        if (hasStationImage) {
+            shaderEffectView?.isVisible = true
+        } else {
+            shaderEffectView?.isGone = true
+            shaderEffectView?.stopAnimation()
+        }
+
         if (station.imageColor != -1) {
             stationImageView?.setBackgroundColor(station.imageColor)
+            shaderEffectView?.setColor(station.imageColor)
         }
         stationImageView?.setImageBitmap(ImageHelper.getStationImage(context, station.smallImage))
         stationImageView?.contentDescription = "${context.getString(R.string.descr_player_station_image)}: ${station.name}"
@@ -302,9 +313,13 @@ data class LayoutHolder(var rootView: View) {
             playButtonView.setImageResource(R.drawable.ic_audio_waves_animated)
             val animatedVectorDrawable = playButtonView.drawable as? AnimatedVectorDrawable
             animatedVectorDrawable?.start()
+            if (hasStationImage) {
+                shaderEffectView?.startAnimation()
+            }
             sheetSleepTimerStartButtonView?.isVisible = true
         } else {
             playButtonView.setImageResource(R.drawable.ic_player_play_symbol_42dp)
+            shaderEffectView?.stopAnimation()
             sheetSleepTimerStartButtonView?.isVisible = false
         }
     }

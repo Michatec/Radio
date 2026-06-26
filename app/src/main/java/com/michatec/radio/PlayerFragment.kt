@@ -61,6 +61,7 @@ import com.michatec.radio.extensions.*
 import com.michatec.radio.helpers.*
 import com.michatec.radio.ui.LayoutHolder
 import com.michatec.radio.ui.PlayerState
+import com.michatec.radio.ui.ShaderEffectView
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -95,6 +96,7 @@ class PlayerFragment : Fragment(),
     private val handler: Handler = Handler(Looper.getMainLooper())
     private var tempStationUuid: String = String()
     private var itemTouchHelper: ItemTouchHelper? = null
+    private var shaderEffectView: ShaderEffectView? = null
 
     // Check if the device running the app is an Android TV instance
     private val isAndroidTV: Boolean by lazy {
@@ -180,6 +182,7 @@ class PlayerFragment : Fragment(),
         val rootView: View = inflater.inflate(R.layout.fragment_player, container, false)
         layout = LayoutHolder(rootView)
 
+        shaderEffectView = rootView.findViewById(R.id.player_shader_effect)
         initializeViews()
 
         // hide action bar
@@ -298,6 +301,7 @@ class PlayerFragment : Fragment(),
     override fun onDestroy() {
         super.onDestroy()
         queue.cancelAll(TAG)
+        shaderEffectView?.stopAnimation()
     }
 
     /* Overrides onSharedPreferenceChanged from OnSharedPreferenceChangeListener */
@@ -559,8 +563,8 @@ class PlayerFragment : Fragment(),
             playerState.stationUuid = station.uuid
         }
         // update views
-        layout.togglePlayButton(playerState.isPlaying)
         layout.updatePlayerViews(activity as Context, station, playerState.isPlaying)
+        layout.togglePlayButton(playerState.isPlaying)
 
         // main play/pause button
         layout.playButtonView.setOnClickListener {

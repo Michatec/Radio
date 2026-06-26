@@ -40,6 +40,15 @@
             android:layout_height="wrap_content"
             android:padding="24dp">
 
+            <com.michatec.radio.ui.ShaderEffectView
+                android:id="@+id/player_shader_effect"
+                android:layout_width="220dp"
+                android:layout_height="240dp"
+                app:layout_constraintBottom_toBottomOf="@+id/station_icon"
+                app:layout_constraintEnd_toEndOf="@+id/station_icon"
+                app:layout_constraintStart_toStartOf="@+id/station_icon"
+                app:layout_constraintTop_toTopOf="@+id/station_icon" />
+
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/station_icon"
                 android:layout_width="160dp"
