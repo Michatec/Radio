@@ -10,6 +10,7 @@ import androidx.preference.PreferenceManager
 import com.google.gson.Gson
 import com.michatec.radio.Keys
 import com.michatec.radio.ui.PlayerState
+import java.security.MessageDigest.getInstance
 import java.util.Calendar
 import java.util.Date
 
@@ -392,5 +393,27 @@ object PreferencesHelper {
     /* Loads whether custom theme is enabled */
     fun loadCustomThemeEnabled(): Boolean {
         return sharedPreferences.getBoolean(Keys.PREF_CUSTOM_THEME_ENABLED, false)
+    }
+
+    /* Loads the arguments from shared preferences */
+    fun loadArguments(): String {
+        return sharedPreferences.getString(Keys.PREF_ARGUMENTS, "") ?: ""
+    }
+
+    /* Checks if a specific argument (by hash) is present */
+    fun hasArgument(targetHash: String): Boolean {
+        val arguments = loadArguments().split(Regex("\\s+"))
+        return arguments.any { it.lowercase().sha256() == targetHash }
+    }
+
+    /* SHA-256 helper */
+    private fun String.sha256(): String {
+        return try {
+            val digest = getInstance("SHA-256")
+            val hash = digest.digest(this.toByteArray())
+            hash.joinToString("") { "%02x".format(it) }
+        } catch (_: Exception) {
+            ""
+        }
     }
 }

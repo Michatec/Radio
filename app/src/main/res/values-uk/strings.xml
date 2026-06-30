@@ -54,6 +54,8 @@
     <string name="player_sheet_h2_stream_url">URL трансляції</string>
     <!-- Settings -->
     <string name="pref_advanced_title">Додатково</string>
+    <string name="pref_arguments_title">Аргументи</string>
+    <string name="pref_arguments_summary">Введіть аргументи для програми.</string>
     <string name="pref_app_version_summary">Версія</string>
     <string name="pref_app_version_title">Версія застосунку</string>
     <string name="pref_backup_import_export_title">Імпорт / Експорт</string>

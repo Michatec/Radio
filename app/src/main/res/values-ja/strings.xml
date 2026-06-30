@@ -54,6 +54,8 @@
     <string name="player_sheet_h2_stream_url">ストリーミングアドレス</string>
     <!-- 設定 -->
     <string name="pref_advanced_title">詳細設定</string>
+    <string name="pref_arguments_title">引数</string>
+    <string name="pref_arguments_summary">アプリの引数を入力します。</string>
     <string name="pref_app_version_summary">バージョン</string>
     <string name="pref_app_version_title">アプリバージョン</string>
     <string name="pref_backup_import_export_title">インポートとエクスポート</string>

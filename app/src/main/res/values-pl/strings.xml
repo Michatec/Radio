@@ -54,6 +54,8 @@
     <string name="player_sheet_h2_stream_url">URL strumienia</string>
     <!-- Settings -->
     <string name="pref_advanced_title">Zaawansowane</string>
+    <string name="pref_arguments_title">Argumenty</string>
+    <string name="pref_arguments_summary">Wprowadź argumenty dla aplikacji.</string>
     <string name="pref_app_version_summary">Wersja</string>
     <string name="pref_app_version_title">Wersja aplikacji</string>
     <string name="pref_backup_import_export_title">Import &amp; Eksport</string>

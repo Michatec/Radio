@@ -182,6 +182,29 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             PreferencesHelper.loadEditStreamUrisEnabled(context)
         }
 
+        // set up "Arguments" preference
+        val preferenceArguments = EditTextPreference(context)
+        preferenceArguments.title = getString(R.string.pref_arguments_title)
+        preferenceArguments.dialogTitle = getString(R.string.pref_arguments_title)
+        preferenceArguments.setIcon(R.drawable.ic_info_24dp)
+        preferenceArguments.key = Keys.PREF_ARGUMENTS
+        val currentArguments = PreferencesHelper.loadArguments()
+        preferenceArguments.summary = if (currentArguments.isEmpty()) {
+            getString(R.string.pref_arguments_summary)
+        } else {
+            "${getString(R.string.pref_arguments_summary)}\n$currentArguments"
+        }
+        preferenceArguments.setDefaultValue(currentArguments)
+        preferenceArguments.setOnPreferenceChangeListener { _, newValue ->
+            val arguments = newValue as String
+            preferenceArguments.summary = if (arguments.isEmpty()) {
+                getString(R.string.pref_arguments_summary)
+            } else {
+                "${getString(R.string.pref_arguments_summary)}\n$arguments"
+            }
+            return@setOnPreferenceChangeListener true
+        }
+
 
         // set up "Edit Stations" preference
         val preferenceEnableEditingGeneral = MarqueeSwitchPreference(context)
@@ -477,6 +500,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceCategoryAdvanced.addPreference(preferenceBufferSize)
         preferenceCategoryAdvanced.addPreference(preferenceEnableEditingGeneral)
         preferenceCategoryAdvanced.addPreference(preferenceEnableEditingStreamUri)
+        preferenceCategoryAdvanced.addPreference(preferenceArguments)
 
         screen.addPreference(preferenceCategoryLinks)
         preferenceCategoryLinks.addPreference(preferenceGitHub)

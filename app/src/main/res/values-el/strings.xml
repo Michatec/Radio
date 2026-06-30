@@ -54,6 +54,8 @@
     <string name="player_sheet_h2_stream_url">Σύνδεσμος ροής</string>
     <!-- Settings -->
     <string name="pref_advanced_title">Για προχωρημένους</string>
+    <string name="pref_arguments_title">Ορίσματα</string>
+    <string name="pref_arguments_summary">Εισαγάγετε ορίσματα για την εφαρμογή.</string>
     <string name="pref_app_version_summary">Έκδοση</string>
     <string name="pref_app_version_title">Έκδοση Εφαρμογής</string>
     <string name="pref_backup_import_export_title">Εισαγωγή &amp; Εξαγωγή</string>

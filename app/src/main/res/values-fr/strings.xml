@@ -54,6 +54,8 @@
     <string name="player_sheet_h2_stream_url">Adresse du flux</string>
     <!-- Paramètres -->
     <string name="pref_advanced_title">Avancé</string>
+    <string name="pref_arguments_title">Arguments</string>
+    <string name="pref_arguments_summary">Saisissez les arguments pour l\'application.</string>
     <string name="pref_app_version_summary">Version</string>
     <string name="pref_app_version_title">Version de lapplication</string>
     <string name="pref_backup_import_export_title">Importer &amp; Exporter</string>

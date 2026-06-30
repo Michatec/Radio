@@ -95,6 +95,7 @@ object Keys {
     const val PREF_CUSTOM_THEME_COLOR: String = "CUSTOM_THEME_COLOR"
     const val PREF_CUSTOM_THEME_ENABLED: String = "CUSTOM_THEME_ENABLED"
     const val PREF_CUSTOM_THEME_INDEX: String = "CUSTOM_THEME_INDEX"
+    const val PREF_ARGUMENTS: String = "ARGUMENTS"
 
     // default const values
     const val DEFAULT_SIZE_OF_METADATA_HISTORY: Int = 25

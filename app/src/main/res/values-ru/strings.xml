@@ -54,6 +54,8 @@
     <string name="player_sheet_h2_stream_url">Адрес потока</string>
     <!-- Settings -->
     <string name="pref_advanced_title">Продвинутые</string>
+    <string name="pref_arguments_title">Аргументы</string>
+    <string name="pref_arguments_summary">Введите аргументы для приложения.</string>
     <string name="pref_app_version_summary">Версия</string>
     <string name="pref_app_version_title">Версия приложения</string>
     <string name="pref_backup_import_export_title">Импорт &amp; Экспорт</string>

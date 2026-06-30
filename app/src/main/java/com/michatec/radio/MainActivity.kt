@@ -114,7 +114,8 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         // TV-specific loading logic: Hide the overlay once the app is ready
-        if (isAndroidTV) {
+        val arg = PreferencesHelper.hasArgument("e2a5c13d8aff6f133c9bf0a0f2696d0ffa9924ba98330954516e1caf3fd9a3ee")
+        if (isAndroidTV && !arg) {
             Handler(Looper.getMainLooper()).postDelayed({
                 hideLoadingOverlay()
             }, 1200)

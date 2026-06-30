@@ -23,6 +23,7 @@ import com.google.android.material.textview.MaterialTextView
 import com.michatec.radio.R
 import com.michatec.radio.core.Station
 import com.michatec.radio.helpers.NativeAudioProcessor
+import com.michatec.radio.helpers.PreferencesHelper
 
 
 /*
@@ -183,6 +184,10 @@ class SearchResultAdapter(
                 .setAudioAttributes(audioAttributes, true)
                 .setHandleAudioBecomingNoisy(true)
                 .build()
+
+            if (PreferencesHelper.hasArgument("008f0747f4e27c8462baa991a538025bcc2dd143e78422f1afbdfcd9e757a20f")) {
+                exoPlayer?.volume = 0f
+            }
 
             // create a MediaItem with the streamUri
             val mediaItem = MediaItem.fromUri(streamUri)

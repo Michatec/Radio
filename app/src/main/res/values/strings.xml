@@ -111,6 +111,8 @@
     <string name="pref_preset_jazz">Jazz</string>
     <string name="pref_preset_flat">Flat</string>
     <string name="pref_advanced_title">Advanced</string>
+    <string name="pref_arguments_title">Arguments</string>
+    <string name="pref_arguments_summary">Enter arguments for the app.</string>
     <string name="pref_app_version_summary">Version</string>
     <string name="pref_app_version_title">App Version</string>
     <string name="pref_backup_import_export_title">Import &amp; Export</string>

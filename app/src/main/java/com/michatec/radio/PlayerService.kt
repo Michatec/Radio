@@ -149,6 +149,13 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
                 )
             )
         }.build()
+
+        if (PreferencesHelper.hasArgument("008f0747f4e27c8462baa991a538025bcc2dd143e78422f1afbdfcd9e757a20f")) {
+            exoPlayer.volume = 0f
+            player.volume = 0f
+            castPlayer.volume = 0f
+        }
+
         exoPlayer.addAnalyticsListener(analyticsListener)
         exoPlayer.addListener(playerListener)
 
@@ -350,6 +357,17 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
             Keys.PREF_PRESET_BASS_BOOST, Keys.PREF_PRESET_REVERB,
             Keys.PREF_PRESET_DRC, Keys.PREF_PRESET_STEREO_WIDTH -> {
                 applyAudioEffects()
+            }
+            Keys.PREF_ARGUMENTS -> {
+                if (PreferencesHelper.hasArgument("008f0747f4e27c8462baa991a538025bcc2dd143e78422f1afbdfcd9e757a20f")) {
+                    exoPlayer.volume = 0f
+                    player.volume = 0f
+                    castPlayer.volume = 0f
+                } else {
+                    exoPlayer.volume = 1f
+                    player.volume = 1f
+                    castPlayer.volume = 1f
+                }
             }
         }
     }
