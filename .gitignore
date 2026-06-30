@@ -2,9 +2,11 @@
 .gradle
 .DS_Store
 /local.properties
-/.idea
 /build
-/captures
 /gradle/gradle-daemon-jvm.properties
 /.kotlin
 /app/.cxx/
+/.idea/*
+!/.idea/icon.png
+!/.idea/runConfigurations.xml
+!/.idea/vcs.xml
