@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <data-extraction-rules>
     <cloud-backup>
-        <!-- backup files from external storage -->
-        <include domain="external" />
+        <include domain="sharedpref" path="." />
+        <include domain="external" path="." />
+        <exclude domain="external" path="temp" />
     </cloud-backup>
+    <device-transfer>
+        <include domain="sharedpref" path="." />
+        <include domain="external" path="." />
+        <exclude domain="external" path="temp" />
+    </device-transfer>
 </data-extraction-rules>

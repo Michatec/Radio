@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <full-backup-content>
-    <!-- backup files from external storage -->
-    <include domain="external" />
+    <include domain="sharedpref" path="." />
+    <include domain="external" path="." />
+    <exclude domain="external" path="temp" />
 </full-backup-content>
