@@ -114,6 +114,17 @@ class FavoritesWidgetProvider : AppWidgetProvider() {
             }
             views.setPendingIntentTemplate(R.id.favorites_list, PendingIntent.getActivity(themedContext, 0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE))
 
+            val mainIntent = Intent(themedContext, MainActivity::class.java).apply {
+                action = Keys.ACTION_START
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            }
+            val mainPendingIntent = PendingIntent.getActivity(
+                context, 1, mainIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            views.setOnClickPendingIntent(R.id.widget_root, mainPendingIntent)
+            views.setOnClickPendingIntent(R.id.widget_header, mainPendingIntent)
+
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }
