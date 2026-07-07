@@ -182,4 +182,9 @@
     <string name="theme_green">Grün</string>
     <string name="theme_blue">Blau</string>
     <string name="hex_code">Hex-Code</string>
+
+    <!-- Widgets -->
+    <string name="widget_favorites_title">Favoriten</string>
+    <string name="widget_favorites_empty">Noch keine Favoriten hinzugefügt.</string>
+    <string name="widget_favorites_description">Zeigt eine Liste deiner Favoriten-Sender für den Schnellzugriff.</string>
 </resources>

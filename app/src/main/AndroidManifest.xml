@@ -154,6 +154,26 @@
             </intent-filter>
         </receiver>
 
+        <!-- WIDGETS -->
+        <receiver
+            android:name=".widget.FavoritesWidgetProvider"
+            android:label="@string/widget_favorites_title"
+            android:description="@string/widget_favorites_description"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.michatec.radio.action.COLLECTION_CHANGED" />
+                <action android:name="com.michatec.radio.action.THEME_CHANGED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/favorites_widget_info" />
+        </receiver>
+
+        <service
+            android:name=".widget.FavoritesWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

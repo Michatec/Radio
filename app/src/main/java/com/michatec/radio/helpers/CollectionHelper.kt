@@ -623,11 +623,15 @@ object CollectionHelper {
         Log.v(TAG, "Broadcasting that collection has changed.")
         val collectionChangedIntent = Intent()
         collectionChangedIntent.action = Keys.ACTION_COLLECTION_CHANGED
+        collectionChangedIntent.setPackage(context.packageName)
         collectionChangedIntent.putExtra(
             Keys.EXTRA_COLLECTION_MODIFICATION_DATE,
             modificationDate.time
         )
+        // Send local broadcast
         LocalBroadcastManager.getInstance(context).sendBroadcast(collectionChangedIntent)
+        // Send global broadcast for widgets
+        context.sendBroadcast(collectionChangedIntent)
     }
 
     /* Creates a MediaItem with MediaMetadata for a single radio station - used to prepare player */

@@ -218,4 +218,8 @@
     <string name="theme_green">Green</string>
     <string name="theme_blue">Blue</string>
     <string name="hex_code">Hex Code</string>
+    <!-- Widgets -->
+    <string name="widget_favorites_title">Favorites</string>
+    <string name="widget_favorites_empty">No favorites added yet.</string>
+    <string name="widget_favorites_description">Shows a list of your favorite stations for quick access.</string>
 </resources>

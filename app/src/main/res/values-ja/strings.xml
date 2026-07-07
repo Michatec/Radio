@@ -181,4 +181,9 @@
     <string name="theme_green">緑</string>
     <string name="theme_blue">青</string>
     <string name="hex_code">Hexコード</string>
+
+    <!-- Widgets -->
+    <string name="widget_favorites_title">お気に入り</string>
+    <string name="widget_favorites_empty">お気に入りはまだ追加されていません。</string>
+    <string name="widget_favorites_description">お気に入りのステーションを一覧表示し、素早くアクセスできます。</string>
 </resources>

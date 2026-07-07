@@ -182,4 +182,9 @@
     <string name="theme_green">Зелений</string>
     <string name="theme_blue">Синій</string>
     <string name="hex_code">Hex-код</string>
+
+    <!-- Widgets -->
+    <string name="widget_favorites_title">Обране</string>
+    <string name="widget_favorites_empty">Ще не додано жодної станції до обраного.</string>
+    <string name="widget_favorites_description">Показує список ваших улюблених станцій для швидкого доступу.</string>
 </resources>

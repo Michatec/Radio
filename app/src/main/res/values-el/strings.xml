@@ -182,4 +182,9 @@
     <string name="theme_green">Πράσινο</string>
     <string name="theme_blue">Μπλε</string>
     <string name="hex_code">Κωδικός Hex</string>
+
+    <!-- Widgets -->
+    <string name="widget_favorites_title">Αγαπημένα</string>
+    <string name="widget_favorites_empty">Δεν έχουν προστεθεί ακόμα αγαπημένα.</string>
+    <string name="widget_favorites_description">Εμφανίζει μια λίστα με τους αγαπημένους σας σταθμούς για γρήγορη πρόσβαση.</string>
 </resources>

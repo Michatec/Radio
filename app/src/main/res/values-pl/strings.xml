@@ -182,4 +182,9 @@
     <string name="theme_green">Zielony</string>
     <string name="theme_blue">Niebieski</string>
     <string name="hex_code">Kod Hex</string>
+
+    <!-- Widgets -->
+    <string name="widget_favorites_title">Ulubione</string>
+    <string name="widget_favorites_empty">Nie dodano jeszcze żadnych ulubionych.</string>
+    <string name="widget_favorites_description">Wyświetla listę ulubionych stacji, zapewniając szybki dostęp.</string>
 </resources>

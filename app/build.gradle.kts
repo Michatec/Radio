@@ -11,8 +11,8 @@ android {
         applicationId = "com.michatec.radio"
         minSdk = 28
         targetSdk = 37
-        versionCode = 150
-        versionName = "15"
+        versionCode = 151
+        versionName = "15.1"
     }
 
     compileOptions {

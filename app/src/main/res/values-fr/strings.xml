@@ -180,4 +180,9 @@
     <string name="theme_green">Vert</string>
     <string name="theme_blue">Bleu</string>
     <string name="hex_code">Code Hex</string>
+
+    <!-- Widgets -->
+    <string name="widget_favorites_title">Favoris</string>
+    <string name="widget_favorites_empty">Aucun favori ajouté pour le moment.</string>
+    <string name="widget_favorites_description">Affiche une liste de vos stations préférées pour un accès rapide.</string>
 </resources>

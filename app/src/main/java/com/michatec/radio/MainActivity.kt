@@ -179,6 +179,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /* Overrides onNewIntent from AppCompatActivity */
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+    }
+
 
     /* Overrides onSupportNavigateUp from AppCompatActivity */
     override fun onSupportNavigateUp(): Boolean {

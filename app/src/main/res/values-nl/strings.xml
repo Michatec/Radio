@@ -182,4 +182,9 @@
     <string name="theme_green">Groen</string>
     <string name="theme_blue">Blauw</string>
     <string name="hex_code">Hex-code</string>
+
+    <!-- Widgets -->
+    <string name="widget_favorites_title">Favorieten</string>
+    <string name="widget_favorites_empty">Nog geen favorieten toegevoegd.</string>
+    <string name="widget_favorites_description">Toont een lijst met je favoriete zenders voor snelle toegang.</string>
 </resources>

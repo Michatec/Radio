@@ -180,4 +180,9 @@
     <string name="theme_green">Grøn</string>
     <string name="theme_blue">Blå</string>
     <string name="hex_code">Hex-kode</string>
+
+    <!-- Widgets -->
+    <string name="widget_favorites_title">Favoritter</string>
+    <string name="widget_favorites_empty">Ingen favoritter tilføjet endnu.</string>
+    <string name="widget_favorites_description">Viser en liste over dine yndlingsstationer for hurtig adgang.</string>
 </resources>

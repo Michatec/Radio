@@ -18,6 +18,7 @@ object Keys {
     // intent actions
     const val ACTION_SHOW_PLAYER: String = "com.michatec.radio.action.SHOW_PLAYER"
     const val ACTION_COLLECTION_CHANGED: String = "com.michatec.radio.action.COLLECTION_CHANGED"
+    const val ACTION_THEME_CHANGED: String = "com.michatec.radio.action.THEME_CHANGED"
     const val ACTION_START: String = "com.michatec.radio.action.START"
 
     // intent extras
