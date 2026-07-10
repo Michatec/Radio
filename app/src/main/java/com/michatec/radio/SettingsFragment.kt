@@ -426,13 +426,14 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceShareApp.setIcon(R.drawable.ic_share_24dp)
         preferenceShareApp.summary = getString(R.string.pref_share_app_summary)
         preferenceShareApp.setOnPreferenceClickListener {
-            val shareIntent = Intent().apply {
+            val share = Intent.createChooser(Intent().apply {
                 action = Intent.ACTION_SEND
                 type = "text/plain"
                 putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.app_name))
+                putExtra(Intent.EXTRA_TITLE, context.getString(R.string.app_name))
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.pref_share_app_share_text))
-            }
-            startActivity(shareIntent)
+            }, null)
+            startActivity(share)
             if (!isAndroidTV && isPermissionGranted(activity as Context, android.Manifest.permission.POST_NOTIFICATIONS)) {
                 NotificationSys.showNotification(
                     context,

@@ -247,6 +247,7 @@ data class LayoutHolder(var rootView: View) {
             val share = Intent.createChooser(Intent().apply {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_TITLE, stationNameView?.text)
+                putExtra(Intent.EXTRA_SUBJECT, stationNameView?.text)
                 putExtra(Intent.EXTRA_TEXT, sheetStreamingLinkView?.text ?: "")
                 type = "text/plain"
             }, null)
