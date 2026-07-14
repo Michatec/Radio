@@ -11,6 +11,7 @@ import com.michatec.radio.R
 import com.michatec.radio.core.Station
 import com.michatec.radio.helpers.FileHelper
 import com.michatec.radio.helpers.PreferencesHelper
+import java.util.Locale
 
 class FavoritesWidgetService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
@@ -36,8 +37,21 @@ class FavoritesWidgetFactory(private val context: Context) : RemoteViewsService.
     override fun getViewAt(position: Int): RemoteViews {
         val station = favorites[position]
 
+        // Language and Theme-aware context for widget items
+        val languageCode = PreferencesHelper.loadSelectedLanguage()
         val themeSelection = PreferencesHelper.loadThemeSelection()
         val configuration = Configuration(context.resources.configuration)
+
+        // Apply language
+        val locale = if (languageCode != "system") {
+            Locale.forLanguageTag(languageCode)
+        } else {
+            context.resources.configuration.locales[0]
+        }
+        configuration.setLocale(locale)
+        configuration.setLayoutDirection(locale)
+
+        // Apply theme
         when (themeSelection) {
             Keys.STATE_THEME_LIGHT_MODE -> configuration.uiMode = (configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or Configuration.UI_MODE_NIGHT_NO
             Keys.STATE_THEME_DARK_MODE -> configuration.uiMode = (configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or Configuration.UI_MODE_NIGHT_YES

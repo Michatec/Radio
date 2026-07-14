@@ -32,7 +32,8 @@ class Radio : Application(), SharedPreferences.OnSharedPreferenceChangeListener 
             Keys.PREF_THEME_SELECTION,
             Keys.PREF_CUSTOM_THEME_COLOR,
             Keys.PREF_CUSTOM_THEME_ENABLED,
-            Keys.PREF_CUSTOM_THEME_INDEX -> {
+            Keys.PREF_CUSTOM_THEME_INDEX,
+            Keys.PREF_LANGUAGE_SELECTED -> {
                 val intent = Intent(Keys.ACTION_THEME_CHANGED).apply {
                     setPackage(packageName)
                 }

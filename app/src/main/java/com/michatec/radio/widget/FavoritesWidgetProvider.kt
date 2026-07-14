@@ -18,6 +18,7 @@ import com.michatec.radio.R
 import com.michatec.radio.helpers.FileHelper
 import com.michatec.radio.helpers.PreferencesHelper
 import com.michatec.radio.helpers.PreferencesHelper.initPreferences
+import java.util.Locale
 
 class FavoritesWidgetProvider : AppWidgetProvider() {
 
@@ -48,8 +49,21 @@ class FavoritesWidgetProvider : AppWidgetProvider() {
         fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
             context.initPreferences()
 
+            // Language and Theme-aware context for widgets
+            val languageCode = PreferencesHelper.loadSelectedLanguage()
             val themeSelection = PreferencesHelper.loadThemeSelection()
             val configuration = Configuration(context.resources.configuration)
+
+            // Apply language
+            val locale = if (languageCode != "system") {
+                Locale.forLanguageTag(languageCode)
+            } else {
+                context.resources.configuration.locales[0]
+            }
+            configuration.setLocale(locale)
+            configuration.setLayoutDirection(locale)
+            
+            // Apply theme
             when (themeSelection) {
                 Keys.STATE_THEME_LIGHT_MODE -> configuration.uiMode = (configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or Configuration.UI_MODE_NIGHT_NO
                 Keys.STATE_THEME_DARK_MODE -> configuration.uiMode = (configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or Configuration.UI_MODE_NIGHT_YES
@@ -59,6 +73,10 @@ class FavoritesWidgetProvider : AppWidgetProvider() {
             val views = RemoteViews(themedContext.packageName, R.layout.favorites_widget)
             val iconColor = ContextCompat.getColor(themedContext, R.color.icon_default)
             val textColor = ContextCompat.getColor(themedContext, R.color.text_default)
+
+            // Explicitly set localized strings
+            views.setTextViewText(R.id.widget_title, themedContext.resources.getString(R.string.widget_favorites_title))
+            views.setTextViewText(R.id.empty_view, themedContext.resources.getString(R.string.widget_favorites_empty))
 
             views.setTextColor(R.id.widget_title, textColor)
             views.setInt(R.id.widget_icon, "setColorFilter", iconColor)

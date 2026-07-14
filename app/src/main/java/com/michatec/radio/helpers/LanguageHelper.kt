@@ -57,6 +57,7 @@ object LanguageHelper {
             "pl" -> context.getString(R.string.pref_language_pl)
             "el" -> context.getString(R.string.pref_language_el)
             "da" -> context.getString(R.string.pref_language_da)
+            "uk" -> context.getString(R.string.pref_language_uk)
             else -> languageCode
         }
     }
