@@ -38,7 +38,7 @@ android {
 
         release {
             isMinifyEnabled = false
-            isShrinkResources = true
+            isShrinkResources = false
             isCrunchPngs = true
             proguardFiles.addAll(listOf(getDefaultProguardFile("proguard-android-optimize.txt"), file("proguard-rules.pro")))
             buildConfigField("boolean", "IS_DEBUG_ENABLED", "false")
