@@ -187,4 +187,10 @@
     <string name="widget_favorites_title">Favorieten</string>
     <string name="widget_favorites_empty">Nog geen favorieten toegevoegd.</string>
     <string name="widget_favorites_description">Toont een lijst met je favoriete zenders voor snelle toegang.</string>
+
+    <!-- Remote Control -->
+    <string name="pref_remote_control_title">Afstandsbediening</string>
+    <string name="pref_remote_control_summary">Bedien de radio vanuit je webbrowser</string>
+    <string name="pref_remote_control_url">Bedien de radio via http://%1$s:8080</string>
+    <string name="error_webserver">De webserver voor de afstandsbediening is gecrasht of gestopt.</string>
 </resources>

@@ -60,6 +60,33 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
     private var playLastStation: Boolean = false
     private var manuallyCancelledSleepTimer = false
     
+    private val remoteControlServer: RemoteControlServer by lazy { 
+        RemoteControlServer(this).apply {
+            onPlayStation = { uuid ->
+                playStation(uuid) 
+            }
+            onPause = {
+                player.pause() 
+            }
+            onResume = {
+                player.play()
+            }
+            onNext = {
+                playNextStation() 
+            }
+            onPrev = {
+                playPreviousStation() 
+            }
+            
+            onError = { error ->
+                Log.e(TAG, "RemoteControlServer error: $error")
+                PreferencesHelper.saveRemoteControlEnabled(false)
+                val intent = Intent(Keys.ACTION_REMOTE_SERVER_ERROR)
+                LocalBroadcastManager.getInstance(this@PlayerService).sendBroadcast(intent)
+            }
+        }
+    }
+
     // Native Audio Processor instance
     private val nativeAudioProcessor = NativeAudioProcessor()
 
@@ -77,6 +104,13 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
         // initialize player and session
         initializePlayer()
         initializeSession()
+
+        // start remote control server if enabled
+        if (PreferencesHelper.loadRemoteControlEnabled()) {
+            remoteControlServer.setPlayer(player)
+            remoteControlServer.start()
+        }
+
         val notificationProvider: DefaultMediaNotificationProvider = CustomNotificationProvider()
         notificationProvider.setSmallIcon(R.drawable.ic_notification_app_icon_white_24dp)
         setMediaNotificationProvider(notificationProvider)
@@ -104,6 +138,12 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
         super.onDestroy()
     }
 
+
+    /* Overrides onStartCommand from Service */
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+        return START_STICKY
+    }
 
     /* Overrides onTaskRemoved from Service */
     override fun onTaskRemoved(rootIntent: Intent?) {
@@ -369,6 +409,14 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
                     castPlayer.volume = 1f
                 }
             }
+            Keys.PREF_REMOTE_CONTROL_ENABLED -> {
+                if (PreferencesHelper.loadRemoteControlEnabled()) {
+                    remoteControlServer.setPlayer(player)
+                    remoteControlServer.start()
+                } else {
+                    remoteControlServer.stop()
+                }
+            }
         }
     }
 
@@ -394,6 +442,13 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
         }
     }
 
+    /* Starts playback of a radio station by UUID (centralized logic) */
+    fun playStation(uuid: String) {
+        val station = CollectionHelper.getStation(collection, uuid)
+        if (station.isValid()) {
+            playStation(station)
+        }
+    }
 
     /* Starts playback of a radio station */
     private fun playStation(station: Station) {

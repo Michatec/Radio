@@ -187,4 +187,10 @@
     <string name="widget_favorites_title">Обране</string>
     <string name="widget_favorites_empty">Ще не додано жодної станції до обраного.</string>
     <string name="widget_favorites_description">Показує список ваших улюблених станцій для швидкого доступу.</string>
+
+    <!-- Remote Control -->
+    <string name="pref_remote_control_title">Дистанційне керування</string>
+    <string name="pref_remote_control_summary">Керуйте радіо з вашого веб-браузера</string>
+    <string name="pref_remote_control_url">Керуйте радіо через http://%1$s:8080</string>
+    <string name="error_webserver">Веб-сервер дистанційного керування аварійно зупинився/зупинено.</string>
 </resources>

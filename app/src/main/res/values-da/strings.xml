@@ -185,4 +185,10 @@
     <string name="widget_favorites_title">Favoritter</string>
     <string name="widget_favorites_empty">Ingen favoritter tilføjet endnu.</string>
     <string name="widget_favorites_description">Viser en liste over dine yndlingsstationer for hurtig adgang.</string>
+
+    <!-- Remote Control -->
+    <string name="pref_remote_control_title">Fjernbetjening</string>
+    <string name="pref_remote_control_summary">Betjen radioen fra din webbrowser</string>
+    <string name="pref_remote_control_url">Betjen radioen fra http://%1$s:8080</string>
+    <string name="error_webserver">Web fjernbetjeningsserver crashet/stoppede.</string>
 </resources>

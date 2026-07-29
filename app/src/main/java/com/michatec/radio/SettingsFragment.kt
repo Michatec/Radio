@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -13,21 +14,31 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.media3.common.util.UnstableApi
 import androidx.navigation.fragment.findNavController
-import androidx.preference.*
+import androidx.preference.EditTextPreference
+import androidx.preference.Preference
+import androidx.preference.PreferenceCategory
+import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.snackbar.Snackbar
 import com.michatec.radio.dialogs.ErrorDialog
 import com.michatec.radio.dialogs.LanguageSelectionDialog
 import com.michatec.radio.dialogs.PresetSelectionDialog
 import com.michatec.radio.dialogs.ThemeSelectionDialog
 import com.michatec.radio.dialogs.YesNoDialog
-import com.michatec.radio.helpers.*
-import android.content.pm.PackageManager
+import com.michatec.radio.helpers.AppThemeHelper
+import com.michatec.radio.helpers.BackupHelper
+import com.michatec.radio.helpers.FileHelper
+import com.michatec.radio.helpers.LanguageHelper
+import com.michatec.radio.helpers.MarqueeSwitchPreference
+import com.michatec.radio.helpers.NetworkHelper
+import com.michatec.radio.helpers.PreferencesHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 
 /*
@@ -59,6 +70,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
     }
 
     /* Overrides onCreatePreferences from PreferenceFragmentCompat */
+    @UnstableApi
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 
         val context = preferenceManager.context
@@ -180,6 +192,29 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             true
         } else {
             PreferencesHelper.loadEditStreamUrisEnabled(context)
+        }
+
+        // set up "Remote Control" preference
+        val preferenceRemoteControl = MarqueeSwitchPreference(context)
+        preferenceRemoteControl.title = getString(R.string.pref_remote_control_title)
+        preferenceRemoteControl.setIcon(R.drawable.ic_network_check_24dp)
+        preferenceRemoteControl.key = Keys.PREF_REMOTE_CONTROL_ENABLED
+        val localIp = NetworkHelper.getLocalIpAddress(context)
+        preferenceRemoteControl.summary = if (localIp != null) {
+            getString(R.string.pref_remote_control_url, localIp)
+        } else {
+            getString(R.string.pref_remote_control_summary)
+        }
+        preferenceRemoteControl.setDefaultValue(PreferencesHelper.loadRemoteControlEnabled())
+        preferenceRemoteControl.setOnPreferenceChangeListener { _, newValue ->
+            val enabled = newValue as Boolean
+            if (enabled) {
+                val intent = Intent(activity, PlayerService::class.java).apply {
+                    action = Keys.ACTION_START
+                }
+                activity?.startService(intent)
+            }
+            return@setOnPreferenceChangeListener true
         }
 
         // set up "Arguments" preference
@@ -501,6 +536,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceCategoryAdvanced.addPreference(preferenceBufferSize)
         preferenceCategoryAdvanced.addPreference(preferenceEnableEditingGeneral)
         preferenceCategoryAdvanced.addPreference(preferenceEnableEditingStreamUri)
+        preferenceCategoryAdvanced.addPreference(preferenceRemoteControl)
         preferenceCategoryAdvanced.addPreference(preferenceArguments)
 
         screen.addPreference(preferenceCategoryLinks)

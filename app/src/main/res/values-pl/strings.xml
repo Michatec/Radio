@@ -187,4 +187,9 @@
     <string name="widget_favorites_title">Ulubione</string>
     <string name="widget_favorites_empty">Nie dodano jeszcze żadnych ulubionych.</string>
     <string name="widget_favorites_description">Wyświetla listę ulubionych stacji, zapewniając szybki dostęp.</string>
+    <!-- Remote Control -->
+    <string name="pref_remote_control_title">Pilot</string>
+    <string name="pref_remote_control_summary">Steruj radiem z przeglądarki internetowej</string>
+    <string name="pref_remote_control_url">Steruj radiem przez http://%1$s:8080</string>
+    <string name="error_webserver">Serwer zdalnego sterowania uległ awarii/zatrzymaniu.</string>
 </resources>

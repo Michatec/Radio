@@ -222,4 +222,10 @@
     <string name="widget_favorites_title">Favorites</string>
     <string name="widget_favorites_empty">No favorites added yet.</string>
     <string name="widget_favorites_description">Shows a list of your favorite stations for quick access.</string>
+
+    <!-- Remote Control -->
+    <string name="pref_remote_control_title">Remote Control</string>
+    <string name="pref_remote_control_summary">Control radio from your web browser</string>
+    <string name="pref_remote_control_url">Control radio from http://%1$s:8080</string>
+    <string name="error_webserver">Web Remote server crashed / stopped.</string>
 </resources>

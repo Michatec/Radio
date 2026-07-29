@@ -20,10 +20,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.navigateUp
+import android.content.*
 import com.google.android.material.snackbar.Snackbar
 import com.michatec.radio.helpers.AppThemeHelper
 import com.michatec.radio.helpers.FileHelper
@@ -132,6 +134,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        // register remote server error receiver
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            remoteServerErrorReceiver,
+            IntentFilter(Keys.ACTION_REMOTE_SERVER_ERROR)
+        )
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // unregister remote server error receiver
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(remoteServerErrorReceiver)
+    }
+
     /* Hides the loading/splash overlay */
     private fun hideLoadingOverlay() {
         findViewById<View>(R.id.loading_layout)?.let { overlay ->
@@ -220,6 +237,24 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+
+    /*
+     * Receiver for remote server error
+     */
+    private val remoteServerErrorReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == Keys.ACTION_REMOTE_SERVER_ERROR) {
+                val snackbar = Snackbar.make(
+                    findViewById(R.id.main_root),
+                    R.string.error_webserver,
+                    Snackbar.LENGTH_LONG
+                )
+                snackbar.anchorView = findViewById(R.id.bottom_sheet)
+                snackbar.show()
+            }
+        }
+    }
     /*
      * End of declaration
      */
