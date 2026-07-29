@@ -509,6 +509,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceCategoryGeneral.addPreference(preferenceLanguageSelection)
         preferenceCategoryGeneral.addPreference(preferenceCustomThemeEnabled)
         preferenceCategoryGeneral.addPreference(preferenceCustomTheme)
+        preferenceCategoryGeneral.addPreference(preferenceRemoteControl)
 
         if (!isAndroidTV && isPermissionGranted(activity as Context, android.Manifest.permission.POST_NOTIFICATIONS)) {
             preferenceCategoryGeneral.addPreference(preferenceTestNotification)
@@ -536,7 +537,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceCategoryAdvanced.addPreference(preferenceBufferSize)
         preferenceCategoryAdvanced.addPreference(preferenceEnableEditingGeneral)
         preferenceCategoryAdvanced.addPreference(preferenceEnableEditingStreamUri)
-        preferenceCategoryAdvanced.addPreference(preferenceRemoteControl)
         preferenceCategoryAdvanced.addPreference(preferenceArguments)
 
         screen.addPreference(preferenceCategoryLinks)
