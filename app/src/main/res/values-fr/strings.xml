@@ -185,4 +185,15 @@
     <string name="widget_favorites_title">Favoris</string>
     <string name="widget_favorites_empty">Aucun favori ajouté pour le moment.</string>
     <string name="widget_favorites_description">Affiche une liste de vos stations préférées pour un accès rapide.</string>
+
+    <!-- Remote Control -->
+    <string name="pref_remote_control_title">Télécommande</string>
+    <string name="pref_remote_control_summary">Contrôlez la radio depuis votre navigateur web</string>
+    <string name="pref_remote_control_url">Contrôlez la radio depuis http://%1$s:8080</string>
+    <string name="error_webserver">Serveur de télécommande Web planté/arrêté.</string>
+
+    <string name="descr_player_search_button">Rechercher des stations</string>
+    <string name="search_hint">Rechercher des stations…</string>
+    <string name="search_filter_favorites">Favoris uniquement</string>
+    <string name="search_no_results">Aucune station trouvée.</string>
 </resources>

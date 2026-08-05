@@ -130,9 +130,9 @@
     <string name="dialog_yes_no_positive_button_update_collection">更新</string>
     <string name="pref_audio_effects_title">オーディオエフェクト</string>
     <string name="pref_bass_boost_title">バスブースト</string>
+    <string name="pref_bass_boost_summary">低音を増強します。</string>
     <string name="pref_security_title">セキュリティ</string>
     <string name="pref_security_summary">このアプリケーションのセキュリティについて詳しく知る</string>
-    <string name="pref_bass_boost_summary">低音を増強します。</string>
     <string name="pref_reverb_title">リバーブ</string>
     <string name="pref_reverb_summary">リバーブミスを調整します。</string>
     <string name="pref_drc_title">ダイナミックレンジ圧縮</string>
@@ -186,4 +186,14 @@
     <string name="widget_favorites_title">お気に入り</string>
     <string name="widget_favorites_empty">お気に入りはまだ追加されていません。</string>
     <string name="widget_favorites_description">お気に入りのステーションを一覧表示し、素早くアクセスできます。</string>
+
+    <!-- Remote Control -->
+    <string name="pref_remote_control_title">リモコン</string>
+    <string name="pref_remote_control_summary">ウェブブラウザからラジオを操作</string>
+    <string name="pref_remote_control_url">http://%1$s:8080 からラジオを操作</string>
+    <string name="error_webserver">Webリモートサーバーがクラッシュ/停止しました。</string>
+    <string name="search_hint">局を検索…</string>
+    <string name="search_filter_favorites">お気に入りのみ</string>
+    <string name="search_no_results">局が見つかりません。</string>
+    <string name="descr_player_search_button">局を検索</string>
 </resources>

@@ -2,11 +2,11 @@ package com.michatec.radio.dialogs
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.widget.RadioButton
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.michatec.radio.Keys
 import com.michatec.radio.R
+import com.michatec.radio.databinding.DialogThemeSelectionBinding
 import com.michatec.radio.helpers.AppThemeHelper
 import com.michatec.radio.helpers.PreferencesHelper
 
@@ -33,31 +33,24 @@ class ThemeSelectionDialog(private var themeSelectionDialogListener: ThemeSelect
         val builder = MaterialAlertDialogBuilder(context)
 
         // inflate custom layout
-        val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.dialog_theme_selection, null)
-
-        // find radio buttons
-        val radioGroup = view.findViewById<android.widget.RadioGroup>(R.id.theme_radio_group)
-        val radioFollowSystem = view.findViewById<RadioButton>(R.id.radio_theme_follow_system)
-        val radioLight = view.findViewById<RadioButton>(R.id.radio_theme_light)
-        val radioDark = view.findViewById<RadioButton>(R.id.radio_theme_dark)
+        val binding = DialogThemeSelectionBinding.inflate(LayoutInflater.from(context))
 
         // set current selection
         val currentTheme = AppThemeHelper.getCurrentTheme(context)
         when (currentTheme) {
             context.getString(R.string.pref_theme_selection_mode_device_default) -> {
-                radioFollowSystem.isChecked = true
+                binding.radioThemeFollowSystem.isChecked = true
             }
             context.getString(R.string.pref_theme_selection_mode_light) -> {
-                radioLight.isChecked = true
+                binding.radioThemeLight.isChecked = true
             }
             context.getString(R.string.pref_theme_selection_mode_dark) -> {
-                radioDark.isChecked = true
+                binding.radioThemeDark.isChecked = true
             }
         }
 
         // set up radio group listener
-        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+        binding.themeRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             val selectedTheme = when (checkedId) {
                 R.id.radio_theme_follow_system -> Keys.STATE_THEME_FOLLOW_SYSTEM
                 R.id.radio_theme_light -> Keys.STATE_THEME_LIGHT_MODE
@@ -75,7 +68,7 @@ class ThemeSelectionDialog(private var themeSelectionDialogListener: ThemeSelect
         }
 
         // set custom view
-        builder.setView(view)
+        builder.setView(binding.root)
 
         // handle outside-click as cancel
         builder.setOnCancelListener {

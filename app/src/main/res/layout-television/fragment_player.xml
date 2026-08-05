@@ -12,6 +12,54 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
 
+        <!-- SEARCH BAR -->
+        <LinearLayout
+            android:id="@+id/search_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/search_input_layout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:endIconMode="clear_text"
+                app:startIconDrawable="@drawable/ic_search_24dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/search_input_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/search_hint"
+                    android:inputType="text"
+                    android:maxLines="1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/search_filter_favorites_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/search_filter_favorites" />
+
+            <!-- NO RESULTS MESSAGE -->
+            <TextView
+                android:id="@+id/search_no_results_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/search_no_results"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/station_list"
             android:layout_width="match_parent"
@@ -19,7 +67,7 @@
             android:clipToPadding="false"
             android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/search_layout" />
 
         <include
             layout="@layout/element_onboarding"

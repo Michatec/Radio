@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title data-t="title">Radio Remote</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="dark-theme">
+    <div class="dashboard">
+        <header>
+            <h1 data-t="title">Radio Remote</h1>
+            <button id="menuBtn" class="icon-btn"><span class="material-icons">settings</span></button>
+        </header>
+
+        <main id="mainDashboard">
+            <section class="now-playing glass">
+                <div class="current-station-info">
+                    <div class="current-text-info">
+                        <div class="current-title-row">
+                            <div id="currentName" class="current-name" data-t="status_loading">Loading...</div>
+                            <span id="currentStar" class="material-icons starred-icon hidden">star</span>
+                        </div>
+                        <div id="currentMetadata" class="current-metadata"></div>
+                    </div>
+                    <img id="currentImage" class="current-img" src="favicon.png" alt="Station">
+                </div>
+                <div id="status" class="status-badge" data-t="status_loading">Loading...</div>
+                <div class="controls">
+                    <button id="prevBtn" class="icon-btn large"><span class="material-icons">skip_previous</span></button>
+                    <button id="playPauseBtn" class="icon-btn x-large"><span class="material-icons" id="playPauseIcon">play_arrow</span></button>
+                    <button id="nextBtn" class="icon-btn large"><span class="material-icons">skip_next</span></button>
+                </div>
+            </section>
+
+            <section class="station-section">
+                <h2 data-t="stations_title">Station Collection</h2>
+                <div id="stationList" class="station-grid"></div>
+            </section>
+        </main>
+
+        <main id="apiDocsView" class="hidden">
+            <div class="glass api-container">
+                <header class="api-header">
+                    <button id="backToDashboard" class="icon-btn"><span class="material-icons">arrow_back</span></button>
+                    <h1 data-t="api_docs">API Documentation</h1>
+                </header>
+                <div class="api-content">
+                    <p>The Radio app provides a REST API to control playback and query information.</p>
+
+                    <h2>API Reference</h2>
+
+                    <div class="endpoint">
+                        <h3><span class="method get">GET</span> <code>/api/status</code></h3>
+                        <p>Returns current playback status.</p>
+                        <div class="code-example">Response Example:</div>
+                        <pre>
+{
+  "isPlaying": true,
+  "playWhenReady": true,
+  "playbackState": 3,
+  "currentStationUuid": "fc080549-...",
+  "metadata": "Artist - Title",
+  "starred": true
+}                   </pre>
+                    </div>
+
+                    <div class="endpoint">
+                        <h3><span class="method get">GET</span> <code>/api/stations</code></h3>
+                        <p>Returns all stations in collection.</p>
+                        <div class="code-example">Response Example:</div>
+                        <pre>
+[
+  {
+    "uuid": "fc080549-...",
+    "name": "Station Name",
+    "hasImage": true,
+    "starred": true
+  }
+]                   </pre>
+                    </div>
+
+                    <div class="endpoint">
+                        <h3><span class="method get">GET</span> <code>/api/image/{uuid}</code></h3>
+                        <p>Returns the image for a specific station.</p>
+                        <div class="code-example">Response: Image (binary data, JPEG)</div>
+                    </div>
+
+                    <div class="endpoint">
+                        <h3><span class="method get">GET</span> <code>/api/config</code></h3>
+                        <p>Returns the app version.</p>
+                        <div class="code-example">Response Example:</div>
+                        <pre>{ "version": "15.1" }</pre>
+                    </div>
+
+                    <div class="endpoint">
+                        <h3><span class="method post">POST</span> <code>/api/play/{uuid}</code></h3>
+                        <p>Starts playback of a specific station.</p>
+                        <div class="code-example">Response Example:</div>
+                        <pre>{ "status": "ok" }</pre>
+                    </div>
+
+                    <div class="endpoint">
+                        <h3><span class="method post">POST</span> <code>/api/pause</code></h3>
+                        <p>Pauses current playback.</p>
+                        <div class="code-example">Response Example:</div>
+                        <pre>{ "status": "ok" }</pre>
+                    </div>
+
+                    <div class="endpoint">
+                        <h3><span class="method post">POST</span> <code>/api/resume</code></h3>
+                        <p>Resumes current playback.</p>
+                        <div class="code-example">Response Example:</div>
+                        <pre>{ "status": "ok" }</pre>
+                    </div>
+
+                    <div class="endpoint">
+                        <h3><span class="method post">POST</span> <code>/api/next</code></h3>
+                        <p>Plays the next station.</p>
+                        <div class="code-example">Response Example:</div>
+                        <pre>{ "status": "ok" }</pre>
+                    </div>
+
+                    <div class="endpoint">
+                        <h3><span class="method post">POST</span> <code>/api/prev</code></h3>
+                        <p>Plays the previous station.</p>
+                        <div class="code-example">Response Example:</div>
+                        <pre>{ "status": "ok" }</pre>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div id="settingsPanel" class="settings-panel glass hidden">
+            <div class="settings-content">
+                <div class="settings-header">
+                    <h3 data-t="menu_theme">Theme</h3>
+                    <button id="closeMenuBtn" class="icon-btn"><span class="material-icons">close</span></button>
+                </div>
+                <div class="setting-item">
+                    <span data-t="menu_theme">Theme</span>
+                    <label for="themeSelect"></label>
+                    <select id="themeSelect">
+                        <option value="auto_browser" data-t="theme_follow_browser">Follow Browser</option>
+                        <option value="dark" data-t="theme_dark">Dark</option>
+                        <option value="light" data-t="theme_light">Light</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <span data-t="menu_language">Language</span>
+                    <label for="langSelect"></label>
+                    <select id="langSelect">
+                        <option value="auto_browser" data-t="lang_auto_browser">Auto (Browser)</option>
+                        <option value="en">English</option>
+                        <option value="de">Deutsch</option>
+                        <option value="fr">Français</option>
+                        <option value="ru">Русский</option>
+                        <option value="nl">Nederlands</option>
+                        <option value="pl">Polski</option>
+                        <option value="ja">日本語</option>
+                        <option value="uk">Українська</option>
+                        <option value="el">Ελληνικά</option>
+                        <option value="da">Dansk</option>
+                    </select>
+                </div>
+                <div class="settings-footer">
+                    <button id="showApiDocsBtn" class="link-btn" data-t="api_docs">API Documentation</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js?v=18"></script>
+</body>
+</html>

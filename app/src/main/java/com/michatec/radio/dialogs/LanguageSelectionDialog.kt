@@ -3,10 +3,10 @@ package com.michatec.radio.dialogs
 import android.content.Context
 import android.view.LayoutInflater
 import android.widget.RadioButton
-import android.widget.RadioGroup
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.michatec.radio.R
+import com.michatec.radio.databinding.DialogLanguageSelectionBinding
 import com.michatec.radio.helpers.PreferencesHelper
 
 
@@ -58,11 +58,7 @@ class LanguageSelectionDialog(private var languageSelectionDialogListener: Langu
         val builder = MaterialAlertDialogBuilder(context)
 
         // inflate custom layout
-        val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.dialog_language_selection, null)
-
-        // find radio group
-        val radioGroup = view.findViewById<RadioGroup>(R.id.language_radio_group)
+        val binding = DialogLanguageSelectionBinding.inflate(LayoutInflater.from(context))
         val currentLanguage = PreferencesHelper.loadSelectedLanguage()
 
         // add radio buttons for each supported language
@@ -74,12 +70,12 @@ class LanguageSelectionDialog(private var languageSelectionDialogListener: Langu
                 textSize = if (isTelevision(context)) 20f else 16f
                 setPadding(dpToPx(context, 8), dpToPx(context, 16), dpToPx(context, 16), dpToPx(context, 16))
             }
-            radioGroup.addView(radioButton)
+            binding.languageRadioGroup.addView(radioButton)
         }
 
         // set current selection
-        for (i in 0 until radioGroup.childCount) {
-            val radioButton = radioGroup.getChildAt(i) as RadioButton
+        for (i in 0 until binding.languageRadioGroup.childCount) {
+            val radioButton = binding.languageRadioGroup.getChildAt(i) as RadioButton
             if (radioButton.tag == currentLanguage) {
                 radioButton.isChecked = true
                 break
@@ -87,14 +83,14 @@ class LanguageSelectionDialog(private var languageSelectionDialogListener: Langu
         }
 
         // if no language is selected, check the first one (system)
-        if (radioGroup.checkedRadioButtonId == -1) {
-            val firstButton = radioGroup.getChildAt(0) as RadioButton
+        if (binding.languageRadioGroup.checkedRadioButtonId == -1) {
+            val firstButton = binding.languageRadioGroup.getChildAt(0) as RadioButton
             firstButton.isChecked = true
         }
 
         // set up radio group listener
-        radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            val selectedButton = radioGroup.findViewById<RadioButton>(checkedId)
+        binding.languageRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+            val selectedButton = binding.languageRadioGroup.findViewById<RadioButton>(checkedId)
             val selectedLanguageCode = selectedButton?.tag as? String ?: "system"
 
             // save language selection to preferences
@@ -108,7 +104,7 @@ class LanguageSelectionDialog(private var languageSelectionDialogListener: Langu
         }
 
         // set custom view
-        builder.setView(view)
+        builder.setView(binding.root)
 
         // handle outside-click as cancel
         builder.setOnCancelListener {

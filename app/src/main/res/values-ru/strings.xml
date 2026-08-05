@@ -187,4 +187,14 @@
     <string name="widget_favorites_title">Избранное</string>
     <string name="widget_favorites_empty">Избранное пока не добавлено.</string>
     <string name="widget_favorites_description">Показывает список ваших любимых станций для быстрого доступа.</string>
+
+    <!-- Remote Control -->
+    <string name="pref_remote_control_title">Удалённое управление</string>
+    <string name="pref_remote_control_summary">Управляйте радио из вашего веб-браузера</string>
+    <string name="pref_remote_control_url">Управляйте радио через http://%1$s:8080</string>
+    <string name="error_webserver">Веб-сервер удалённого управления упал/остановлен.</string>
+    <string name="search_hint">Поиск станций…</string>
+    <string name="search_filter_favorites">Только избранное</string>
+    <string name="search_no_results">Станции не найдены.</string>
+    <string name="descr_player_search_button">Поиск станций</string>
 </resources>

@@ -34,6 +34,21 @@ object NetworkHelper {
     }
 
 
+    /* Gets the IP address of the device on the local network */
+    fun getLocalIpAddress(context: Context): String? {
+        val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork: Network = connMgr.activeNetwork ?: return null
+        val linkProperties = connMgr.getLinkProperties(activeNetwork) ?: return null
+        for (linkAddress in linkProperties.linkAddresses) {
+            val address = linkAddress.address
+            if (!address.isLoopbackAddress && address is InetAddress && address.hostAddress?.contains(":") == false) {
+                return address.hostAddress
+            }
+        }
+        return null
+    }
+
+
     /* Detects content type (mime type) from given URL string - async using coroutine - use only on separate threat */
     fun detectContentType(urlString: String): ContentType {
         Log.v(TAG, "Determining content type - Thread: ${Thread.currentThread().name}")

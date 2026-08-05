@@ -406,6 +406,18 @@ object PreferencesHelper {
         return arguments.any { it.lowercase().sha256() == targetHash }
     }
 
+    /* Loads whether remote control is enabled */
+    fun loadRemoteControlEnabled(): Boolean {
+        return sharedPreferences.getBoolean(Keys.PREF_REMOTE_CONTROL_ENABLED, false)
+    }
+
+    /* Saves whether remote control is enabled */
+    fun saveRemoteControlEnabled(enabled: Boolean) {
+        sharedPreferences.edit {
+            putBoolean(Keys.PREF_REMOTE_CONTROL_ENABLED, enabled)
+        }
+    }
+
     /* SHA-256 helper */
     private fun String.sha256(): String {
         return try {

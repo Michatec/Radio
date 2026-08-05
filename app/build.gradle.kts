@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.serialization)
     id("kotlin-parcelize")
 }
 
@@ -22,12 +23,12 @@ android {
 
     buildFeatures {
         buildConfig = true
+        viewBinding = true
     }
 
     buildTypes {
         debug {
             isMinifyEnabled = false
-            //noinspection NotShrinkingResources
             isShrinkResources = false
             isCrunchPngs = false
             proguardFiles.addAll(listOf(getDefaultProguardFile("proguard-android-optimize.txt"), file("proguard-rules.pro")))
@@ -36,8 +37,8 @@ android {
         }
 
         release {
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = false
+            isShrinkResources = false
             isCrunchPngs = true
             proguardFiles.addAll(listOf(getDefaultProguardFile("proguard-android-optimize.txt"), file("proguard-rules.pro")))
             buildConfigField("boolean", "IS_DEBUG_ENABLED", "false")
@@ -50,6 +51,13 @@ android {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")
             version = "3.22.1"
+        }
+    }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/INDEX.LIST"
+            excludes += "/META-INF/io.netty.versions.properties"
         }
     }
 }
@@ -77,6 +85,13 @@ dependencies {
     implementation(libs.leanback)
 
     implementation(libs.freedroidwarn)
+
+    // Ktor //
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.serialization.gson)
 
     // Volley HTTP request //
     implementation(libs.volley)

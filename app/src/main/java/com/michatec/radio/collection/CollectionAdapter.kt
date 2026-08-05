@@ -1,6 +1,5 @@
 package com.michatec.radio.collection
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.text.Editable
@@ -10,12 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.CheckBox
-import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.Group
 import androidx.core.net.toUri
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -24,19 +19,31 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.card.MaterialCardView
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.google.android.material.textfield.TextInputEditText
 import com.michatec.radio.Keys
 import com.michatec.radio.R
 import com.michatec.radio.core.Collection
 import com.michatec.radio.core.Station
-import com.michatec.radio.helpers.*
-import kotlinx.coroutines.*
+import com.michatec.radio.databinding.CardAddNewStationBinding
+import com.michatec.radio.databinding.CardStationBinding
+import com.michatec.radio.helpers.CollectionHelper
+import com.michatec.radio.helpers.FileHelper
+import com.michatec.radio.helpers.ImageHelper
+import com.michatec.radio.helpers.NetworkHelper
+import com.michatec.radio.helpers.PreferencesHelper
+import com.michatec.radio.helpers.ShortcutHelper
+import com.michatec.radio.helpers.UiHelper
+import com.michatec.radio.helpers.UpdateHelper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import java.util.*
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.Collections
+import java.util.Locale
 
 
 /*
@@ -50,12 +57,15 @@ class CollectionAdapter(
     /* Main class variables */
     private lateinit var collectionViewModel: CollectionViewModel
     private var collection: Collection = Collection()
+    private var filteredStations: MutableList<Station> = mutableListOf()
     private var editStationsEnabled: Boolean = PreferencesHelper.loadEditStationsEnabled(context)
     private var editStationStreamsEnabled: Boolean = PreferencesHelper.loadEditStreamUrisEnabled(context)
     private var expandedStationUuid: String = PreferencesHelper.loadStationListStreamUuid()
     private var expandedStationPosition: Int = -1
     var isExpandedForEdit: Boolean = false
     private var reorderStationUuid: String = ""
+    private var currentSearchQuery: String = ""
+    private var currentOnlyFavorites: Boolean = false
 
 
     /* Listener Interface */
@@ -63,6 +73,7 @@ class CollectionAdapter(
         fun onPlayButtonTapped(stationUuid: String)
         fun onAddNewButtonTapped()
         fun onChangeImageButtonTapped(stationUuid: String)
+        fun onSearchButtonTapped()
     }
 
 
@@ -91,16 +102,22 @@ class CollectionAdapter(
 
         return when (viewType) {
             Keys.VIEW_TYPE_ADD_NEW -> {
-                // get view, put view into holder and return
-                val v = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.card_add_new_station, parent, false)
-                AddNewViewHolder(v)
+                AddNewViewHolder(
+                    CardAddNewStationBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
             }
             else -> {
-                // get view, put view into holder and return
-                val v = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.card_station, parent, false)
-                StationViewHolder(v)
+                StationViewHolder(
+                    CardStationBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
             }
         }
     }
@@ -108,31 +125,34 @@ class CollectionAdapter(
 
     /* Implement the method to handle item move */
     fun onItemMove(fromPosition: Int, toPosition: Int) {
-        // Do nothing if in "edit" mode
-        if (isExpandedForEdit) {
+        if (isExpandedForEdit || filteredStations.size != collection.stations.size) {
             return
         }
 
-        val stationList = collection.stations
-        val stationCount = stationList.size
+        val stationCount = filteredStations.size
 
         if (fromPosition !in 0 until stationCount || toPosition !in 0 until stationCount) {
             return
         }
 
-        val fromStation = stationList[fromPosition]
-        val toStation = stationList[toPosition]
+        val fromStation = filteredStations[fromPosition]
+        val toStation = filteredStations[toPosition]
 
         if (fromStation.starred != toStation.starred) {
             // Prevent moving a starred item into non-starred area or vice versa
             return
         }
 
-        // Move within the same group (either starred or non-starred)
-        Collections.swap(stationList, fromPosition, toPosition)
+        // Move within both lists to keep them in sync
+        Collections.swap(collection.stations, fromPosition, toPosition)
+        Collections.swap(filteredStations, fromPosition, toPosition)
 
         // Update the value of expandedStationPosition if necessary
-        expandedStationPosition = if (fromPosition == expandedStationPosition) toPosition else expandedStationPosition
+        if (expandedStationUuid == fromStation.uuid) {
+            expandedStationPosition = toPosition
+        } else if (expandedStationUuid == toStation.uuid) {
+            expandedStationPosition = fromPosition
+        }
 
         // Notify the adapter about the item move
         notifyItemMoved(fromPosition, toPosition)
@@ -141,8 +161,12 @@ class CollectionAdapter(
 
     /* Implement the method to handle item dismissal */
     fun onItemDismiss(position: Int) {
-        // Remove the item at the given position from your data collection
-        collection.stations.removeAt(position)
+        val station = filteredStations[position]
+        val originalPosition = collection.stations.indexOfFirst { it.uuid == station.uuid }
+        if (originalPosition != -1) {
+            collection.stations.removeAt(originalPosition)
+        }
+        filteredStations.removeAt(position)
         notifyItemRemoved(position)
     }
 
@@ -154,28 +178,53 @@ class CollectionAdapter(
     }
 
 
+    /* Filters the station list based on query and favorite status */
+    fun filter(query: String, onlyFavorites: Boolean) {
+        currentSearchQuery = query
+        currentOnlyFavorites = onlyFavorites
+        applyFilter()
+    }
+
+    private fun applyFilter() {
+        val oldStations = filteredStations.toList()
+        filteredStations = if (currentSearchQuery.isEmpty() && !currentOnlyFavorites) {
+            collection.stations.toMutableList()
+        } else {
+            collection.stations.filter { station ->
+                val matchesQuery = station.name.contains(currentSearchQuery, ignoreCase = true)
+                val matchesFavorite = !currentOnlyFavorites || station.starred
+                matchesQuery && matchesFavorite
+            }.toMutableList()
+        }
+        val diffResult = DiffUtil.calculateDiff(CollectionDiffCallback(oldStations, filteredStations))
+        diffResult.dispatchUpdatesTo(this)
+    }
+
     /* Overrides onBindViewHolder */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             // CASE ADD NEW CARD
             is AddNewViewHolder -> {
-                // get reference to StationViewHolder
-                val addNewViewHolder: AddNewViewHolder = holder
-                addNewViewHolder.addNewStationView.setOnClickListener {
+                val binding = holder.binding
+                binding.cardAddNewStation.setOnClickListener {
                     // show the add station dialog
                     collectionAdapterListener.onAddNewButtonTapped()
                 }
-                addNewViewHolder.settingsButtonView.setOnClickListener {
+                binding.cardSettings.setOnClickListener {
                     it.findNavController().navigate(R.id.settings_destination)
                 }
-                addNewViewHolder.visualizerButtonView.setOnClickListener {
+                binding.cardVisualizer.setOnClickListener {
                     it.findNavController().navigate(R.id.visualizer_destination)
                 }
+                binding.playerSearchButton.setOnClickListener {
+                    collectionAdapterListener.onSearchButtonTapped()
+                }
+                binding.playerSearchButton.isVisible = collection.stations.isNotEmpty()
             }
             // CASE STATION CARD
             is StationViewHolder -> {
                 // get station from position
-                val station: Station = collection.stations[position]
+                val station: Station = filteredStations[position]
 
                 // get reference to StationViewHolder
                 val stationViewHolder: StationViewHolder = holder
@@ -189,44 +238,14 @@ class CollectionAdapter(
                 setDownloadProgress(stationViewHolder, station)
 
                 if (reorderStationUuid == station.uuid) {
-                    stationViewHolder.reorderCheckbox.isVisible = true
-                    stationViewHolder.reorderCheckbox.isChecked = true
+                    stationViewHolder.binding.reorderCheckbox.isVisible = true
+                    stationViewHolder.binding.reorderCheckbox.isChecked = true
                 } else {
-                    stationViewHolder.reorderCheckbox.isGone = true
-                    stationViewHolder.reorderCheckbox.isChecked = false
+                    stationViewHolder.binding.reorderCheckbox.isGone = true
+                    stationViewHolder.binding.reorderCheckbox.isChecked = false
                 }
 
-                // show / hide edit views
-                when (expandedStationPosition) {
-                    // show edit views
-                    position -> {
-                        stationViewHolder.stationNameView.isVisible = false
-                        stationViewHolder.playButtonView.isGone = true
-                        stationViewHolder.stationStarredView.isGone = true
-                        stationViewHolder.editViews.isVisible = true
-                        if (editStationStreamsEnabled) {
-                            stationViewHolder.stationUriEditView.isVisible = true
-                            stationViewHolder.stationUriEditView.imeOptions =
-                                EditorInfo.IME_ACTION_DONE
-                        } else {
-                            stationViewHolder.stationUriEditView.isGone = true
-                            stationViewHolder.stationNameEditView.imeOptions =
-                                EditorInfo.IME_ACTION_DONE
-                        }
-                        // Allow internal focus
-                        stationViewHolder.stationCardView.descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
-                    }
-                    // hide edit views
-                    else -> {
-                        stationViewHolder.stationNameView.isVisible = true
-                        //stationViewHolder.playButtonView.isVisible = true
-                        stationViewHolder.stationStarredView.isVisible = station.starred
-                        stationViewHolder.editViews.isGone = true
-                        stationViewHolder.stationUriEditView.isGone = true
-                        // Block internal focus
-                        stationViewHolder.stationCardView.descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
-                    }
-                }
+                updateVisibility(stationViewHolder, station)
             }
         }
     }
@@ -238,29 +257,24 @@ class CollectionAdapter(
         positionPriorUpdate: Int,
         positionAfterUpdate: Int
     ) {
-        // check if position has changed after update and move stations around if necessary
-        if (positionPriorUpdate != positionAfterUpdate && positionPriorUpdate != -1 && positionAfterUpdate != -1) {
-            notifyItemMoved(positionPriorUpdate, positionAfterUpdate)
-            notifyItemChanged(positionPriorUpdate)
-        }
-        // update station (e.g. name)
-        notifyItemChanged(positionAfterUpdate)
+        this.collection = collection
+        applyFilter()
     }
 
 
     /* Sets the station name view */
     private fun setStationName(stationViewHolder: StationViewHolder, station: Station) {
-        stationViewHolder.stationNameView.text = station.name
+        stationViewHolder.binding.stationName.text = station.name
     }
 
 
     /* Sets the playback progress view */
     private fun setPlaybackProgress(stationViewHolder: StationViewHolder, station: Station) {
         if (station.bufferingProgress > 0) {
-            stationViewHolder.bufferingProgress.progress = station.bufferingProgress
-            stationViewHolder.bufferingProgress.isVisible = true
+            stationViewHolder.binding.bufferingProgress.progress = station.bufferingProgress
+            stationViewHolder.binding.bufferingProgress.isVisible = true
         } else {
-            stationViewHolder.bufferingProgress.isGone = true
+            stationViewHolder.binding.bufferingProgress.isGone = true
         }
     }
 
@@ -268,57 +282,66 @@ class CollectionAdapter(
     /* Sets the download progress view */
     private fun setDownloadProgress(stationViewHolder: StationViewHolder, station: Station) {
         if (station.downloadProgress > 0) {
-            stationViewHolder.downloadProgress.progress = station.downloadProgress
-            stationViewHolder.downloadProgress.isVisible = true
+            stationViewHolder.binding.downloadProgress.progress = station.downloadProgress
+            stationViewHolder.binding.downloadProgress.isVisible = true
         } else {
-            stationViewHolder.downloadProgress.isGone = true
+            stationViewHolder.binding.downloadProgress.isGone = true
         }
     }
 
 
     /* Sets the edit views */
     private fun setEditViews(stationViewHolder: StationViewHolder, station: Station) {
-        stationViewHolder.stationNameEditView.setText(station.name, TextView.BufferType.EDITABLE)
-        stationViewHolder.stationUriEditView.setText(
+        val binding = stationViewHolder.binding
+        binding.editStationName.setText(station.name, TextView.BufferType.EDITABLE)
+        binding.editStreamUri.setText(
             station.getStreamUri(),
             TextView.BufferType.EDITABLE
         )
-        stationViewHolder.stationUriEditView.addTextChangedListener(object : TextWatcher {
+        
+        // Remove existing TextWatcher to prevent leaks and redundant updates
+        stationViewHolder.textWatcher?.let {
+            binding.editStreamUri.removeTextChangedListener(it)
+        }
+        
+        val newTextWatcher = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 handleStationUriInput(stationViewHolder, s, station.getStreamUri())
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
-        stationViewHolder.cancelButton.setOnClickListener {
+        }
+        stationViewHolder.textWatcher = newTextWatcher
+        binding.editStreamUri.addTextChangedListener(newTextWatcher)
+
+        binding.cancelButton.setOnClickListener {
             val position: Int = stationViewHolder.bindingAdapterPosition
             toggleEditViews(position, station.uuid)
-            UiHelper.hideSoftKeyboard(context, stationViewHolder.stationNameEditView)
+            UiHelper.hideSoftKeyboard(context, binding.editStationName)
         }
-        stationViewHolder.saveButton.setOnClickListener {
+        binding.saveButton.setOnClickListener {
             val position: Int = stationViewHolder.bindingAdapterPosition
             toggleEditViews(position, station.uuid)
             saveStation(
                 station,
-                position,
-                stationViewHolder.stationNameEditView.text.toString(),
-                stationViewHolder.stationUriEditView.text.toString()
+                binding.editStationName.text.toString(),
+                binding.editStreamUri.text.toString()
             )
-            UiHelper.hideSoftKeyboard(context, stationViewHolder.stationNameEditView)
+            UiHelper.hideSoftKeyboard(context, binding.editStationName)
         }
-        stationViewHolder.placeOnHomeScreenButton.setOnClickListener {
+        binding.placeOnHomeScreenButton.setOnClickListener {
             val position: Int = stationViewHolder.bindingAdapterPosition
             ShortcutHelper.placeShortcut(context, station)
             toggleEditViews(position, station.uuid)
-            UiHelper.hideSoftKeyboard(context, stationViewHolder.stationNameEditView)
+            UiHelper.hideSoftKeyboard(context, binding.editStationName)
         }
-        stationViewHolder.stationImageChangeView.setOnClickListener {
+        binding.changeImageView.setOnClickListener {
             val position: Int = stationViewHolder.bindingAdapterPosition
             collectionAdapterListener.onChangeImageButtonTapped(station.uuid)
             stationViewHolder.bindingAdapterPosition
             toggleEditViews(position, station.uuid)
-            UiHelper.hideSoftKeyboard(context, stationViewHolder.stationNameEditView)
+            UiHelper.hideSoftKeyboard(context, binding.editStationName)
         }
     }
 
@@ -339,49 +362,78 @@ class CollectionAdapter(
 
 
     /* Shows / hides the edit view for a station */
-    /* TODO: Remove @SuppressLint("NotifyDataSetChanged"), remove NotifyDataSetChanged */
-    @SuppressLint("NotifyDataSetChanged")
     private fun toggleEditViews(position: Int, stationUuid: String) {
-        when (stationUuid) {
-            // CASE: this station's edit view is already expanded
-            expandedStationUuid -> {
-                isExpandedForEdit = false
-                // reset currently expanded info (both uuid and position)
-                saveStationListExpandedState()
-                // update station view
-                notifyItemChanged(position)
+        if (expandedStationUuid == stationUuid) {
+            // CASE: this station's edit view is already expanded -> collapse it
+            isExpandedForEdit = false
+            saveStationListExpandedState()
+            notifyItemChanged(position, Keys.HOLDER_UPDATE_EXPANSION)
+        } else {
+            // CASE: this station's edit view is not yet expanded -> expand it
+            isExpandedForEdit = true
+            
+            // Collapse previously expanded station if it exists and is visible
+            val previousUuid = expandedStationUuid
+            if (previousUuid.isNotEmpty()) {
+                val previousPosition = filteredStations.indexOfFirst { it.uuid == previousUuid }
+                if (previousPosition != -1) {
+                    notifyItemChanged(previousPosition, Keys.HOLDER_UPDATE_EXPANSION)
+                }
             }
-            // CASE: this station's edit view is not yet expanded
-            else -> {
-                isExpandedForEdit = true
-                // remember previously expanded position
-                val previousExpandedStationPosition: Int = expandedStationPosition
-                // if station was expanded - collapse it
-                if (previousExpandedStationPosition > -1 && previousExpandedStationPosition < collection.stations.size)
-                    notifyItemChanged(previousExpandedStationPosition)
-                // store current station as the expanded one
-                saveStationListExpandedState(position, stationUuid)
-                // update station view
-                notifyDataSetChanged()
+            
+            // Store current station as the expanded one
+            saveStationListExpandedState(position, stationUuid)
+            // Update the newly expanded station
+            notifyItemChanged(position, Keys.HOLDER_UPDATE_EXPANSION)
+        }
+    }
+
+
+    /* Updates the visibility of a station's views based on its expanded state */
+    private fun updateVisibility(stationViewHolder: StationViewHolder, station: Station) {
+        val binding = stationViewHolder.binding
+        val isExpanded = expandedStationUuid == station.uuid
+        if (isExpanded) {
+            binding.stationName.isVisible = false
+            binding.playbackButton.isGone = true
+            binding.starredIcon.isGone = true
+            binding.defaultEditViews.isVisible = true
+            if (editStationStreamsEnabled) {
+                binding.editStreamUri.isVisible = true
+                binding.editStreamUri.imeOptions = EditorInfo.IME_ACTION_DONE
+            } else {
+                binding.editStreamUri.isGone = true
+                binding.editStationName.imeOptions = EditorInfo.IME_ACTION_DONE
             }
+            // Allow internal focus
+            binding.stationCard.descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
+        } else {
+            binding.stationName.isVisible = true
+            binding.starredIcon.isVisible = station.starred
+            binding.defaultEditViews.isGone = true
+            binding.editStreamUri.isGone = true
+            // Block internal focus
+            binding.stationCard.descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
         }
     }
 
 
     /* Toggles the starred icon */
     private fun setStarredIcon(stationViewHolder: StationViewHolder, station: Station) {
+        val binding = stationViewHolder.binding
+        val isExpanded = expandedStationUuid == station.uuid
         when (station.starred) {
             true -> {
                 if (station.imageColor != -1) {
-                    stationViewHolder.stationStarredView.setColorFilter(station.imageColor)
+                    binding.starredIcon.setColorFilter(station.imageColor)
                 } else {
-                    stationViewHolder.stationStarredView.clearColorFilter()
+                    binding.starredIcon.clearColorFilter()
                 }
-                stationViewHolder.stationStarredView.isVisible = true
+                binding.starredIcon.isVisible = !isExpanded
             }
             false -> {
-                stationViewHolder.stationStarredView.clearColorFilter()
-                stationViewHolder.stationStarredView.isGone = true
+                binding.starredIcon.clearColorFilter()
+                binding.starredIcon.isGone = true
             }
         }
     }
@@ -389,46 +441,48 @@ class CollectionAdapter(
 
     /* Sets the station image view */
     private fun setStationImage(stationViewHolder: StationViewHolder, station: Station) {
+        val binding = stationViewHolder.binding
         if (station.imageColor != -1) {
-            stationViewHolder.stationImageView.setBackgroundColor(station.imageColor)
+            binding.stationIcon.setBackgroundColor(station.imageColor)
         }
-        stationViewHolder.stationImageView.setImageBitmap(
+        binding.stationIcon.setImageBitmap(
             ImageHelper.getStationImage(
                 context,
                 station.smallImage
             )
         )
-        stationViewHolder.stationImageView.contentDescription =
+        binding.stationIcon.contentDescription =
             "${context.getString(R.string.descr_player_station_image)}: ${station.name}"
     }
 
 
     /* Sets up a station's play and edit buttons */
     private fun setStationButtons(stationViewHolder: StationViewHolder, station: Station) {
+        val binding = stationViewHolder.binding
         when (station.isPlaying) {
-            true -> stationViewHolder.playButtonView.visibility = View.VISIBLE
-            false -> stationViewHolder.playButtonView.visibility = View.INVISIBLE
+            true -> binding.playbackButton.visibility = View.VISIBLE
+            false -> binding.playbackButton.visibility = View.INVISIBLE
         }
-        stationViewHolder.stationCardView.setOnClickListener {
+        binding.stationCard.setOnClickListener {
             if (reorderStationUuid.isNotEmpty()) return@setOnClickListener
             if (expandedStationPosition == stationViewHolder.bindingAdapterPosition) return@setOnClickListener
             collectionAdapterListener.onPlayButtonTapped(station.uuid)
         }
-        stationViewHolder.playButtonView.setOnClickListener {
+        binding.playbackButton.setOnClickListener {
             collectionAdapterListener.onPlayButtonTapped(station.uuid)
         }
-        stationViewHolder.stationNameView.setOnClickListener {
+        binding.stationName.setOnClickListener {
             collectionAdapterListener.onPlayButtonTapped(station.uuid)
         }
-        stationViewHolder.stationStarredView.setOnClickListener {
+        binding.starredIcon.setOnClickListener {
             collectionAdapterListener.onPlayButtonTapped(station.uuid)
         }
-        stationViewHolder.stationImageView.setOnClickListener {
+        binding.stationIcon.setOnClickListener {
             collectionAdapterListener.onPlayButtonTapped(station.uuid)
         }
 
         // TV improvement: Allow reordering with DPAD
-        stationViewHolder.stationCardView.setOnKeyListener { _, keyCode, event ->
+        binding.stationCard.setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN) {
                 // Reorder mode handling
                 if (reorderStationUuid == station.uuid) {
@@ -464,13 +518,6 @@ class CollectionAdapter(
                             return@setOnKeyListener true
                         }
                     }
-                    KeyEvent.KEYCODE_NUMPAD_3, KeyEvent.KEYCODE_3, KeyEvent.KEYCODE_BACK -> {
-                        if (expandedStationPosition == stationViewHolder.bindingAdapterPosition) {
-                            val position: Int = stationViewHolder.bindingAdapterPosition
-                            toggleEditViews(position, station.uuid)
-                            return@setOnKeyListener true
-                        }
-                    }
                     KeyEvent.KEYCODE_NUMPAD_0, KeyEvent.KEYCODE_0, KeyEvent.KEYCODE_DEL -> {
                         removeStation(context, stationViewHolder.bindingAdapterPosition)
                         return@setOnKeyListener true
@@ -488,7 +535,7 @@ class CollectionAdapter(
             false
         }
 
-        stationViewHolder.playButtonView.setOnLongClickListener {
+        binding.playbackButton.setOnLongClickListener {
             if (editStationsEnabled) {
                 val position: Int = stationViewHolder.bindingAdapterPosition
                 toggleEditViews(position, station.uuid)
@@ -497,7 +544,7 @@ class CollectionAdapter(
                 return@setOnLongClickListener false
             }
         }
-        stationViewHolder.stationNameView.setOnLongClickListener {
+        binding.stationName.setOnLongClickListener {
             if (editStationsEnabled) {
                 val position: Int = stationViewHolder.bindingAdapterPosition
                 toggleEditViews(position, station.uuid)
@@ -506,7 +553,7 @@ class CollectionAdapter(
                 return@setOnLongClickListener false
             }
         }
-        stationViewHolder.stationStarredView.setOnLongClickListener {
+        binding.starredIcon.setOnLongClickListener {
             if (editStationsEnabled) {
                 val position: Int = stationViewHolder.bindingAdapterPosition
                 toggleEditViews(position, station.uuid)
@@ -515,7 +562,7 @@ class CollectionAdapter(
                 return@setOnLongClickListener false
             }
         }
-        stationViewHolder.stationImageView.setOnLongClickListener {
+        binding.stationIcon.setOnLongClickListener {
             if (editStationsEnabled) {
                 val position: Int = stationViewHolder.bindingAdapterPosition
                 toggleEditViews(position, station.uuid)
@@ -533,18 +580,22 @@ class CollectionAdapter(
         s: Editable?,
         streamUri: String
     ) {
+        val binding = stationViewHolder.binding
         if (editStationStreamsEnabled) {
             val input: String = s.toString()
             if (input == streamUri) {
                 // enable save button
-                stationViewHolder.saveButton.isEnabled = true
+                binding.saveButton.isEnabled = true
+                stationViewHolder.validationJob?.cancel()
             } else {
                 // 1. disable save button
-                stationViewHolder.saveButton.isEnabled = false
+                binding.saveButton.isEnabled = false
                 // 2. check for valid station uri - and re-enable button
-                if (input.startsWith("http")) {
+                if (input.length > 10 && input.startsWith("http")) {
+                    // cancel previous validation job
+                    stationViewHolder.validationJob?.cancel()
                     // detect content type on background thread
-                    CoroutineScope(IO).launch {
+                    stationViewHolder.validationJob = CoroutineScope(IO).launch {
                         val deferred: Deferred<NetworkHelper.ContentType> =
                             async(Dispatchers.Default) {
                                 NetworkHelper.detectContentTypeSuspended(input)
@@ -560,7 +611,7 @@ class CollectionAdapter(
                         ) {
                             // re-enable save button
                             withContext(Main) {
-                                stationViewHolder.saveButton.isEnabled = true
+                                binding.saveButton.isEnabled = true
                             }
                         }
                     }
@@ -583,7 +634,7 @@ class CollectionAdapter(
 
         } else if (holder is StationViewHolder) {
             // get station from position
-            val station: Station = collection.stations[holder.bindingAdapterPosition]
+            val station: Station = filteredStations[holder.bindingAdapterPosition]
 
             for (data in payloads) {
                 when (data as Int) {
@@ -603,6 +654,10 @@ class CollectionAdapter(
                     Keys.HOLDER_UPDATE_DOWNLOAD_STATE -> {
                         setDownloadProgress(holder, station)
                     }
+                    Keys.HOLDER_UPDATE_EXPANSION -> {
+                        setEditViews(holder, station)
+                        updateVisibility(holder, station)
+                    }
                 }
             }
         }
@@ -621,19 +676,24 @@ class CollectionAdapter(
     /* Overrides getItemCount */
     override fun getItemCount(): Int {
         // +1 ==> the add station card
-        return collection.stations.size + 1
+        return filteredStations.size + 1
     }
 
 
     /* Removes a station from collection */
     fun removeStation(context: Context, position: Int) {
+        val station = filteredStations[position]
+        val originalPosition = collection.stations.indexOfFirst { it.uuid == station.uuid }
+        if (originalPosition == -1) return
+
         val newCollection = collection.deepCopy()
         // delete images assets
-        CollectionHelper.deleteStationImages(context, newCollection.stations[position])
+        CollectionHelper.deleteStationImages(context, newCollection.stations[originalPosition])
         // remove station from collection
-        newCollection.stations.removeAt(position)
+        newCollection.stations.removeAt(originalPosition)
         collection = newCollection
         // update list
+        filteredStations.removeAt(position)
         notifyItemRemoved(position)
         // save collection and broadcast changes
         CollectionHelper.saveCollection(context, newCollection)
@@ -642,16 +702,25 @@ class CollectionAdapter(
 
     /* Toggles starred status of a station */
     fun toggleStarredStation(context: Context, position: Int) {
-        // update view (reset "swipe" state of station card)
-        notifyItemChanged(position)
-        // mark starred
-        val stationUuid: String = collection.stations[position].uuid
-        collection.stations[position].apply { starred = !starred }
-        // sort collection
+        val station = filteredStations[position]
+        val originalIndex = collection.stations.indexOfFirst { it.uuid == station.uuid }
+        if (originalIndex == -1) return
+
+        // Create a copy of the station with toggled starred status
+        val updatedStation = collection.stations[originalIndex].deepCopy().apply {
+            starred = !starred
+        }
+
+        // Update master list with the new instance
+        collection.stations[originalIndex] = updatedStation
+
+        // Sort collection
         collection = CollectionHelper.sortCollection(collection)
-        // update list
-        notifyItemMoved(position, CollectionHelper.getStationPosition(collection, stationUuid))
-        // save collection and broadcast changes
+
+        // Trigger immediate UI update via DiffUtil
+        applyFilter()
+
+        // Save collection and broadcast changes
         CollectionHelper.saveCollection(context, collection)
     }
 
@@ -659,30 +728,30 @@ class CollectionAdapter(
     /* Saves edited station */
     private fun saveStation(
         station: Station,
-        position: Int,
         stationName: String,
         streamUri: String
     ) {
-        // update station name and stream uri
-        collection.stations.forEach {
-            if (it.uuid == station.uuid) {
+        // update station name and stream uri in master list
+        val originalIndex = collection.stations.indexOfFirst { it.uuid == station.uuid }
+        if (originalIndex != -1) {
+            val updatedStation = collection.stations[originalIndex].deepCopy().apply {
                 if (stationName.isNotEmpty()) {
-                    it.name = stationName
-                    it.nameManuallySet = true
+                    name = stationName
+                    nameManuallySet = true
                 }
                 if (streamUri.isNotEmpty()) {
-                    it.streamUris[0] = streamUri
+                    streamUris[0] = streamUri
                 }
             }
+            collection.stations[originalIndex] = updatedStation
         }
+
         // sort and save collection
         collection = CollectionHelper.sortCollection(collection)
-        // update list
-        val newPosition: Int = CollectionHelper.getStationPosition(collection, station.uuid)
-        if (position != newPosition && newPosition != -1) {
-            notifyItemMoved(position, newPosition)
-            notifyItemChanged(position)
-        }
+
+        // Trigger immediate UI update
+        applyFilter()
+
         // save collection and broadcast changes
         CollectionHelper.saveCollection(context, collection)
     }
@@ -690,23 +759,14 @@ class CollectionAdapter(
 
     /* Determines if position is last */
     private fun isPositionFooter(position: Int): Boolean {
-        return position == collection.stations.size
+        return position == filteredStations.size
     }
 
 
     /* Updates the station list - redraws the views with changed content */
-    @SuppressLint("NotifyDataSetChanged")
-    private fun updateRecyclerView(oldCollection: Collection, newCollection: Collection) {
+    private fun updateRecyclerView(newCollection: Collection) {
         collection = newCollection
-        if (oldCollection.stations.isEmpty() && newCollection.stations.isNotEmpty()) {
-            // data set has been initialized - redraw the whole list
-            notifyDataSetChanged()
-        } else {
-            // calculate differences between current collection and new collection - and inform this adapter about the changes
-            val diffResult =
-                DiffUtil.calculateDiff(CollectionDiffCallback(oldCollection, newCollection), true)
-            diffResult.dispatchUpdatesTo(this@CollectionAdapter)
-        }
+        applyFilter()
     }
 
 
@@ -724,7 +784,7 @@ class CollectionAdapter(
     /* Observe view model of station collection*/
     private fun observeCollectionViewModel(owner: LifecycleOwner) {
         collectionViewModel.collectionLiveData.observe(owner) { newCollection ->
-            updateRecyclerView(collection, newCollection)
+            updateRecyclerView(newCollection)
         }
     }
 
@@ -749,15 +809,8 @@ class CollectionAdapter(
     /*
      * Inner class: ViewHolder for the Add New Station action
      */
-    private class AddNewViewHolder(listItemAddNewLayout: View) :
-        RecyclerView.ViewHolder(listItemAddNewLayout) {
-        val addNewStationView: ExtendedFloatingActionButton =
-            listItemAddNewLayout.findViewById(R.id.card_add_new_station)
-        val settingsButtonView: ExtendedFloatingActionButton =
-            listItemAddNewLayout.findViewById(R.id.card_settings)
-        val visualizerButtonView: ExtendedFloatingActionButton =
-            listItemAddNewLayout.findViewById(R.id.card_visualizer)
-    }
+    private class AddNewViewHolder(val binding: CardAddNewStationBinding) :
+        RecyclerView.ViewHolder(binding.root)
     /*
      * End of inner class
      */
@@ -766,28 +819,10 @@ class CollectionAdapter(
     /*
      * Inner class: ViewHolder for a station
      */
-    private class StationViewHolder(stationCardLayout: View) :
-        RecyclerView.ViewHolder(stationCardLayout) {
-        val stationCardView: MaterialCardView = stationCardLayout.findViewById(R.id.station_card)
-        val stationImageView: ImageView = stationCardLayout.findViewById(R.id.station_icon)
-        val stationNameView: TextView = stationCardLayout.findViewById(R.id.station_name)
-        val stationStarredView: ImageView = stationCardLayout.findViewById(R.id.starred_icon)
-        val reorderCheckbox: CheckBox = stationCardLayout.findViewById(R.id.reorder_checkbox)
-        val bufferingProgress: ProgressBar = stationCardLayout.findViewById(R.id.buffering_progress)
-        val downloadProgress: ProgressBar = stationCardLayout.findViewById(R.id.download_progress)
-
-        val playButtonView: ImageView = stationCardLayout.findViewById(R.id.playback_button)
-        val editViews: Group = stationCardLayout.findViewById(R.id.default_edit_views)
-        val stationImageChangeView: ImageView =
-            stationCardLayout.findViewById(R.id.change_image_view)
-        val stationNameEditView: TextInputEditText =
-            stationCardLayout.findViewById(R.id.edit_station_name)
-        val stationUriEditView: TextInputEditText =
-            stationCardLayout.findViewById(R.id.edit_stream_uri)
-        val placeOnHomeScreenButton: MaterialButton =
-            stationCardLayout.findViewById(R.id.place_on_home_screen_button)
-        val cancelButton: MaterialButton = stationCardLayout.findViewById(R.id.cancel_button)
-        val saveButton: MaterialButton = stationCardLayout.findViewById(R.id.save_button)
+    private class StationViewHolder(val binding: CardStationBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        var textWatcher: TextWatcher? = null
+        var validationJob: Job? = null
     }
     /*
      * End of inner class
@@ -798,27 +833,44 @@ class CollectionAdapter(
      * Inner class: DiffUtil.Callback that determines changes in data - improves list performance
      */
     private inner class CollectionDiffCallback(
-        val oldCollection: Collection,
-        val newCollection: Collection
+        private val oldStations: List<Station>,
+        private val newStations: List<Station>
     ) : DiffUtil.Callback() {
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val oldStation: Station = oldCollection.stations[oldItemPosition]
-            val newStation: Station = newCollection.stations[newItemPosition]
+            val isOldFooter = oldItemPosition == oldStations.size
+            val isNewFooter = newItemPosition == newStations.size
+
+            if (isOldFooter && isNewFooter) return true
+            if (isOldFooter || isNewFooter) return false
+
+            val oldStation: Station = oldStations[oldItemPosition]
+            val newStation: Station = newStations[newItemPosition]
             return oldStation.uuid == newStation.uuid
         }
 
         override fun getOldListSize(): Int {
-            return oldCollection.stations.size
+            return oldStations.size + 1
         }
 
         override fun getNewListSize(): Int {
-            return newCollection.stations.size
+            return newStations.size + 1
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val oldStation: Station = oldCollection.stations[oldItemPosition]
-            val newStation: Station = newCollection.stations[newItemPosition]
+            val isOldFooter = oldItemPosition == oldStations.size
+            val isNewFooter = newItemPosition == newStations.size
+
+            if (isOldFooter && isNewFooter) return true
+            if (isOldFooter || isNewFooter) return false
+
+            val oldStation: Station = oldStations[oldItemPosition]
+            val newStation: Station = newStations[newItemPosition]
+
+            // Compare expanded state using UUID
+            val wasExpanded = oldStation.uuid == expandedStationUuid
+            val isExpanded = newStation.uuid == expandedStationUuid
+            if (wasExpanded != isExpanded) return false
 
             // compare relevant contents of a station
             if (oldStation.isPlaying != newStation.isPlaying) return false

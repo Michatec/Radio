@@ -10,6 +10,7 @@
 **Radio is an application with a minimalist approach to listening to radio over the Internet.** <br>
 **Radio only offers a very basic search option, and it imports audio streaming links when you tap them in a web browser.** <br>
 **Radio now also supports Android TV and Cast to Devices (Beta) with the Version 14.5 and above.** <br>
+**New Feature Update: Web Control with API for devs.**<br>
 **Pull request are welcome at any time.**<br>
 
 **Radio is free software. It is released under the [GPLv3 open source license](https://opensource.org/licenses/GPL-3.0).**
@@ -91,7 +92,6 @@ You can help out the radio-browser.info community by [adding the missing station
 
 When **Edit Stations** is enabled:
 - Press **← (Left)** on the remote to open the detailed station editing area
-- Press **3** or **Back** to close the editing area
 
 **General TV** Controls:
 - Press **0** or **DEL** to remove the selected radio station

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,21 +20,84 @@
         android:orientation="vertical"
         tools:context="com.michatec.radio.PlayerFragment">
 
-        <!-- STATION LIST -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/station_list"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="2dp"
-            android:visibility="visible" />
+            android:orientation="vertical">
 
-        <!-- ONBOARDING -->
-        <include
-            layout="@layout/element_onboarding"
-            android:visibility="gone" />
+            <!-- SEARCH BAR -->
+            <LinearLayout
+                android:id="@+id/search_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/search_input_layout"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:endIconMode="clear_text"
+                    app:startIconDrawable="@drawable/ic_search_24dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/search_input_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/search_hint"
+                        android:inputType="text"
+                        android:maxLines="1" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/search_filter_favorites_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/search_filter_favorites" />
+
+                <!-- NO RESULTS MESSAGE -->
+                <TextView
+                    android:id="@+id/search_no_results_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/search_no_results"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <!-- STATION LIST -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/station_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="2dp"
+                    android:visibility="visible" />
+
+                <!-- ONBOARDING -->
+                <include
+                    layout="@layout/element_onboarding"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+        </LinearLayout>
 
         <!-- PLAYER SHEET -->
-        <include layout="@layout/bottom_sheet_playback_controls" />
+        <include
+            android:id="@+id/player_sheet"
+            layout="@layout/bottom_sheet_playback_controls" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

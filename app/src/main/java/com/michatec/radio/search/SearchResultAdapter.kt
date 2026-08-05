@@ -18,10 +18,11 @@ import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.audio.AudioSink
 import androidx.media3.exoplayer.audio.DefaultAudioSink
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.textview.MaterialTextView
 import com.michatec.radio.R
 import com.michatec.radio.core.Station
+import com.michatec.radio.databinding.ElementSearchResultBinding
 import com.michatec.radio.helpers.NativeAudioProcessor
 import com.michatec.radio.helpers.PreferencesHelper
 
@@ -48,16 +49,15 @@ class SearchResultAdapter(
     }
 
 
-    init {
-        setHasStableIds(true)
-    }
-
-
     /* Overrides onCreateViewHolder from RecyclerView.Adapter */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val v = LayoutInflater.from(parent.context)
-            .inflate(R.layout.element_search_result, parent, false)
-        return SearchResultViewHolder(v)
+        return SearchResultViewHolder(
+            ElementSearchResultBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
 
@@ -67,51 +67,49 @@ class SearchResultAdapter(
     }
 
 
-    /* Overrides getItemCount from RecyclerView.Adapter */
-    override fun getItemId(position: Int): Long = position.toLong()
-
-
     /* Overrides onBindViewHolder from RecyclerView.Adapter */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         // get reference to ViewHolder
         val searchResultViewHolder: SearchResultViewHolder = holder as SearchResultViewHolder
+        val binding = searchResultViewHolder.binding
         val searchResult: Station = searchResults[position]
 
         // update text
-        searchResultViewHolder.nameView.text = searchResult.name
-        searchResultViewHolder.streamView.text = searchResult.getStreamUri()
+        binding.stationName.text = searchResult.name
+        binding.stationUrl.text = searchResult.getStreamUri()
 
         if (searchResult.codec.isNotEmpty()) {
             if (searchResult.bitrate == 0) {
                 // show only the codec when the bitrate is at "0" from radio-browser.info API
-                searchResultViewHolder.bitrateView.text = searchResult.codec
+                binding.stationBitrate.text = searchResult.codec
             } else {
                 // show the bitrate and codec if the result is available in the radio-browser.info API
-                searchResultViewHolder.bitrateView.text = buildString {
+                binding.stationBitrate.text = buildString {
                     append(searchResult.codec)
                     append(" | ")
                     append(searchResult.bitrate)
                     append("kbps")}
             }
+            binding.stationBitrate.visibility = View.VISIBLE
         } else {
             // do not show for M3U and PLS playlists as they do not include codec or bitrate
-            searchResultViewHolder.bitrateView.visibility = View.GONE
+            binding.stationBitrate.visibility = View.GONE
         }
 
         // mark selected if necessary
         val isSelected = selectedPosition == holder.bindingAdapterPosition
-        searchResultViewHolder.searchResultLayout.isSelected = isSelected
+        binding.root.isSelected = isSelected
 
         // toggle text scrolling (marquee) if necessary
-        searchResultViewHolder.nameView.isSelected = isSelected
-        searchResultViewHolder.streamView.isSelected = isSelected
+        binding.stationName.isSelected = isSelected
+        binding.stationUrl.isSelected = isSelected
 
         // reduce the shadow left and right because of scrolling (Marquee)
-        searchResultViewHolder.nameView.setFadingEdgeLength(10)
-        searchResultViewHolder.streamView.setFadingEdgeLength(10)
+        binding.stationName.setFadingEdgeLength(10)
+        binding.stationUrl.setFadingEdgeLength(10)
 
         // attach touch listener
-        searchResultViewHolder.searchResultLayout.setOnClickListener {
+        binding.root.setOnClickListener {
             // move marked position
             val previousSelectedPosition = selectedPosition
             selectedPosition = holder.bindingAdapterPosition
@@ -128,7 +126,7 @@ class SearchResultAdapter(
                 // get the selected station from searchResults
                 val selectedStation = searchResults[holder.bindingAdapterPosition]
                 // perform pre-playback here
-                performPrePlayback(searchResultViewHolder.searchResultLayout.context, selectedStation.getStreamUri())
+                performPrePlayback(binding.root.context, selectedStation.getStreamUri())
                 // hand over station
                 listener.onSearchResultTapped(searchResult)
             }
@@ -247,9 +245,7 @@ class SearchResultAdapter(
         val currentlySelected: Int = selectedPosition
         selectedPosition = RecyclerView.NO_POSITION
         if (clearAdapter) {
-            val previousItemCount = itemCount
-            searchResults = emptyList()
-            notifyItemRangeRemoved(0, previousItemCount)
+            updateSearchResults(emptyList())
         } else {
             notifyItemChanged(currentlySelected)
             stopPrePlayback()
@@ -257,14 +253,44 @@ class SearchResultAdapter(
     }
 
 
+    /* Updates the search results using DiffUtil */
+    fun updateSearchResults(newList: List<Station>) {
+        val diffResult = DiffUtil.calculateDiff(SearchResultDiffCallback(searchResults, newList))
+        searchResults = newList
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+
+    /*
+     * Inner class: DiffUtil.Callback for search results
+     */
+    private class SearchResultDiffCallback(
+        private val oldList: List<Station>,
+        private val newList: List<Station>
+    ) : DiffUtil.Callback() {
+
+        override fun getOldListSize(): Int = oldList.size
+        override fun getNewListSize(): Int = newList.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition].uuid == newList[newItemPosition].uuid
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val oldItem = oldList[oldItemPosition]
+            val newItem = newList[newItemPosition]
+            return oldItem.name == newItem.name &&
+                    oldItem.getStreamUri() == newItem.getStreamUri() &&
+                    oldItem.codec == newItem.codec &&
+                    oldItem.bitrate == newItem.bitrate
+        }
+    }
+
+
     /*
      * Inner class: ViewHolder for a radio station search result
      */
-    private class SearchResultViewHolder(var searchResultLayout: View) :
-        RecyclerView.ViewHolder(searchResultLayout) {
-        val nameView: MaterialTextView = searchResultLayout.findViewById(R.id.station_name)
-        val streamView: MaterialTextView = searchResultLayout.findViewById(R.id.station_url)
-        val bitrateView: MaterialTextView = searchResultLayout.findViewById(R.id.station_bitrate)
-    }
+    private class SearchResultViewHolder(val binding: ElementSearchResultBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
 }
