@@ -61,6 +61,7 @@ import com.michatec.radio.dialogs.AddStationDialog
 import com.michatec.radio.dialogs.FindStationDialog
 import com.michatec.radio.dialogs.YesNoDialog
 import com.michatec.radio.extensions.*
+import com.michatec.radio.databinding.FragmentPlayerBinding
 import com.michatec.radio.helpers.*
 import com.michatec.radio.ui.LayoutHolder
 import com.michatec.radio.ui.PlayerState
@@ -85,6 +86,8 @@ class PlayerFragment : Fragment(),
     private val TAG: String = PlayerFragment::class.java.simpleName
 
     /* Main class variables */
+    private var _binding: FragmentPlayerBinding? = null
+    private val binding get() = _binding!!
     private lateinit var collectionViewModel: CollectionViewModel
     private lateinit var layout: LayoutHolder
     private lateinit var collectionAdapter: CollectionAdapter
@@ -183,26 +186,31 @@ class PlayerFragment : Fragment(),
         savedInstanceState: Bundle?
     ): View {
         // find views and set them up
-        val rootView: View = inflater.inflate(R.layout.fragment_player, container, false)
-        layout = LayoutHolder(rootView)
+        _binding = FragmentPlayerBinding.inflate(inflater, container, false)
+        layout = LayoutHolder(binding)
         isSearchActive = false
 
-        shaderEffectView = rootView.findViewById(R.id.player_shader_effect)
+        shaderEffectView = binding.playerSheet?.playerShaderEffect ?: binding.playerShaderEffect
         initializeViews()
 
         // hide action bar
         (activity as AppCompatActivity).supportActionBar?.hide()
 
-        ViewCompat.setOnApplyWindowInsetsListener(layout.rootView) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.updatePadding(bottom = systemBars.bottom)
+            v.updatePadding(top = systemBars.top, bottom = systemBars.bottom)
             insets
         }
         // associate the ItemTouchHelper with the RecyclerView
         itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback())
-        itemTouchHelper?.attachToRecyclerView(layout.recyclerView)
+        itemTouchHelper?.attachToRecyclerView(binding.stationList)
 
-        return rootView
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 

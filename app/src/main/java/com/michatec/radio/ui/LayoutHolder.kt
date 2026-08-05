@@ -36,49 +36,51 @@ import com.michatec.radio.helpers.DateTimeHelper
 import com.michatec.radio.helpers.ImageHelper
 import com.michatec.radio.helpers.PreferencesHelper
 import com.michatec.radio.helpers.ThemeHelper
-import com.michatec.radio.helpers.UiHelper
+import com.michatec.radio.databinding.FragmentPlayerBinding
+import com.michatec.radio.helpers.*
 import java.util.Locale
 
 
 /*
  * LayoutHolder class
  */
-data class LayoutHolder(var rootView: View) {
+class LayoutHolder(binding: FragmentPlayerBinding) {
 
     /* Main class variables */
-    var recyclerView: RecyclerView = rootView.findViewById(R.id.station_list)
+    private val rootView: View = binding.root
+    var recyclerView: RecyclerView = binding.stationList
     val layoutManager: LinearLayoutManager
-    var bottomSheet: ConstraintLayout? = rootView.findViewById(R.id.bottom_sheet)
+    var bottomSheet: ConstraintLayout? = binding.playerSheet?.bottomSheet
 
     //private var sheetMetadataViews: Group
-    private var sleepTimerRunningViews: Group? = rootView.findViewById(R.id.sleep_timer_running_views)
-    private var downloadProgressIndicator: ProgressBar? = rootView.findViewById(R.id.download_progress_indicator)
-    private var stationImageView: ImageView? = rootView.findViewById(R.id.station_icon)
-    private var shaderEffectView: ShaderEffectView? = rootView.findViewById(R.id.player_shader_effect)
-    private var stationNameView: TextView? = rootView.findViewById(R.id.player_station_name)
-    private var metadataView: TextView? = rootView.findViewById(R.id.player_station_metadata)
-    var playButtonView: ImageButton = rootView.findViewById(R.id.player_play_button)
-    var playerPrevButtonView: ImageButton? = rootView.findViewById(R.id.player_prev_button)
-    var playerNextButtonView: ImageButton? = rootView.findViewById(R.id.player_next_button)
-    private var bufferingIndicator: ProgressBar = rootView.findViewById(R.id.player_buffering_indicator)
-    private var searchLayout: View? = rootView.findViewById(R.id.search_layout)
-    var searchInputEditText: TextInputEditText? = rootView.findViewById(R.id.search_input_edit_text)
-    var searchFilterFavoritesSwitch: MaterialSwitch? = rootView.findViewById(R.id.search_filter_favorites_switch)
-    private var searchNoResultsView: View? = rootView.findViewById(R.id.search_no_results_view)
-    private var sheetStreamingLinkHeadline: TextView? = rootView.findViewById(R.id.sheet_streaming_link_headline)
-    private var sheetStreamingLinkView: TextView? = rootView.findViewById(R.id.sheet_streaming_link)
-    private var sheetMetadataHistoryHeadline: TextView? = rootView.findViewById(R.id.sheet_metadata_headline)
-    private var sheetMetadataHistoryView: TextView? = rootView.findViewById(R.id.sheet_metadata_history)
-    private var sheetNextMetadataView: ImageButton? = rootView.findViewById(R.id.sheet_next_metadata_button)
-    private var sheetPreviousMetadataView: ImageButton? = rootView.findViewById(R.id.sheet_previous_metadata_button)
-    private var sheetCopyMetadataButtonView: ImageButton? = rootView.findViewById(R.id.copy_station_metadata_button)
-    private var mediaRouteButton: MediaRouteButton? = rootView.findViewById(R.id.media_route_button)
-    private var sheetShareLinkButtonView: ImageView? = rootView.findViewById(R.id.sheet_share_link_button)
-    private var sheetBitrateView: TextView? = rootView.findViewById(R.id.sheet_bitrate_view)
-    var sheetSleepTimerStartButtonView: ImageButton? = rootView.findViewById(R.id.sleep_timer_start_button)
-    var sheetSleepTimerCancelButtonView: ImageButton? = rootView.findViewById(R.id.sleep_timer_cancel_button)
-    private var sheetSleepTimerRemainingTimeView: TextView = rootView.findViewById(R.id.sleep_timer_remaining_time)
-    private var onboardingLayout: ConstraintLayout = rootView.findViewById(R.id.onboarding_layout)
+    private var sleepTimerRunningViews: Group? = binding.playerSheet?.sleepTimerRunningViews
+    private var downloadProgressIndicator: ProgressBar? = binding.downloadProgressIndicator
+    private var stationImageView: ImageView? = binding.playerSheet?.stationIcon ?: binding.stationIcon
+    private var shaderEffectView: ShaderEffectView? = binding.playerSheet?.playerShaderEffect ?: binding.playerShaderEffect
+    private var stationNameView: TextView? = binding.playerSheet?.playerStationName ?: binding.playerStationName
+    private var metadataView: TextView? = binding.playerSheet?.playerStationMetadata ?: binding.playerStationMetadata
+    var playButtonView: ImageButton = binding.playerSheet?.playerPlayButton ?: binding.playerPlayButton!!
+    var playerPrevButtonView: ImageButton? = binding.playerPrevButton
+    var playerNextButtonView: ImageButton? = binding.playerNextButton
+    private var bufferingIndicator: ProgressBar = binding.playerSheet?.playerBufferingIndicator ?: binding.playerBufferingIndicator!!
+    private var searchLayout: View? = binding.searchLayout
+    var searchInputEditText: TextInputEditText? = binding.searchInputEditText
+    var searchFilterFavoritesSwitch: MaterialSwitch? = binding.searchFilterFavoritesSwitch
+    private var searchNoResultsView: View? = binding.searchNoResultsView
+    private var sheetStreamingLinkHeadline: TextView? = binding.playerSheet?.sheetStreamingLinkHeadline
+    private var sheetStreamingLinkView: TextView? = binding.playerSheet?.sheetStreamingLink
+    private var sheetMetadataHistoryHeadline: TextView? = binding.playerSheet?.sheetMetadataHeadline
+    private var sheetMetadataHistoryView: TextView? = binding.playerSheet?.sheetMetadataHistory
+    private var sheetNextMetadataView: ImageButton? = binding.playerSheet?.sheetNextMetadataButton
+    private var sheetPreviousMetadataView: ImageButton? = binding.playerSheet?.sheetPreviousMetadataButton
+    private var sheetCopyMetadataButtonView: ImageButton? = binding.playerSheet?.copyStationMetadataButton ?: binding.copyStationMetadataButton
+    private var mediaRouteButton: MediaRouteButton? = binding.playerSheet?.mediaRouteButton
+    private var sheetShareLinkButtonView: ImageView? = binding.playerSheet?.sheetShareLinkButton
+    private var sheetBitrateView: TextView? = binding.playerSheet?.sheetBitrateView
+    var sheetSleepTimerStartButtonView: ImageButton? = binding.playerSheet?.sleepTimerStartButton ?: binding.sleepTimerStartButton
+    var sheetSleepTimerCancelButtonView: ImageButton? = binding.playerSheet?.sleepTimerCancelButton ?: binding.sleepTimerCancelButton
+    private var sheetSleepTimerRemainingTimeView: TextView? = binding.playerSheet?.sleepTimerRemainingTime ?: binding.sleepTimerRemainingTime
+    private var onboardingLayout: ConstraintLayout = binding.root.findViewById(R.id.onboarding_layout)
     private var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>? = bottomSheet?.let { BottomSheetBehavior.from(it) }
     private var metadataHistory: MutableList<String>
     private var metadataHistoryPosition: Int
@@ -303,14 +305,14 @@ data class LayoutHolder(var rootView: View) {
         when (timeRemaining) {
             0L -> {
                 sleepTimerRunningViews?.isGone = true
-                sheetSleepTimerRemainingTimeView.isVisible = false
+                sheetSleepTimerRemainingTimeView?.isVisible = false
             }
             else -> {
                 sleepTimerRunningViews?.isVisible = true
-                sheetSleepTimerRemainingTimeView.isVisible = true
+                sheetSleepTimerRemainingTimeView?.isVisible = true
                 val sleepTimerTimeRemaining = DateTimeHelper.convertToHoursMinutesSeconds(timeRemaining)
-                sheetSleepTimerRemainingTimeView.text = sleepTimerTimeRemaining
-                sheetSleepTimerRemainingTimeView.contentDescription = "${context.getString(R.string.descr_expanded_player_sleep_timer_remaining_time)}: $sleepTimerTimeRemaining"
+                sheetSleepTimerRemainingTimeView?.text = sleepTimerTimeRemaining
+                sheetSleepTimerRemainingTimeView?.contentDescription = "${context.getString(R.string.descr_expanded_player_sleep_timer_remaining_time)}: $sleepTimerTimeRemaining"
                 stationNameView?.isSelected = false
             }
         }

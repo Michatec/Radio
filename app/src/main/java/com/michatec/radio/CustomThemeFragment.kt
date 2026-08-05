@@ -1,6 +1,5 @@
 package com.michatec.radio
 
-import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.pm.PackageManager
@@ -19,18 +18,15 @@ import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.textfield.TextInputEditText
+import com.michatec.radio.databinding.ElementColorCircleBinding
+import com.michatec.radio.databinding.FragmentCustomThemeBinding
 import com.michatec.radio.helpers.PreferencesHelper
 import com.michatec.radio.helpers.ThemeHelper
 
 class CustomThemeFragment : Fragment() {
 
-    private lateinit var colorPreview: View
-    private lateinit var hexCode: TextInputEditText
-    private lateinit var seekRed: SeekBar
-    private lateinit var seekGreen: SeekBar
-    private lateinit var seekBlue: SeekBar
-    private lateinit var recyclerView: RecyclerView
+    private var _binding: FragmentCustomThemeBinding? = null
+    private val binding get() = _binding!!
 
     private var currentColor: Int = Color.BLACK
     private var isUpdatingFromHex = false
@@ -49,21 +45,20 @@ class CustomThemeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_custom_theme, container, false)
+    ): View {
+        _binding = FragmentCustomThemeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.pref_custom_theme_title)
-
-        colorPreview = view.findViewById(R.id.color_preview)
-        hexCode = view.findViewById(R.id.hex_code)
-        seekRed = view.findViewById(R.id.seek_red)
-        seekGreen = view.findViewById(R.id.seek_green)
-        seekBlue = view.findViewById(R.id.seek_blue)
-        recyclerView = view.findViewById(R.id.color_recycler_view)
 
         currentColor = PreferencesHelper.loadCustomThemeColor(requireContext())
 
@@ -72,29 +67,29 @@ class CustomThemeFragment : Fragment() {
         val seekBarListener = object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
-                    val r = seekRed.progress
-                    val g = seekGreen.progress
-                    val b = seekBlue.progress
+                    val r = binding.seekRed.progress
+                    val g = binding.seekGreen.progress
+                    val b = binding.seekBlue.progress
                     currentColor = Color.rgb(r, g, b)
                     updatePreview(currentColor)
                     PreferencesHelper.saveCustomTheme(currentColor, -1)
-                    (recyclerView.adapter as? ColorAdapter)?.resetSelection()
+                    (binding.colorRecyclerView.adapter as? ColorAdapter)?.resetSelection()
                 }
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         }
 
-        seekRed.setOnSeekBarChangeListener(seekBarListener)
-        seekGreen.setOnSeekBarChangeListener(seekBarListener)
-        seekBlue.setOnSeekBarChangeListener(seekBarListener)
+        binding.seekRed.setOnSeekBarChangeListener(seekBarListener)
+        binding.seekGreen.setOnSeekBarChangeListener(seekBarListener)
+        binding.seekBlue.setOnSeekBarChangeListener(seekBarListener)
 
         // Clipboard logic (Non-TV)
         if (!isAndroidTV) {
-            hexCode.setOnClickListener {
-                copyToClipboard(hexCode.text.toString())
+            binding.hexCode.setOnClickListener {
+                copyToClipboard(binding.hexCode.text.toString())
             }
-            hexCode.addTextChangedListener(object : TextWatcher {
+            binding.hexCode.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     if (!isUpdatingFromHex) {
@@ -104,7 +99,7 @@ class CustomThemeFragment : Fragment() {
                             isUpdatingFromHex = true
                             applyColor(color)
                             PreferencesHelper.saveCustomTheme(currentColor, -1)
-                            (recyclerView.adapter as? ColorAdapter)?.resetSelection()
+                            (binding.colorRecyclerView.adapter as? ColorAdapter)?.resetSelection()
                             isUpdatingFromHex = false
                         } catch (_: Exception) {}
                     }
@@ -112,44 +107,44 @@ class CustomThemeFragment : Fragment() {
                 override fun afterTextChanged(s: Editable?) {}
             })
         } else {
-            hexCode.isFocusable = false
-            hexCode.isFocusableInTouchMode = false
+            binding.hexCode.isFocusable = false
+            binding.hexCode.isFocusableInTouchMode = false
         }
 
         setupRecyclerView()
     }
 
-    private fun copyToClipboard(text: String) {
-        val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText(getString(R.string.hex_code), text)
-        clipboard.setPrimaryClip(clip)
-        Toast.makeText(requireContext(), R.string.toastmessage_copied_to_clipboard, Toast.LENGTH_SHORT).show()
-    }
-
     private fun updateSeekBars(color: Int) {
-        seekRed.progress = Color.red(color)
-        seekGreen.progress = Color.green(color)
-        seekBlue.progress = Color.blue(color)
+        binding.seekRed.progress = Color.red(color)
+        binding.seekGreen.progress = Color.green(color)
+        binding.seekBlue.progress = Color.blue(color)
     }
 
     private fun updatePreview(color: Int) {
-        colorPreview.setBackgroundColor(color)
+        binding.colorPreview.setBackgroundColor(color)
         if (!isUpdatingFromHex) {
             isUpdatingFromHex = true
-            hexCode.setText(String.format("#%08X", 0xFFFFFF and color))
+            binding.hexCode.setText(String.format("#%08X", 0xFFFFFF and color))
             isUpdatingFromHex = false
         }
     }
 
     private fun setupRecyclerView() {
-        recyclerView.layoutManager = GridLayoutManager(requireContext(), 5)
+        binding.colorRecyclerView.layoutManager = GridLayoutManager(requireContext(), 5)
         val colors = ThemeHelper.getPredefinedColors(requireContext())
         val adapter = ColorAdapter(colors) { color, index ->
             currentColor = color
             applyColor(color)
             PreferencesHelper.saveCustomTheme(currentColor, index)
         }
-        recyclerView.adapter = adapter
+        binding.colorRecyclerView.adapter = adapter
+    }
+
+    private fun copyToClipboard(text: String) {
+        val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = android.content.ClipData.newPlainText(getString(R.string.hex_code), text)
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(requireContext(), R.string.toastmessage_copied_to_clipboard, Toast.LENGTH_SHORT).show()
     }
 
     private inner class ColorAdapter(
@@ -169,12 +164,11 @@ class CustomThemeFragment : Fragment() {
             if (oldPos != -1) notifyItemChanged(oldPos)
         }
 
-        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val circle: View = view.findViewById(R.id.color_circle)
+        inner class ViewHolder(val binding: ElementColorCircleBinding) : RecyclerView.ViewHolder(binding.root) {
             init {
-                view.isFocusable = true
-                view.isFocusableInTouchMode = isAndroidTV
-                view.setOnClickListener {
+                binding.root.isFocusable = true
+                binding.root.isFocusableInTouchMode = isAndroidTV
+                binding.root.setOnClickListener {
                     val pos = bindingAdapterPosition
                     if (pos != RecyclerView.NO_POSITION) {
                         val oldPos = selectedPosition
@@ -188,14 +182,18 @@ class CustomThemeFragment : Fragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.element_color_circle, parent, false)
-            return ViewHolder(view)
+            return ViewHolder(
+                ElementColorCircleBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val color = colors[position]
-            val drawable = holder.circle.background as GradientDrawable
+            val drawable = holder.binding.colorCircle.background as GradientDrawable
             drawable.setColor(color)
             
             // Set selection state

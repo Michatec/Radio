@@ -6,9 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.EditText
-import android.widget.ProgressBar
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -17,10 +15,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.textview.MaterialTextView
 import com.michatec.radio.collection.CollectionViewModel
 import com.michatec.radio.core.Station
+import com.michatec.radio.databinding.DialogFindStationBinding
 import com.michatec.radio.helpers.CollectionHelper
 import com.michatec.radio.helpers.NetworkHelper
 import com.michatec.radio.search.DirectInputCheck
@@ -38,13 +35,9 @@ class AddStationFragment : Fragment(),
     RadioBrowserSearch.RadioBrowserSearchListener,
     DirectInputCheck.DirectInputCheckListener {
 
+    private var _binding: DialogFindStationBinding? = null
+    private val binding get() = _binding!!
     private lateinit var collectionViewModel: CollectionViewModel
-    private lateinit var stationSearchBoxView: SearchView
-    private lateinit var searchRequestProgressIndicator: ProgressBar
-    private lateinit var noSearchResultsTextView: MaterialTextView
-    private lateinit var stationSearchResultList: RecyclerView
-    private lateinit var positiveButton: Button
-    private lateinit var negativeButton: Button
     private lateinit var searchResultAdapter: SearchResultAdapter
     private lateinit var radioBrowserSearch: RadioBrowserSearch
     private lateinit var directInputCheck: DirectInputCheck
@@ -56,32 +49,25 @@ class AddStationFragment : Fragment(),
         savedInstanceState: Bundle?
     ): View {
         // We reuse the dialog layout as it's already optimized for TV in layout-television
-        val view = inflater.inflate(R.layout.dialog_find_station, container, false)
+        _binding = DialogFindStationBinding.inflate(inflater, container, false)
         
         collectionViewModel = ViewModelProvider(requireActivity())[CollectionViewModel::class.java]
         radioBrowserSearch = RadioBrowserSearch(this)
         directInputCheck = DirectInputCheck(this)
 
-        stationSearchBoxView = view.findViewById(R.id.station_search_box_view)
-        searchRequestProgressIndicator = view.findViewById(R.id.search_request_progress_indicator)
-        stationSearchResultList = view.findViewById(R.id.station_search_result_list)
-        noSearchResultsTextView = view.findViewById(R.id.no_results_text_view)
-        positiveButton = view.findViewById(R.id.dialog_positive_button)
-        negativeButton = view.findViewById(R.id.dialog_negative_button)
-
         setupRecyclerView()
         setupSearchView()
 
-        positiveButton.setOnClickListener {
+        binding.dialogPositiveButton?.setOnClickListener {
             addStationAndExit()
         }
 
-        negativeButton.setOnClickListener {
+        binding.dialogNegativeButton?.setOnClickListener {
             searchResultAdapter.stopPrePlayback()
             findNavController().navigateUp()
         }
 
-        stationSearchBoxView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.stationSearchBoxView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(query: String): Boolean {
                 handleSearch(query)
                 return true
@@ -92,7 +78,12 @@ class AddStationFragment : Fragment(),
             }
         })
 
-        return view
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onDestroy() {
@@ -105,14 +96,14 @@ class AddStationFragment : Fragment(),
 
     private fun setupRecyclerView() {
         searchResultAdapter = SearchResultAdapter(this, listOf())
-        stationSearchResultList.adapter = searchResultAdapter
-        stationSearchResultList.layoutManager = LinearLayoutManager(context)
-        stationSearchResultList.itemAnimator = DefaultItemAnimator()
+        binding.stationSearchResultList.adapter = searchResultAdapter
+        binding.stationSearchResultList.layoutManager = LinearLayoutManager(context)
+        binding.stationSearchResultList.itemAnimator = DefaultItemAnimator()
     }
 
     private fun setupSearchView() {
         // TV specific: ensure keyboard opens when search view gets focus
-        stationSearchBoxView.setOnQueryTextFocusChangeListener { v, hasFocus ->
+        binding.stationSearchBoxView.setOnQueryTextFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 // Find the internal EditText of the SearchView
                 val searchEditText = v.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
@@ -125,7 +116,7 @@ class AddStationFragment : Fragment(),
         }
 
         // Make the SearchView always expanded and ready for input
-        stationSearchBoxView.isIconified = false
+        binding.stationSearchBoxView.isIconified = false
     }
 
     private fun handleSearch(query: String) {
@@ -165,11 +156,11 @@ class AddStationFragment : Fragment(),
     }
 
     override fun activateAddButton() {
-        positiveButton.isEnabled = true
+        binding.dialogPositiveButton?.isEnabled = true
     }
 
     override fun deactivateAddButton() {
-        positiveButton.isEnabled = false
+        binding.dialogPositiveButton?.isEnabled = false
     }
 
     override fun onRadioBrowserSearchResults(results: Array<RadioBrowserResult>) {
@@ -191,19 +182,19 @@ class AddStationFragment : Fragment(),
     }
 
     private fun resetLayout(clear: Boolean) {
-        positiveButton.isEnabled = false
-        searchRequestProgressIndicator.isGone = true
-        noSearchResultsTextView.isGone = true
+        binding.dialogPositiveButton?.isEnabled = false
+        binding.searchRequestProgressIndicator.isGone = true
+        binding.noResultsTextView.isGone = true
         if (clear) searchResultAdapter.resetSelection(true)
     }
 
     private fun showProgressIndicator() {
-        searchRequestProgressIndicator.isVisible = true
-        noSearchResultsTextView.isGone = true
+        binding.searchRequestProgressIndicator.isVisible = true
+        binding.noResultsTextView.isGone = true
     }
 
     private fun showNoResultsError() {
-        searchRequestProgressIndicator.isGone = true
-        noSearchResultsTextView.isVisible = true
+        binding.searchRequestProgressIndicator.isGone = true
+        binding.noResultsTextView.isVisible = true
     }
 }

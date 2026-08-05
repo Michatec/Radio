@@ -6,20 +6,17 @@ import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.textview.MaterialTextView
 import com.michatec.radio.Keys
 import com.michatec.radio.R
 import com.michatec.radio.core.Station
+import com.michatec.radio.databinding.DialogFindStationBinding
 import com.michatec.radio.search.DirectInputCheck
 import com.michatec.radio.search.RadioBrowserResult
 import com.michatec.radio.search.RadioBrowserSearch
@@ -44,13 +41,8 @@ class FindStationDialog (
 
 
     /* Main class variables */
+    private lateinit var binding: DialogFindStationBinding
     private lateinit var dialog: AlertDialog
-    private lateinit var stationSearchBoxView: SearchView
-    private lateinit var searchRequestProgressIndicator: ProgressBar
-    private lateinit var noSearchResultsTextView: MaterialTextView
-    private lateinit var stationSearchResultList: RecyclerView
-    private var customPositiveButton: Button? = null
-    private var customNegativeButton: Button? = null
     private lateinit var searchResultAdapter: SearchResultAdapter
     private lateinit var radioBrowserSearch: RadioBrowserSearch
     private lateinit var directInputCheck: DirectInputCheck
@@ -65,7 +57,7 @@ class FindStationDialog (
         // hide keyboard
         val imm: InputMethodManager =
             context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(stationSearchBoxView.windowToken, 0)
+        imm.hideSoftInputFromWindow(binding.stationSearchBoxView.windowToken, 0)
         // make add button clickable
         activateAddButton()
     }
@@ -106,21 +98,12 @@ class FindStationDialog (
         // set title
         builder.setTitle(R.string.dialog_find_station_title)
 
-        // get views
-        val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.dialog_find_station, null)
-        stationSearchBoxView = view.findViewById(R.id.station_search_box_view)
-        searchRequestProgressIndicator = view.findViewById(R.id.search_request_progress_indicator)
-        stationSearchResultList = view.findViewById(R.id.station_search_result_list)
-        noSearchResultsTextView = view.findViewById(R.id.no_results_text_view)
-        noSearchResultsTextView.isGone = true
+        // get binding
+        binding = DialogFindStationBinding.inflate(LayoutInflater.from(context))
+        binding.noResultsTextView.isGone = true
 
         // set up list of search results
         setupRecyclerView(context)
-
-        // find custom buttons (for TV layout)
-        customPositiveButton = view.findViewById(R.id.dialog_positive_button)
-        customNegativeButton = view.findViewById(R.id.dialog_negative_button)
 
         // add okay ("Add") button
         builder.setPositiveButton(R.string.dialog_find_station_button_add) { _, _ ->
@@ -141,19 +124,19 @@ class FindStationDialog (
         }
 
         // set up custom buttons if they exist (TV layout)
-        customPositiveButton?.setOnClickListener {
+        binding.dialogPositiveButton?.setOnClickListener {
             listener.onFindStationDialog(station)
             searchResultAdapter.stopPrePlayback()
             dialog.dismiss()
         }
-        customNegativeButton?.setOnClickListener {
+        binding.dialogNegativeButton?.setOnClickListener {
             radioBrowserSearch.stopSearchRequest()
             searchResultAdapter.stopPrePlayback()
             dialog.dismiss()
         }
 
         // listen for input
-        stationSearchBoxView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.stationSearchBoxView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(query: String): Boolean {
                 handleSearchBoxLiveInput(context, query)
                 searchResultAdapter.stopPrePlayback()
@@ -168,18 +151,18 @@ class FindStationDialog (
         })
 
         // set dialog view
-        builder.setView(view)
+        builder.setView(binding.root)
 
         // create and display dialog
         dialog = builder.create()
         dialog.show()
 
         // handle button visibility and state
-        if (customPositiveButton != null) {
+        if (binding.dialogPositiveButton != null) {
             // hide default buttons if custom ones are used
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isGone = true
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).isGone = true
-            customPositiveButton?.isEnabled = false
+            binding.dialogPositiveButton?.isEnabled = false
         } else {
             // initially disable default "Add" button
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
@@ -192,14 +175,14 @@ class FindStationDialog (
     /* Sets up list of results (RecyclerView) */
     private fun setupRecyclerView(context: Context) {
         searchResultAdapter = SearchResultAdapter(this, listOf())
-        stationSearchResultList.adapter = searchResultAdapter
+        binding.stationSearchResultList.adapter = searchResultAdapter
         val layoutManager: LinearLayoutManager = object : LinearLayoutManager(context) {
             override fun supportsPredictiveItemAnimations(): Boolean {
                 return true
             }
         }
-        stationSearchResultList.layoutManager = layoutManager
-        stationSearchResultList.itemAnimator = DefaultItemAnimator()
+        binding.stationSearchResultList.layoutManager = layoutManager
+        binding.stationSearchResultList.itemAnimator = DefaultItemAnimator()
     }
 
 
@@ -250,25 +233,25 @@ class FindStationDialog (
     /* Makes the "Add" button clickable */
     override fun activateAddButton() {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
-        customPositiveButton?.isEnabled = true
-        searchRequestProgressIndicator.isGone = true
-        noSearchResultsTextView.isGone = true
+        binding.dialogPositiveButton?.isEnabled = true
+        binding.searchRequestProgressIndicator.isGone = true
+        binding.noResultsTextView.isGone = true
     }
 
     override fun deactivateAddButton() {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-        customPositiveButton?.isEnabled = false
-        searchRequestProgressIndicator.isGone = true
-        noSearchResultsTextView.isGone = true
+        binding.dialogPositiveButton?.isEnabled = false
+        binding.searchRequestProgressIndicator.isGone = true
+        binding.noResultsTextView.isGone = true
     }
 
 
     /* Resets the dialog layout to default state */
     private fun resetLayout(clearAdapter: Boolean = false) {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-        customPositiveButton?.isEnabled = false
-        searchRequestProgressIndicator.isGone = true
-        noSearchResultsTextView.isGone = true
+        binding.dialogPositiveButton?.isEnabled = false
+        binding.searchRequestProgressIndicator.isGone = true
+        binding.noResultsTextView.isGone = true
         searchResultAdapter.resetSelection(clearAdapter)
     }
 
@@ -276,18 +259,18 @@ class FindStationDialog (
     /* Display the "No Results" error - hide other unneeded views */
     private fun showNoResultsError() {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-        customPositiveButton?.isEnabled = false
-        searchRequestProgressIndicator.isGone = true
-        noSearchResultsTextView.isVisible = true
+        binding.dialogPositiveButton?.isEnabled = false
+        binding.searchRequestProgressIndicator.isGone = true
+        binding.noResultsTextView.isVisible = true
     }
 
 
     /* Display the "No Results" error - hide other unneeded views */
     private fun showProgressIndicator() {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-        customPositiveButton?.isEnabled = false
-        searchRequestProgressIndicator.isVisible = true
-        noSearchResultsTextView.isGone = true
+        binding.dialogPositiveButton?.isEnabled = false
+        binding.searchRequestProgressIndicator.isVisible = true
+        binding.noResultsTextView.isGone = true
     }
 
 }

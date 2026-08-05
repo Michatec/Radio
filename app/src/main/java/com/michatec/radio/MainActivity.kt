@@ -17,7 +17,6 @@ import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -27,6 +26,7 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.navigateUp
 import android.content.*
 import com.google.android.material.snackbar.Snackbar
+import com.michatec.radio.databinding.ActivityMainBinding
 import com.michatec.radio.helpers.AppThemeHelper
 import com.michatec.radio.helpers.FileHelper
 import com.michatec.radio.helpers.LanguageHelper
@@ -41,8 +41,8 @@ import java.util.Locale
 class MainActivity : AppCompatActivity() {
 
     /* Main class variables */
+    private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var mainRoot: View
 
     // Check if the device running the app is an Android TV instance
     private val isAndroidTV: Boolean by lazy {
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
     ) { isGranted ->
         if (!isGranted) {
             val snackbar = Snackbar.make(
-                findViewById(android.R.id.content),
+                binding.mainRoot,
                 R.string.snackbar_failed_permission_notification,
                 Snackbar.LENGTH_LONG
             )
@@ -68,7 +68,9 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
             }
-            snackbar.anchorView = findViewById(R.id.bottom_sheet)
+            findViewById<View>(R.id.bottom_sheet)?.let {
+                snackbar.anchorView = it
+            }
             snackbar.show()
         }
     }
@@ -94,25 +96,25 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
 
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         // Free Android
         FreeDroidWarn.showWarningOnUpgrade(this, BuildConfig.VERSION_CODE)
 
         // set up views
-        setContentView(R.layout.activity_main)
-        mainRoot = findViewById(R.id.main_root)
         applyCustomTheme()
 
         // create .nomedia file - if not yet existing
         FileHelper.createNomediaFile(getExternalFilesDir(null))
 
         // set up action bar
-        setSupportActionBar(findViewById(R.id.main_toolbar))
-        val toolbar: Toolbar = findViewById(R.id.main_toolbar)
+        setSupportActionBar(binding.mainToolbar)
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.main_host_container) as NavHostFragment
         val navController = navHostFragment.navController
         appBarConfiguration = AppBarConfiguration(navController.graph)
-        NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration)
+        NavigationUI.setupWithNavController(binding.mainToolbar, navController, appBarConfiguration)
         supportActionBar?.hide()
 
         // TV-specific loading logic: Hide the overlay once the app is ready
@@ -122,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                 hideLoadingOverlay()
             }, 1200)
         } else {
-            findViewById<View>(R.id.loading_layout)?.visibility = View.GONE
+            binding.loadingLayout.visibility = View.GONE
         }
 
         // register listener for changes in shared preferences
@@ -151,7 +153,7 @@ class MainActivity : AppCompatActivity() {
 
     /* Hides the loading/splash overlay */
     private fun hideLoadingOverlay() {
-        findViewById<View>(R.id.loading_layout)?.let { overlay ->
+        binding.loadingLayout.let { overlay ->
             if (overlay.isVisible) {
                 overlay.animate().alpha(0f).setDuration(500)
                     .withEndAction { overlay.visibility = View.GONE }
@@ -177,12 +179,12 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            mainRoot.setBackgroundColor(color)
+            binding.mainRoot.setBackgroundColor(color)
         } else {
             // Reset to default theme background color
             val typedValue = TypedValue()
             theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
-            mainRoot.setBackgroundColor(typedValue.data)
+            binding.mainRoot.setBackgroundColor(typedValue.data)
         }
     }
 
@@ -206,7 +208,7 @@ class MainActivity : AppCompatActivity() {
     /* Overrides onSupportNavigateUp from AppCompatActivity */
     override fun onSupportNavigateUp(): Boolean {
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.main_host_container) as NavHostFragment
+            supportFragmentManager.findFragmentById(binding.mainHostContainer.id) as NavHostFragment
         val navController = navHostFragment.navController
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
@@ -246,11 +248,13 @@ class MainActivity : AppCompatActivity() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == Keys.ACTION_REMOTE_SERVER_ERROR) {
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.main_root),
+                    binding.mainRoot,
                     R.string.error_webserver,
                     Snackbar.LENGTH_LONG
                 )
-                snackbar.anchorView = findViewById(R.id.bottom_sheet)
+                this@MainActivity.findViewById<View>(R.id.bottom_sheet)?.let {
+                    snackbar.anchorView = it
+                }
                 snackbar.show()
             }
         }

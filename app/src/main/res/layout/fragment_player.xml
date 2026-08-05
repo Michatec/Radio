@@ -95,7 +95,9 @@
         </LinearLayout>
 
         <!-- PLAYER SHEET -->
-        <include layout="@layout/bottom_sheet_playback_controls" />
+        <include
+            android:id="@+id/player_sheet"
+            layout="@layout/bottom_sheet_playback_controls" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
