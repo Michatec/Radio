@@ -6,7 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.AnimatedVectorDrawable
+import android.transition.ChangeBounds
+import android.transition.TransitionManager
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageButton
@@ -23,7 +26,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
 import com.michatec.radio.Keys
 import com.michatec.radio.R
 import com.michatec.radio.core.Station
@@ -56,6 +61,10 @@ data class LayoutHolder(var rootView: View) {
     var playerPrevButtonView: ImageButton? = rootView.findViewById(R.id.player_prev_button)
     var playerNextButtonView: ImageButton? = rootView.findViewById(R.id.player_next_button)
     private var bufferingIndicator: ProgressBar = rootView.findViewById(R.id.player_buffering_indicator)
+    private var searchLayout: View? = rootView.findViewById(R.id.search_layout)
+    var searchInputEditText: TextInputEditText? = rootView.findViewById(R.id.search_input_edit_text)
+    var searchFilterFavoritesSwitch: MaterialSwitch? = rootView.findViewById(R.id.search_filter_favorites_switch)
+    private var searchNoResultsView: View? = rootView.findViewById(R.id.search_no_results_view)
     private var sheetStreamingLinkHeadline: TextView? = rootView.findViewById(R.id.sheet_streaming_link_headline)
     private var sheetStreamingLinkView: TextView? = rootView.findViewById(R.id.sheet_streaming_link)
     private var sheetMetadataHistoryHeadline: TextView? = rootView.findViewById(R.id.sheet_metadata_headline)
@@ -360,6 +369,27 @@ data class LayoutHolder(var rootView: View) {
             Keys.ACTIVE_DOWNLOADS_EMPTY -> downloadProgressIndicator?.isGone = true
             else -> downloadProgressIndicator?.isVisible = true
         }
+    }
+
+    /* Toggles visibility of the search layout */
+    fun toggleSearchLayout(visible: Boolean) {
+        val parent = searchLayout?.parent as? ViewGroup
+        if (parent != null) {
+            val transition = ChangeBounds()
+            transition.duration = 300
+            TransitionManager.beginDelayedTransition(parent, transition)
+        }
+        searchLayout?.isVisible = visible
+        if (!visible) {
+            searchInputEditText?.text?.clear()
+            searchFilterFavoritesSwitch?.isChecked = false
+            searchNoResultsView?.isGone = true
+        }
+    }
+
+    /* Shows/hides no results message */
+    fun toggleSearchNoResults(show: Boolean) {
+        searchNoResultsView?.isVisible = show
     }
 
 

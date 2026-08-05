@@ -193,4 +193,8 @@
     <string name="pref_remote_control_summary">Керуйте радіо з вашого веб-браузера</string>
     <string name="pref_remote_control_url">Керуйте радіо через http://%1$s:8080</string>
     <string name="error_webserver">Веб-сервер дистанційного керування аварійно зупинився/зупинено.</string>
+    <string name="search_hint">Пошук станцій…</string>
+    <string name="search_filter_favorites">Тільки улюблені</string>
+    <string name="search_no_results">Станцій не знайдено.</string>
+    <string name="descr_player_search_button">Пошук станцій</string>
 </resources>

@@ -192,4 +192,8 @@
     <string name="pref_remote_control_summary">ウェブブラウザからラジオを操作</string>
     <string name="pref_remote_control_url">http://%1$s:8080 からラジオを操作</string>
     <string name="error_webserver">Webリモートサーバーがクラッシュ/停止しました。</string>
+    <string name="search_hint">局を検索…</string>
+    <string name="search_filter_favorites">お気に入りのみ</string>
+    <string name="search_no_results">局が見つかりません。</string>
+    <string name="descr_player_search_button">局を検索</string>
 </resources>

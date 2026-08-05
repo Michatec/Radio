@@ -193,4 +193,9 @@
     <string name="pref_remote_control_summary">Ελέγξτε το ραδιόφωνο από το πρόγραμμα περιήγησής σας</string>
     <string name="pref_remote_control_url">Ελέγξτε το ραδιόφωνο από το http://%1$s:8080</string>
     <string name="error_webserver">Ο διακομιστής τηλεχειριστηρίου ιστού κατέρρευσε/σταμάτησε.</string>
+
+    <string name="descr_player_search_button">Αναζήτηση σταθμών</string>
+    <string name="search_hint">Αναζήτηση σταθμών…</string>
+    <string name="search_filter_favorites">Μόνο αγαπημένα</string>
+    <string name="search_no_results">Δεν βρέθηκαν σταθμοί.</string>
 </resources>

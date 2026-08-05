@@ -50,12 +50,15 @@ class CollectionAdapter(
     /* Main class variables */
     private lateinit var collectionViewModel: CollectionViewModel
     private var collection: Collection = Collection()
+    private var filteredStations: MutableList<Station> = mutableListOf()
     private var editStationsEnabled: Boolean = PreferencesHelper.loadEditStationsEnabled(context)
     private var editStationStreamsEnabled: Boolean = PreferencesHelper.loadEditStreamUrisEnabled(context)
     private var expandedStationUuid: String = PreferencesHelper.loadStationListStreamUuid()
     private var expandedStationPosition: Int = -1
     var isExpandedForEdit: Boolean = false
     private var reorderStationUuid: String = ""
+    private var currentSearchQuery: String = ""
+    private var currentOnlyFavorites: Boolean = false
 
 
     /* Listener Interface */
@@ -63,6 +66,7 @@ class CollectionAdapter(
         fun onPlayButtonTapped(stationUuid: String)
         fun onAddNewButtonTapped()
         fun onChangeImageButtonTapped(stationUuid: String)
+        fun onSearchButtonTapped()
     }
 
 
@@ -108,8 +112,7 @@ class CollectionAdapter(
 
     /* Implement the method to handle item move */
     fun onItemMove(fromPosition: Int, toPosition: Int) {
-        // Do nothing if in "edit" mode
-        if (isExpandedForEdit) {
+        if (isExpandedForEdit || filteredStations.size != collection.stations.size) {
             return
         }
 
@@ -141,8 +144,12 @@ class CollectionAdapter(
 
     /* Implement the method to handle item dismissal */
     fun onItemDismiss(position: Int) {
-        // Remove the item at the given position from your data collection
-        collection.stations.removeAt(position)
+        val station = filteredStations[position]
+        val originalPosition = collection.stations.indexOfFirst { it.uuid == station.uuid }
+        if (originalPosition != -1) {
+            collection.stations.removeAt(originalPosition)
+        }
+        filteredStations.removeAt(position)
         notifyItemRemoved(position)
     }
 
@@ -153,6 +160,27 @@ class CollectionAdapter(
         CollectionHelper.saveCollection(context, collection)
     }
 
+
+    /* Filters the station list based on query and favorite status */
+    fun filter(query: String, onlyFavorites: Boolean) {
+        currentSearchQuery = query
+        currentOnlyFavorites = onlyFavorites
+        applyFilter()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun applyFilter() {
+        filteredStations = if (currentSearchQuery.isEmpty() && !currentOnlyFavorites) {
+            collection.stations.toMutableList()
+        } else {
+            collection.stations.filter { station ->
+                val matchesQuery = station.name.contains(currentSearchQuery, ignoreCase = true)
+                val matchesFavorite = !currentOnlyFavorites || station.starred
+                matchesQuery && matchesFavorite
+            }.toMutableList()
+        }
+        notifyDataSetChanged()
+    }
 
     /* Overrides onBindViewHolder */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -171,11 +199,15 @@ class CollectionAdapter(
                 addNewViewHolder.visualizerButtonView.setOnClickListener {
                     it.findNavController().navigate(R.id.visualizer_destination)
                 }
+                addNewViewHolder.playerSearchButtonView.setOnClickListener {
+                    collectionAdapterListener.onSearchButtonTapped()
+                }
+                addNewViewHolder.playerSearchButtonView.isVisible = collection.stations.isNotEmpty()
             }
             // CASE STATION CARD
             is StationViewHolder -> {
                 // get station from position
-                val station: Station = collection.stations[position]
+                val station: Station = filteredStations[position]
 
                 // get reference to StationViewHolder
                 val stationViewHolder: StationViewHolder = holder
@@ -583,7 +615,7 @@ class CollectionAdapter(
 
         } else if (holder is StationViewHolder) {
             // get station from position
-            val station: Station = collection.stations[holder.bindingAdapterPosition]
+            val station: Station = filteredStations[holder.bindingAdapterPosition]
 
             for (data in payloads) {
                 when (data as Int) {
@@ -621,19 +653,24 @@ class CollectionAdapter(
     /* Overrides getItemCount */
     override fun getItemCount(): Int {
         // +1 ==> the add station card
-        return collection.stations.size + 1
+        return filteredStations.size + 1
     }
 
 
     /* Removes a station from collection */
     fun removeStation(context: Context, position: Int) {
+        val station = filteredStations[position]
+        val originalPosition = collection.stations.indexOfFirst { it.uuid == station.uuid }
+        if (originalPosition == -1) return
+
         val newCollection = collection.deepCopy()
         // delete images assets
-        CollectionHelper.deleteStationImages(context, newCollection.stations[position])
+        CollectionHelper.deleteStationImages(context, newCollection.stations[originalPosition])
         // remove station from collection
-        newCollection.stations.removeAt(position)
+        newCollection.stations.removeAt(originalPosition)
         collection = newCollection
         // update list
+        filteredStations.removeAt(position)
         notifyItemRemoved(position)
         // save collection and broadcast changes
         CollectionHelper.saveCollection(context, newCollection)
@@ -642,15 +679,16 @@ class CollectionAdapter(
 
     /* Toggles starred status of a station */
     fun toggleStarredStation(context: Context, position: Int) {
+        val station = filteredStations[position]
+        val originalPosition = collection.stations.indexOfFirst { it.uuid == station.uuid }
+        if (originalPosition == -1) return
+
         // update view (reset "swipe" state of station card)
         notifyItemChanged(position)
         // mark starred
-        val stationUuid: String = collection.stations[position].uuid
-        collection.stations[position].apply { starred = !starred }
+        collection.stations[originalPosition].apply { starred = !starred }
         // sort collection
         collection = CollectionHelper.sortCollection(collection)
-        // update list
-        notifyItemMoved(position, CollectionHelper.getStationPosition(collection, stationUuid))
         // save collection and broadcast changes
         CollectionHelper.saveCollection(context, collection)
     }
@@ -690,7 +728,7 @@ class CollectionAdapter(
 
     /* Determines if position is last */
     private fun isPositionFooter(position: Int): Boolean {
-        return position == collection.stations.size
+        return position == filteredStations.size
     }
 
 
@@ -698,6 +736,7 @@ class CollectionAdapter(
     @SuppressLint("NotifyDataSetChanged")
     private fun updateRecyclerView(oldCollection: Collection, newCollection: Collection) {
         collection = newCollection
+        applyFilter()
         if (oldCollection.stations.isEmpty() && newCollection.stations.isNotEmpty()) {
             // data set has been initialized - redraw the whole list
             notifyDataSetChanged()
@@ -757,6 +796,8 @@ class CollectionAdapter(
             listItemAddNewLayout.findViewById(R.id.card_settings)
         val visualizerButtonView: ExtendedFloatingActionButton =
             listItemAddNewLayout.findViewById(R.id.card_visualizer)
+        val playerSearchButtonView: ExtendedFloatingActionButton =
+            listItemAddNewLayout.findViewById(R.id.player_search_button)
     }
     /*
      * End of inner class

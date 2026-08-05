@@ -193,4 +193,8 @@
     <string name="pref_remote_control_summary">Bedien de radio vanuit je webbrowser</string>
     <string name="pref_remote_control_url">Bedien de radio via http://%1$s:8080</string>
     <string name="error_webserver">De webserver voor de afstandsbediening is gecrasht of gestopt.</string>
+    <string name="search_hint">Zenders zoeken…</string>
+    <string name="search_filter_favorites">Alleen favorieten</string>
+    <string name="search_no_results">Geen zenders gevonden.</string>
+    <string name="descr_player_search_button">Zenders zoeken</string>
 </resources>

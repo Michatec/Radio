@@ -10,10 +10,13 @@ import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.net.Uri
 import android.os.*
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
@@ -97,6 +100,7 @@ class PlayerFragment : Fragment(),
     private var tempStationUuid: String = String()
     private var itemTouchHelper: ItemTouchHelper? = null
     private var shaderEffectView: ShaderEffectView? = null
+    private var isSearchActive: Boolean = false
 
     // Check if the device running the app is an Android TV instance
     private val isAndroidTV: Boolean by lazy {
@@ -181,6 +185,7 @@ class PlayerFragment : Fragment(),
         // find views and set them up
         val rootView: View = inflater.inflate(R.layout.fragment_player, container, false)
         layout = LayoutHolder(rootView)
+        isSearchActive = false
 
         shaderEffectView = rootView.findViewById(R.id.player_shader_effect)
         initializeViews()
@@ -381,6 +386,20 @@ class PlayerFragment : Fragment(),
         pickImage()
     }
 
+    /* Overrides onSearchButtonTapped from CollectionAdapterListener */
+    override fun onSearchButtonTapped() {
+        isSearchActive = !isSearchActive
+        layout.toggleSearchLayout(isSearchActive)
+        if (!isSearchActive) {
+            collectionAdapter.filter("", false)
+        } else if (isAndroidTV) {
+            // TV: focus search field and show keyboard
+            layout.searchInputEditText?.requestFocus()
+            val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.showSoftInput(layout.searchInputEditText, 0)
+        }
+    }
+
 
     /* Overrides onYesNoDialog from YesNoDialogListener */
     override fun onYesNoDialog(
@@ -518,7 +537,7 @@ class PlayerFragment : Fragment(),
                         Snackbar.LENGTH_SHORT
                     )
                     if (!isAndroidTV) {
-                        snackbar.setAnchorView(layout.bottomSheet)
+                        snackbar.anchorView = layout.bottomSheet
                     }
                     snackbar.show()
                 }
@@ -530,6 +549,20 @@ class PlayerFragment : Fragment(),
             playerState.sleepTimerRunning = false
             controller?.cancelSleepTimer()
             togglePeriodicSleepTimerUpdateRequest()
+        }
+
+        // set up search input
+        layout.searchInputEditText?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                performSearch()
+            }
+        })
+
+        // set up favorites filter
+        layout.searchFilterFavoritesSwitch?.setOnCheckedChangeListener { _, _ ->
+            performSearch()
         }
 
         // set up TV station navigation
@@ -605,6 +638,14 @@ class PlayerFragment : Fragment(),
     /* Start image picker */
     private fun pickImage() {
         pickSingleMediaLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+
+    /* Performs search and updates list */
+    private fun performSearch() {
+        val query = layout.searchInputEditText?.text?.toString() ?: ""
+        val onlyFavorites = layout.searchFilterFavoritesSwitch?.isChecked ?: false
+        collectionAdapter.filter(query, onlyFavorites)
+        layout.toggleSearchNoResults(collectionAdapter.itemCount == 1 && (query.isNotEmpty() || onlyFavorites))
     }
 
     /* Handles this activity's start intent */
@@ -724,9 +765,9 @@ class PlayerFragment : Fragment(),
             // handle navigation arguments
             handleNavigationArguments()
         }
-        collectionViewModel.collectionSizeLiveData.observe(this) {
+        collectionViewModel.collectionSizeLiveData.observe(this) { size ->
             // size of collection changed
-            layout.toggleOnboarding(activity as Context, collection.stations.size)
+            layout.toggleOnboarding(activity as Context, size)
             updatePlayerViews()
             CollectionHelper.exportCollectionM3u(activity as Context, collection)
             CollectionHelper.exportCollectionPls(activity as Context, collection)

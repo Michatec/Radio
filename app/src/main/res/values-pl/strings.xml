@@ -192,4 +192,8 @@
     <string name="pref_remote_control_summary">Steruj radiem z przeglądarki internetowej</string>
     <string name="pref_remote_control_url">Steruj radiem przez http://%1$s:8080</string>
     <string name="error_webserver">Serwer zdalnego sterowania uległ awarii/zatrzymaniu.</string>
+    <string name="search_hint">Szukaj stacji…</string>
+    <string name="search_filter_favorites">Tylko ulubione</string>
+    <string name="search_no_results">Nie znaleziono stacji.</string>
+    <string name="descr_player_search_button">Szukaj stacji</string>
 </resources>

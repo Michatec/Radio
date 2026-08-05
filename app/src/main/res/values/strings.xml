@@ -18,6 +18,7 @@
     <string name="descr_expanded_player_sleep_timer_start_button">Start sleep timer</string>
     <string name="descr_player_playback_button">Play/pause</string>
     <string name="descr_player_station_image">Station image</string>
+    <string name="descr_player_search_button">Search stations</string>
 
     <!-- Dialogs -->
     <string name="dialog_add_station_title">Add Station</string>
@@ -228,4 +229,7 @@
     <string name="pref_remote_control_summary">Control radio from your web browser</string>
     <string name="pref_remote_control_url">Control radio from http://%1$s:8080</string>
     <string name="error_webserver">Web Remote server crashed / stopped.</string>
+    <string name="search_hint">Search stations…</string>
+    <string name="search_filter_favorites">Only favorites</string>
+    <string name="search_no_results">No stations found.</string>
 </resources>
