@@ -88,6 +88,13 @@ body.light-theme .current-station-info {
     margin-right: 20px;
 }
 
+.current-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
 .current-name {
     font-size: 1.4rem;
     font-weight: 800;
@@ -96,7 +103,6 @@ body.light-theme .current-station-info {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    margin-bottom: 4px;
 }
 
 .current-metadata {
@@ -192,6 +198,29 @@ body.light-theme .station-item {
     transform: translateY(-8px);
     background: rgba(128,128,128,0.08);
     border-color: var(--accent-color);
+}
+
+.station-item-content {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.starred-icon {
+    color: #ffca28;
+    text-shadow: 0 0 10px rgba(255, 202, 40, 0.4);
+}
+
+.station-item .starred-icon {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-size: 24px;
+    background: var(--bg-color);
+    border-radius: 50%;
 }
 
 .station-item.active {

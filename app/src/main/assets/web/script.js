@@ -39,6 +39,7 @@ async function updateStatus() {
     const statusEl = document.getElementById('status');
     const playPauseIcon = document.getElementById('playPauseIcon');
     const currentNameEl = document.getElementById('currentName');
+    const currentStarEl = document.getElementById('currentStar');
     const currentMetadataEl = document.getElementById('currentMetadata');
     const currentImageEl = document.getElementById('currentImage');
 
@@ -51,11 +52,14 @@ async function updateStatus() {
             statusEl.innerText = t('status_error') + ': ' + data.error;
         } else {
             let statusText = data.isPlaying ? t('status_playing') : t('status_paused');
+            if (data.playWhenReady && !data.isPlaying) {
+                statusText = "Buffering...";
+            }
             if (data.playbackState === STATE_BUFFERING) {
                 statusText = "Buffering...";
             }
             statusEl.innerText = statusText;
-            playPauseIcon.innerText = data.isPlaying ? 'pause' : 'play_arrow';
+            playPauseIcon.innerText = (data.isPlaying || data.playWhenReady) ? 'pause' : 'play_arrow';
 
             const stationUuid = data.currentStationUuid;
             updateActiveStation(stationUuid);
@@ -63,10 +67,12 @@ async function updateStatus() {
             const station = allStations.find(s => s.uuid === stationUuid);
             if (station) {
                 currentNameEl.innerText = station.name;
+                currentStarEl.classList.toggle('hidden', !data.starred);
                 currentMetadataEl.innerText = data.metadata || "";
                 currentImageEl.src = station.hasImage ? '/api/image/' + station.uuid : 'favicon.png';
             } else {
                 currentNameEl.innerText = data.isPlaying ? 'Unknown Station' : 'No Station Selected';
+                currentStarEl.classList.add('hidden');
                 currentMetadataEl.innerText = "";
                 currentImageEl.src = 'favicon.png';
             }
@@ -105,6 +111,9 @@ async function loadStations() {
             div.className = 'station-item';
             div.id = 'station-' + station.uuid;
 
+            const content = document.createElement('div');
+            content.className = 'station-item-content';
+
             const img = document.createElement('img');
             img.className = 'station-img';
             if (station.hasImage) {
@@ -112,13 +121,21 @@ async function loadStations() {
             } else {
                 img.src = 'favicon.png';
             }
-            div.appendChild(img);
+            content.appendChild(img);
 
             const name = document.createElement('div');
             name.className = 'station-name';
             name.innerText = station.name || 'Unnamed Station';
-            div.appendChild(name);
+            content.appendChild(name);
 
+            if (station.starred) {
+                const star = document.createElement('span');
+                star.className = 'material-icons starred-icon';
+                star.innerText = 'star';
+                content.appendChild(star);
+            }
+
+            div.appendChild(content);
             div.onclick = () => playStation(station.uuid);
             list.appendChild(div);
         });
@@ -143,6 +160,7 @@ async function playStation(uuid) {
     const station = allStations.find(s => s.uuid === uuid);
     if (station) {
         document.getElementById('currentName').innerText = station.name;
+        document.getElementById('currentStar').classList.toggle('hidden', !station.starred);
         document.getElementById('currentMetadata').innerText = "";
         document.getElementById('currentImage').src = station.hasImage ? '/api/image/' + station.uuid : 'favicon.png';
     }

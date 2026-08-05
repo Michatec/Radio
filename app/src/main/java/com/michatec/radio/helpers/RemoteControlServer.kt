@@ -26,6 +26,7 @@ class RemoteControlServer(private val context: Context) {
     private val serverScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val lifecycleMutex = Mutex()
     var onPlayStation: ((String) -> Unit)? = null
+    var onGetCollection: (() -> com.michatec.radio.core.Collection)? = null
     var onPause: (() -> Unit)? = null
     var onResume: (() -> Unit)? = null
     var onNext: (() -> Unit)? = null
@@ -121,16 +122,24 @@ class RemoteControlServer(private val context: Context) {
                                         call.respond(HttpStatusCode.ServiceUnavailable, mapOf("error" to "Player not available"))
                                     } else {
                                         try {
+                                            val collection = onGetCollection?.invoke() ?: withContext(Dispatchers.IO) {
+                                                FileHelper.readCollection(context)
+                                            }
+                                            
                                             val status = withContext(Dispatchers.Main) {
                                                 val metadataHistory = PreferencesHelper.loadMetadataHistory()
                                                 val currentTrack = if (metadataHistory.isNotEmpty()) metadataHistory.last() else ""
                                                 val mediaId = p.currentMediaItem?.mediaId ?: PreferencesHelper.loadLastPlayedStationUuid()
                                                 
+                                                val station = CollectionHelper.getStation(collection, mediaId)
+
                                                 mapOf(
                                                     "isPlaying" to p.isPlaying,
+                                                    "playWhenReady" to p.playWhenReady,
                                                     "playbackState" to p.playbackState,
                                                     "currentStationUuid" to mediaId,
-                                                    "metadata" to currentTrack
+                                                    "metadata" to currentTrack,
+                                                    "starred" to station.starred
                                                 )
                                             }
                                             call.respond(status)
@@ -142,14 +151,15 @@ class RemoteControlServer(private val context: Context) {
 
                                 get("/api/stations") {
                                     try {
-                                        val collection = withContext(Dispatchers.IO) {
+                                        val collection = onGetCollection?.invoke() ?: withContext(Dispatchers.IO) {
                                             FileHelper.readCollection(context)
                                         }
                                         val simplifiedStations = collection.stations.map {
                                             mapOf(
                                                 "uuid" to it.uuid, 
                                                 "name" to it.name,
-                                                "hasImage" to it.smallImage.isNotEmpty()
+                                                "hasImage" to it.smallImage.isNotEmpty(),
+                                                "starred" to it.starred
                                             )
                                         }
                                         call.respond(simplifiedStations)

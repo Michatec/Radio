@@ -65,11 +65,19 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
             onPlayStation = { uuid ->
                 playStation(uuid) 
             }
+            onGetCollection = {
+                collection
+            }
             onPause = {
                 player.pause() 
             }
             onResume = {
-                player.play()
+                if (player.playbackState == Player.STATE_IDLE) {
+                    val mediaId = player.currentMediaItem?.mediaId ?: PreferencesHelper.loadLastPlayedStationUuid()
+                    playStation(mediaId)
+                } else {
+                    player.play()
+                }
             }
             onNext = {
                 playNextStation() 
@@ -444,6 +452,7 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
 
     /* Starts playback of a radio station by UUID (centralized logic) */
     fun playStation(uuid: String) {
+        Log.i(TAG, "playStation called for UUID: $uuid")
         val station = CollectionHelper.getStation(collection, uuid)
         if (station.isValid()) {
             playStation(station)

@@ -19,7 +19,10 @@
             <section class="now-playing glass">
                 <div class="current-station-info">
                     <div class="current-text-info">
-                        <div id="currentName" class="current-name" data-t="status_loading">Loading...</div>
+                        <div class="current-title-row">
+                            <div id="currentName" class="current-name" data-t="status_loading">Loading...</div>
+                            <span id="currentStar" class="material-icons starred-icon hidden">star</span>
+                        </div>
                         <div id="currentMetadata" class="current-metadata"></div>
                     </div>
                     <img id="currentImage" class="current-img" src="favicon.png" alt="Station">
@@ -56,8 +59,11 @@
                         <pre>
 {
   "isPlaying": true,
+  "playWhenReady": true,
+  "playbackState": 3,
   "currentStationUuid": "fc080549-...",
-  "metadata": "Artist - Title"
+  "metadata": "Artist - Title",
+  "starred": true
 }                   </pre>
                     </div>
 
@@ -70,7 +76,8 @@
   {
     "uuid": "fc080549-...",
     "name": "Station Name",
-    "hasImage": true
+    "hasImage": true,
+    "starred": true
   }
 ]                   </pre>
                     </div>

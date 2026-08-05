@@ -1,6 +1,5 @@
 package com.michatec.radio
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -173,22 +172,18 @@ class AddStationFragment : Fragment(),
         positiveButton.isEnabled = false
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onRadioBrowserSearchResults(results: Array<RadioBrowserResult>) {
         if (results.isNotEmpty()) {
-            searchResultAdapter.searchResults = results.map { it.toStation() }
-            searchResultAdapter.notifyDataSetChanged()
+            searchResultAdapter.updateSearchResults(results.map { it.toStation() })
             resetLayout(false)
         } else {
             showNoResultsError()
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onDirectInputCheck(stationList: MutableList<Station>) {
         if (stationList.isNotEmpty()) {
-            searchResultAdapter.searchResults = stationList
-            searchResultAdapter.notifyDataSetChanged()
+            searchResultAdapter.updateSearchResults(stationList)
             resetLayout(false)
         } else {
             showNoResultsError()

@@ -1,6 +1,5 @@
 package com.michatec.radio.dialogs
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Handler
@@ -73,13 +72,10 @@ class FindStationDialog (
 
 
     /* Overrides onRadioBrowserSearchResults from RadioBrowserSearchListener */
-    /* TODO: Remove @SuppressLint("NotifyDataSetChanged"), remove NotifyDataSetChanged */
-    @SuppressLint("NotifyDataSetChanged")
     override fun onRadioBrowserSearchResults(results: Array<RadioBrowserResult>) {
         if (results.isNotEmpty()) {
             val stationList: List<Station> = results.map {it.toStation()}
-            searchResultAdapter.searchResults = stationList
-            searchResultAdapter.notifyDataSetChanged()
+            searchResultAdapter.updateSearchResults(stationList)
             resetLayout(clearAdapter = false)
         } else {
             showNoResultsError()
@@ -90,9 +86,7 @@ class FindStationDialog (
     /* Overrides onDirectInputCheck from DirectInputCheck */
     override fun onDirectInputCheck(stationList: MutableList<Station>) {
         if (stationList.isNotEmpty()) {
-            val startPosition = searchResultAdapter.searchResults.size
-            searchResultAdapter.searchResults = stationList
-            searchResultAdapter.notifyItemRangeInserted(startPosition, stationList.size)
+            searchResultAdapter.updateSearchResults(stationList)
             resetLayout(clearAdapter = false)
         } else {
             showNoResultsError()

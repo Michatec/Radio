@@ -18,6 +18,7 @@ import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.audio.AudioSink
 import androidx.media3.exoplayer.audio.DefaultAudioSink
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textview.MaterialTextView
 import com.michatec.radio.R
@@ -48,11 +49,6 @@ class SearchResultAdapter(
     }
 
 
-    init {
-        setHasStableIds(true)
-    }
-
-
     /* Overrides onCreateViewHolder from RecyclerView.Adapter */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val v = LayoutInflater.from(parent.context)
@@ -65,10 +61,6 @@ class SearchResultAdapter(
     override fun getItemCount(): Int {
         return searchResults.size
     }
-
-
-    /* Overrides getItemCount from RecyclerView.Adapter */
-    override fun getItemId(position: Int): Long = position.toLong()
 
 
     /* Overrides onBindViewHolder from RecyclerView.Adapter */
@@ -247,12 +239,44 @@ class SearchResultAdapter(
         val currentlySelected: Int = selectedPosition
         selectedPosition = RecyclerView.NO_POSITION
         if (clearAdapter) {
-            val previousItemCount = itemCount
-            searchResults = emptyList()
-            notifyItemRangeRemoved(0, previousItemCount)
+            updateSearchResults(emptyList())
         } else {
             notifyItemChanged(currentlySelected)
             stopPrePlayback()
+        }
+    }
+
+
+    /* Updates the search results using DiffUtil */
+    fun updateSearchResults(newList: List<Station>) {
+        val diffResult = DiffUtil.calculateDiff(SearchResultDiffCallback(searchResults, newList))
+        searchResults = newList
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+
+    /*
+     * Inner class: DiffUtil.Callback for search results
+     */
+    private class SearchResultDiffCallback(
+        private val oldList: List<Station>,
+        private val newList: List<Station>
+    ) : DiffUtil.Callback() {
+
+        override fun getOldListSize(): Int = oldList.size
+        override fun getNewListSize(): Int = newList.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition].uuid == newList[newItemPosition].uuid
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val oldItem = oldList[oldItemPosition]
+            val newItem = newList[newItemPosition]
+            return oldItem.name == newItem.name &&
+                    oldItem.getStreamUri() == newItem.getStreamUri() &&
+                    oldItem.codec == newItem.codec &&
+                    oldItem.bitrate == newItem.bitrate
         }
     }
 
