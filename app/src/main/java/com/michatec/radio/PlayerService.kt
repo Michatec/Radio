@@ -155,7 +155,7 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
 
     /* Overrides onTaskRemoved from Service */
     override fun onTaskRemoved(rootIntent: Intent?) {
-        if (!player.playWhenReady) {
+        if (!player.playWhenReady && !PreferencesHelper.loadRemoteControlEnabled()) {
             stopSelf()
         }
     }
@@ -343,6 +343,7 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
                 async(Dispatchers.Default) { FileHelper.readCollectionSuspended(context) }
             // wait for result and update collection
             collection = deferred.await()
+            remoteControlServer.notifyCollectionChanged()
         }
     }
 
@@ -670,7 +671,9 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
                 // Check playback state to decide whether to stop the service
                 when (player.playbackState) {
                     Player.STATE_ENDED, Player.STATE_IDLE -> {
-                        stopSelf()
+                        if (!PreferencesHelper.loadRemoteControlEnabled()) {
+                            stopSelf()
+                        }
                     }
                     Player.STATE_READY -> {
                         // Playback is paused. For radio, we keep the service running to allow resumption from headphones.

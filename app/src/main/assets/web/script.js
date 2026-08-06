@@ -2,6 +2,9 @@ let currentLang = 'en';
 let translations = {};
 let allStations = [];
 let isUpdating = false;
+let stationsLoaded = false;
+let lastStatusData = null;
+let updateSocket = null;
 const STATE_IDLE = 1;
 const STATE_BUFFERING = 2;
 const STATE_READY = 3;
@@ -34,78 +37,160 @@ async function loadTranslations() {
     }
 }
 
-async function updateStatus() {
-    if (isUpdating) return;
+function updateStatusUI(data) {
+    if (!data) return;
+    lastStatusData = data;
     const statusEl = document.getElementById('status');
-    const playPauseIcon = document.getElementById('playPauseIcon');
     const currentNameEl = document.getElementById('currentName');
+
+    if (!statusEl || !currentNameEl) return;
+
+    const playPauseIcon = document.getElementById('playPauseIcon');
     const currentStarEl = document.getElementById('currentStar');
     const currentMetadataEl = document.getElementById('currentMetadata');
     const currentImageEl = document.getElementById('currentImage');
+    const themeSelect = document.getElementById('themeSelect');
+    const langSelect = document.getElementById('langSelect');
 
-    try {
-        const response = await fetch('/api/status');
-        if (!response.ok) return;
+    if (data.error) {
+        statusEl.innerText = t('status_error');
+        currentNameEl.innerText = data.error;
+        return;
+    }
 
-        const data = await response.json();
-        if (data.error) {
-            statusEl.innerText = t('status_error') + ': ' + data.error;
-        } else {
-            let statusText = data.isPlaying ? t('status_playing') : t('status_paused');
-            if (data.playWhenReady && !data.isPlaying) {
-                statusText = "Buffering...";
-            }
-            if (data.playbackState === STATE_BUFFERING) {
-                statusText = "Buffering...";
-            }
-            statusEl.innerText = statusText;
-            playPauseIcon.innerText = (data.isPlaying || data.playWhenReady) ? 'pause' : 'play_arrow';
+    let statusText = data.isPlaying ? t('status_playing') : t('status_paused');
+    if (data.playWhenReady && !data.isPlaying) {
+        statusText = t('status_buffering');
+    }
+    if (data.playbackState === STATE_BUFFERING) {
+        statusText = t('status_buffering');
+    }
+    statusEl.innerText = statusText;
+    if (playPauseIcon) {
+        playPauseIcon.innerText = (data.isPlaying || data.playWhenReady) ? 'pause' : 'play_arrow';
+    }
 
-            const stationUuid = data.currentStationUuid;
-            updateActiveStation(stationUuid);
+    const stationUuid = data.currentStationUuid;
+    updateActiveStation(stationUuid);
 
-            const station = allStations.find(s => s.uuid === stationUuid);
-            if (station) {
-                currentNameEl.innerText = station.name;
-                currentStarEl.classList.toggle('hidden', !data.starred);
-                currentMetadataEl.innerText = data.metadata || "";
-                currentImageEl.src = station.hasImage ? '/api/image/' + station.uuid : 'favicon.png';
-            } else {
-                currentNameEl.innerText = data.isPlaying ? 'Unknown Station' : 'No Station Selected';
-                currentStarEl.classList.add('hidden');
-                currentMetadataEl.innerText = "";
-                currentImageEl.src = 'favicon.png';
-            }
-
-            if (themeSelect.value === 'auto_browser') {
-                applyThemeUI(getBrowserTheme());
-            }
-
-            if (langSelect.value === 'auto_browser') {
-                const browserLang = navigator.language.split('-')[0];
-                const targetLang = translations[browserLang] ? browserLang : 'en';
-                if (targetLang !== currentLang) {
-                    currentLang = targetLang;
-                    updateUILanguage();
-                }
-            }
+    const station = allStations.find(s => s.uuid === stationUuid);
+    if (station) {
+        currentNameEl.innerText = station.name;
+        if (currentStarEl) currentStarEl.classList.toggle('hidden', !data.starred);
+        if (currentMetadataEl) currentMetadataEl.innerText = data.metadata || "";
+        if (currentImageEl) {
+            const imageUrl = station.hasImage ? '/api/image/' + station.uuid : 'favicon.png';
+            const cacheBuster = station.lastModified ? '?t=' + station.lastModified : '';
+            currentImageEl.src = imageUrl + cacheBuster;
         }
-    } catch (e) {
-        console.error("Status fetch failed", e);
+    } else {
+        if (stationsLoaded) {
+            if (allStations.length === 0) {
+                currentNameEl.innerText = t('status_no_stations_available');
+            } else {
+                currentNameEl.innerText = (data.isPlaying || data.playWhenReady) ? t('status_unknown_station') : t('status_no_station');
+            }
+        } else {
+            currentNameEl.innerText = t('status_loading');
+        }
+        if (currentStarEl) currentStarEl.classList.add('hidden');
+        if (currentMetadataEl) currentMetadataEl.innerText = "";
+        if (currentImageEl) currentImageEl.src = 'favicon.png';
+    }
+
+    if (themeSelect && themeSelect.value === 'auto_browser') {
+        applyThemeUI(getBrowserTheme());
+    }
+
+    if (langSelect && langSelect.value === 'auto_browser') {
+        const browserLang = navigator.language.split('-')[0];
+        const targetLang = translations[browserLang] ? browserLang : 'en';
+        if (targetLang !== currentLang) {
+            currentLang = targetLang;
+            updateUILanguage();
+        }
     }
 }
 
-async function loadStations() {
-    const list = document.getElementById('stationList');
+async function updateStatus() {
+    if (isUpdating) return;
     try {
-        const response = await fetch('/api/stations');
-        if (!response.ok) return;
-        allStations = await response.json();
-        list.innerHTML = '';
-        if (allStations.length === 0) {
-            list.innerText = t('stations_empty');
+        const response = await fetch('/api/status');
+        const data = await response.json();
+        if (!response.ok) {
+            updateStatusUI({ error: data.error || "Service Unavailable" });
             return;
         }
+        updateStatusUI(data);
+    } catch (e) {
+        console.error("Status fetch failed", e);
+        updateStatusUI({ error: t('status_connection_error') });
+    }
+}
+
+function initUpdateSocket() {
+    if (updateSocket) {
+        updateSocket.close();
+    }
+
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = protocol + '//' + window.location.host + '/api/updates';
+
+    updateSocket = new WebSocket(wsUrl);
+
+    updateSocket.onmessage = (event) => {
+        try {
+            const message = JSON.parse(event.data);
+            if (message.type === 'status') {
+                updateStatusUI(message.data);
+            } else if (message.type === 'stations') {
+                allStations = message.data;
+                stationsLoaded = true;
+                renderStationList();
+            }
+        } catch (e) {
+            console.error("Failed to parse WebSocket message", e, event.data);
+        }
+    };
+
+    updateSocket.onclose = () => {
+        console.log("WebSocket closed, retrying in 5s...");
+        setTimeout(initUpdateSocket, 5000);
+    };
+
+    updateSocket.onerror = (error) => {
+        console.error("WebSocket error", error);
+    };
+}
+
+async function loadStations() {
+    try {
+        const response = await fetch('/api/stations');
+        if (!response.ok) {
+            document.getElementById('stationList').innerText = t('status_error');
+            stationsLoaded = true;
+            updateStatus();
+            return;
+        }
+        allStations = await response.json();
+        stationsLoaded = true;
+        renderStationList();
+        updateStatus();
+    } catch (e) {
+        console.error("Load stations failed", e);
+        document.getElementById('stationList').innerText = t('status_connection_error');
+        stationsLoaded = true;
+        updateStatus();
+    }
+}
+
+function renderStationList() {
+    const list = document.getElementById('stationList');
+    if (!list) return;
+    list.innerHTML = '';
+    if (allStations.length === 0) {
+        list.innerText = t('stations_empty');
+    } else {
         allStations.forEach(station => {
             const div = document.createElement('div');
             div.className = 'station-item';
@@ -117,7 +202,8 @@ async function loadStations() {
             const img = document.createElement('img');
             img.className = 'station-img';
             if (station.hasImage) {
-                img.src = '/api/image/' + station.uuid;
+                const cacheBuster = station.lastModified ? '?t=' + station.lastModified : '';
+                img.src = '/api/image/' + station.uuid + cacheBuster;
             } else {
                 img.src = 'favicon.png';
             }
@@ -139,9 +225,9 @@ async function loadStations() {
             div.onclick = () => playStation(station.uuid);
             list.appendChild(div);
         });
-        updateStatus();
-    } catch (e) {
-        console.error("Load stations failed", e);
+    }
+    if (lastStatusData) {
+        updateActiveStation(lastStatusData.currentStationUuid);
     }
 }
 
@@ -154,7 +240,7 @@ function updateActiveStation(uuid) {
 
 async function playStation(uuid) {
     updateActiveStation(uuid);
-    document.getElementById('status').innerText = "Starting...";
+    document.getElementById('status').innerText = t('status_starting');
     document.getElementById('playPauseIcon').innerText = 'pause';
 
     const station = allStations.find(s => s.uuid === uuid);
@@ -167,7 +253,6 @@ async function playStation(uuid) {
 
     try {
         await fetch('/api/play/' + uuid, { method: 'POST' });
-        setTimeout(updateStatus, 300);
     } catch (e) { console.error(e); }
 }
 
@@ -184,15 +269,14 @@ document.getElementById('playPauseBtn').onclick = async () => {
         } else {
             await fetch('/api/resume', { method: 'POST' });
         }
-        setTimeout(updateStatus, 300);
     } catch (e) { console.error(e); }
 };
 
 document.getElementById('prevBtn').onclick = () => {
-    fetch('/api/prev', { method: 'POST' }).then(() => setTimeout(updateStatus, 300));
+    fetch('/api/prev', { method: 'POST' });
 };
 document.getElementById('nextBtn').onclick = () => {
-    fetch('/api/next', { method: 'POST' }).then(() => setTimeout(updateStatus, 300));
+    fetch('/api/next', { method: 'POST' });
 };
 
 function applyThemeUI(theme) {
@@ -218,7 +302,6 @@ themeSelect.onchange = () => {
     } else {
         applyThemeUI(val);
     }
-    updateStatus();
 };
 
 const langSelect = document.getElementById('langSelect');
@@ -232,7 +315,8 @@ langSelect.onchange = () => {
         currentLang = val;
     }
     updateUILanguage();
-    updateStatus();
+    if (lastStatusData) updateStatusUI(lastStatusData);
+    renderStationList();
 };
 
 const menuBtn = document.getElementById('menuBtn');
@@ -271,6 +355,9 @@ document.addEventListener('click', (e) => {
 });
 
 async function init() {
+    document.getElementById('status').innerText = '...';
+    document.getElementById('currentName').innerText = '...';
+
     await loadTranslations();
 
     const savedTheme = localStorage.getItem('radio-remote-theme') || 'auto_browser';
@@ -292,7 +379,7 @@ async function init() {
 
     updateUILanguage();
     await loadStations();
-    setInterval(updateStatus, 1000);
+    initUpdateSocket();
 }
 
 init();

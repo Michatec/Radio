@@ -20,14 +20,14 @@
                 <div class="current-station-info">
                     <div class="current-text-info">
                         <div class="current-title-row">
-                            <div id="currentName" class="current-name" data-t="status_loading">Loading...</div>
+                            <div id="currentName" class="current-name"></div>
                             <span id="currentStar" class="material-icons starred-icon hidden">star</span>
                         </div>
                         <div id="currentMetadata" class="current-metadata"></div>
                     </div>
                     <img id="currentImage" class="current-img" src="favicon.png" alt="Station">
                 </div>
-                <div id="status" class="status-badge" data-t="status_loading">Loading...</div>
+                <div id="status" class="status-badge"></div>
                 <div class="controls">
                     <button id="prevBtn" class="icon-btn large"><span class="material-icons">skip_previous</span></button>
                     <button id="playPauseBtn" class="icon-btn x-large"><span class="material-icons" id="playPauseIcon">play_arrow</span></button>
@@ -54,7 +54,7 @@
 
                     <div class="endpoint">
                         <h3><span class="method get">GET</span> <code>/api/status</code></h3>
-                        <p>Returns current playback status.</p>
+                        <p>Returns current playback status. Recommended for initial state only; use WebSockets for real-time updates.</p>
                         <div class="code-example">Response Example:</div>
                         <pre>
 {
@@ -65,6 +65,18 @@
   "metadata": "Artist - Title",
   "starred": true
 }                   </pre>
+                    </div>
+
+                    <div class="endpoint">
+                        <h3><span class="method get">WS</span> <code>/api/updates</code></h3>
+                        <p>WebSocket endpoint for real-time status updates. Pushes status objects whenever state or metadata changes.</p>
+                        <div class="code-example">Example Usage (JavaScript):</div>
+                        <pre>
+const socket = new WebSocket('ws://' + location.host + '/api/updates');
+socket.onmessage = (event) => {
+  const status = JSON.parse(event.data);
+  console.log('Update received:', status);
+};                      </pre>
                     </div>
 
                     <div class="endpoint">
@@ -84,7 +96,7 @@
 
                     <div class="endpoint">
                         <h3><span class="method get">GET</span> <code>/api/image/{uuid}</code></h3>
-                        <p>Returns the image for a specific station.</p>
+                        <p>Returns the image for a specific station. Supports HTTP caching via <code>ETag</code> and <code>If-None-Match</code>.</p>
                         <div class="code-example">Response: Image (binary data, JPEG)</div>
                     </div>
 

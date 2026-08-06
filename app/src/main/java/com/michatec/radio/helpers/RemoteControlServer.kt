@@ -2,8 +2,12 @@ package com.michatec.radio.helpers
 
 import android.content.Context
 import android.util.Log
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Metadata
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import com.michatec.radio.BuildConfig
+import com.google.gson.Gson
 import io.ktor.http.*
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
@@ -12,19 +16,113 @@ import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.websocket.*
+import io.ktor.websocket.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.io.File
 import java.net.BindException
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 class RemoteControlServer(private val context: Context) {
 
     private var server: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>? = null
     private var player: Player? = null
-    private val serverScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private var serverScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val lifecycleMutex = Mutex()
+    private val gson = Gson()
+    private val _statusUpdates = MutableSharedFlow<Map<String, Any>>(extraBufferCapacity = 1)
+    private val statusUpdates = _statusUpdates.asSharedFlow()
+
+    private val playerListener = object : Player.Listener {
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            broadcastStatus()
+        }
+
+        override fun onPlaybackStateChanged(playbackState: Int) {
+            broadcastStatus()
+        }
+
+        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+            broadcastStatus()
+        }
+
+        @UnstableApi
+        override fun onMetadata(metadata: Metadata) {
+            broadcastStatus()
+        }
+    }
+
+    private suspend fun getStationsList(): List<Map<String, Any>> {
+        val collection = onGetCollection?.invoke() ?: withContext(Dispatchers.IO) {
+            FileHelper.readCollection(context)
+        }
+        return collection.stations.map {
+            val imageFile = File(context.getExternalFilesDir(""), FileHelper.determineDestinationFolderPath(com.michatec.radio.Keys.FILE_TYPE_IMAGE, it.uuid) + "/" + com.michatec.radio.Keys.STATION_IMAGE_FILE)
+            val lastModified = if (imageFile.exists()) imageFile.lastModified() else 0L
+            mapOf(
+                "uuid" to it.uuid,
+                "name" to it.name,
+                "hasImage" to it.smallImage.isNotEmpty(),
+                "starred" to it.starred,
+                "lastModified" to lastModified
+            )
+        }
+    }
+
+    fun notifyCollectionChanged() {
+        serverScope.launch {
+            try {
+                val stations = getStationsList()
+                _statusUpdates.emit(mapOf("type" to "stations", "data" to stations))
+            } catch (e: Exception) {
+                Log.e("RemoteControlServer", "Error broadcasting stations", e)
+            }
+        }
+    }
+
+    private fun broadcastStatus() {
+        serverScope.launch {
+            val status = getStatusMap()
+            if (status != null) {
+                _statusUpdates.emit(mapOf("type" to "status", "data" to status))
+            }
+        }
+    }
+
+    private suspend fun getStatusMap(): Map<String, Any>? {
+        val p = player ?: return null
+        return try {
+            val collection = onGetCollection?.invoke() ?: withContext(Dispatchers.IO) {
+                FileHelper.readCollection(context)
+            }
+
+            withContext(Dispatchers.Main) {
+                val metadataHistory = PreferencesHelper.loadMetadataHistory()
+                val currentTrack = if (metadataHistory.isNotEmpty()) metadataHistory.last() else ""
+                val mediaId = p.currentMediaItem?.mediaId ?: PreferencesHelper.loadLastPlayedStationUuid()
+
+                val station = CollectionHelper.getStation(collection, mediaId)
+
+                mapOf(
+                    "isPlaying" to p.isPlaying,
+                    "playWhenReady" to p.playWhenReady,
+                    "playbackState" to p.playbackState,
+                    "currentStationUuid" to mediaId,
+                    "metadata" to currentTrack,
+                    "starred" to station.starred
+                )
+            }
+        } catch (e: Exception) {
+            Log.e("RemoteControlServer", "Error getting status map", e)
+            null
+        }
+    }
+
     var onPlayStation: ((String) -> Unit)? = null
     var onGetCollection: (() -> com.michatec.radio.core.Collection)? = null
     var onPause: (() -> Unit)? = null
@@ -34,7 +132,9 @@ class RemoteControlServer(private val context: Context) {
     var onError: ((String) -> Unit)? = null
 
     fun setPlayer(player: Player?) {
+        this.player?.removeListener(playerListener)
         this.player = player
+        this.player?.addListener(playerListener)
     }
 
     private fun safeReadAsset(path: String): ByteArray? {
@@ -63,6 +163,12 @@ class RemoteControlServer(private val context: Context) {
                         val newServer = embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
                             install(ContentNegotiation) {
                                 gson()
+                            }
+                            install(WebSockets) {
+                                pingPeriod = 30.seconds
+                                timeout = 60.seconds
+                                maxFrameSize = Long.MAX_VALUE
+                                masking = false
                             }
                             routing {
                                 get("/") {
@@ -117,52 +223,44 @@ class RemoteControlServer(private val context: Context) {
                                 }
 
                                 get("/api/status") {
-                                    val p = player
-                                    if (p == null) {
+                                    val status = getStatusMap()
+                                    if (status == null) {
                                         call.respond(HttpStatusCode.ServiceUnavailable, mapOf("error" to "Player not available"))
                                     } else {
-                                        try {
-                                            val collection = onGetCollection?.invoke() ?: withContext(Dispatchers.IO) {
-                                                FileHelper.readCollection(context)
-                                            }
-                                            
-                                            val status = withContext(Dispatchers.Main) {
-                                                val metadataHistory = PreferencesHelper.loadMetadataHistory()
-                                                val currentTrack = if (metadataHistory.isNotEmpty()) metadataHistory.last() else ""
-                                                val mediaId = p.currentMediaItem?.mediaId ?: PreferencesHelper.loadLastPlayedStationUuid()
-                                                
-                                                val station = CollectionHelper.getStation(collection, mediaId)
+                                        call.respond(status)
+                                    }
+                                }
 
-                                                mapOf(
-                                                    "isPlaying" to p.isPlaying,
-                                                    "playWhenReady" to p.playWhenReady,
-                                                    "playbackState" to p.playbackState,
-                                                    "currentStationUuid" to mediaId,
-                                                    "metadata" to currentTrack,
-                                                    "starred" to station.starred
-                                                )
-                                            }
-                                            call.respond(status)
-                                        } catch (e: Exception) {
-                                            call.respond(HttpStatusCode.InternalServerError, mapOf("error" to e.message))
+                                webSocket("/api/updates") {
+                                    // Send current status and stations immediately on connect
+                                    try {
+                                        getStatusMap()?.let { send(Frame.Text(gson.toJson(mapOf("type" to "status", "data" to it)))) }
+                                        val stations = getStationsList()
+                                        send(Frame.Text(gson.toJson(mapOf("type" to "stations", "data" to stations))))
+                                    } catch (_: Exception) { }
+
+                                    val job = launch {
+                                        statusUpdates.collect { update ->
+                                            try {
+                                                send(Frame.Text(gson.toJson(update)))
+                                            } catch (_: Exception) { }
                                         }
+                                    }
+                                    try {
+                                        for (frame in incoming) {
+                                            // Just consume to keep connection alive
+                                        }
+                                    } catch (_: Exception) {
+                                        Log.d("RemoteControlServer", "WebSocket client disconnected")
+                                    } finally {
+                                        job.cancel()
                                     }
                                 }
 
                                 get("/api/stations") {
                                     try {
-                                        val collection = onGetCollection?.invoke() ?: withContext(Dispatchers.IO) {
-                                            FileHelper.readCollection(context)
-                                        }
-                                        val simplifiedStations = collection.stations.map {
-                                            mapOf(
-                                                "uuid" to it.uuid, 
-                                                "name" to it.name,
-                                                "hasImage" to it.smallImage.isNotEmpty(),
-                                                "starred" to it.starred
-                                            )
-                                        }
-                                        call.respond(simplifiedStations)
+                                        val stations = getStationsList()
+                                        call.respond(stations)
                                     } catch (e: Exception) {
                                         call.respond(HttpStatusCode.InternalServerError, mapOf("error" to e.message))
                                     }
@@ -179,7 +277,16 @@ class RemoteControlServer(private val context: Context) {
                                             if (station.smallImage.isNotEmpty()) {
                                                 val imageFile = File(context.getExternalFilesDir(""), FileHelper.determineDestinationFolderPath(com.michatec.radio.Keys.FILE_TYPE_IMAGE, uuid) + "/" + com.michatec.radio.Keys.STATION_IMAGE_FILE)
                                                 if (imageFile.exists()) {
-                                                    call.respondBytes(imageFile.readBytes(), ContentType.Image.JPEG)
+                                                    val lastModified = imageFile.lastModified()
+                                                    val etag = "W/\"${lastModified}-${imageFile.length()}\""
+                                                    
+                                                    if (call.request.headers[HttpHeaders.IfNoneMatch] == etag) {
+                                                        call.respond(HttpStatusCode.NotModified)
+                                                    } else {
+                                                        call.response.header(HttpHeaders.CacheControl, "public, max-age=86400")
+                                                        call.response.header(HttpHeaders.ETag, etag)
+                                                        call.respondBytes(imageFile.readBytes(), ContentType.Image.JPEG)
+                                                    }
                                                 } else {
                                                     call.respond(HttpStatusCode.NotFound)
                                                 }
@@ -261,11 +368,14 @@ class RemoteControlServer(private val context: Context) {
     }
 
     fun stop() {
-        serverScope.launch {
+        val oldScope = serverScope
+        oldScope.launch {
             lifecycleMutex.withLock {
                 stopInternal()
             }
+            oldScope.cancel()
         }
+        serverScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     }
 
     private fun stopInternal() {
@@ -274,7 +384,7 @@ class RemoteControlServer(private val context: Context) {
         if (s != null) {
             try {
                 Log.i("RemoteControlServer", "Stopping server...")
-                s.stop(50, 100)
+                s.stop(500, 2000) // Higher grace period and timeout
                 Log.i("RemoteControlServer", "Server stopped")
             } catch (e: Exception) {
                 Log.e("RemoteControlServer", "Error stopping server", e)
