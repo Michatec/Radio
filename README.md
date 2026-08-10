@@ -115,12 +115,15 @@ When **Edit Stations** is enabled:
 
 ----------------------------------------
 
-<details>
-<summary>⭐ Star History</summary>
+### ⭐ Star History
 
-[![Star History Chart](https://api.star-history.com/chart?repos=michatec/radio&type=date&legend=top-left)](https://www.star-history.com/?repos=michatec%2Fradio&type=date&legend=top-left)
-
-</details>
+<a href="https://www.star-history.com/?repos=Michatec%2FRadio&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=Michatec/Radio&type=date&theme=dark&legend=top-left&sealed_token=MSdMnFFYG2UBXwIFyGMi6m9fjegL-rbtD2f4q0-901taxfXuwy2vWj3SjtlWAhA8AituZgH6-Rdzoupi7dTI2luAWgc42tVdxuHHDVjgsf55Z_Bpact4Yb33eamF7HFse0QuZvgC4XqTCC2XQkfTgJnmv3l1BbcUyA_4UwppqhEKPX9MNyrcSAhZL4CM" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=Michatec/Radio&type=date&legend=top-left&sealed_token=MSdMnFFYG2UBXwIFyGMi6m9fjegL-rbtD2f4q0-901taxfXuwy2vWj3SjtlWAhA8AituZgH6-Rdzoupi7dTI2luAWgc42tVdxuHHDVjgsf55Z_Bpact4Yb33eamF7HFse0QuZvgC4XqTCC2XQkfTgJnmv3l1BbcUyA_4UwppqhEKPX9MNyrcSAhZL4CM" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=Michatec/Radio&type=date&legend=top-left&sealed_token=MSdMnFFYG2UBXwIFyGMi6m9fjegL-rbtD2f4q0-901taxfXuwy2vWj3SjtlWAhA8AituZgH6-Rdzoupi7dTI2luAWgc42tVdxuHHDVjgsf55Z_Bpact4Yb33eamF7HFse0QuZvgC4XqTCC2XQkfTgJnmv3l1BbcUyA_4UwppqhEKPX9MNyrcSAhZL4CM" />
+ </picture>
+</a>
 
 <div align="right">
 <table><td>
