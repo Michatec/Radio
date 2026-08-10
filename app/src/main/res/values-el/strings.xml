@@ -192,6 +192,13 @@
     <string name="pref_remote_control_title">Τηλεχειριστήριο</string>
     <string name="pref_remote_control_summary">Ελέγξτε το ραδιόφωνο από το πρόγραμμα περιήγησής σας</string>
     <string name="pref_remote_control_url">Ελέγξτε το ραδιόφωνο από το http://%1$s:8080</string>
+    <string name="snackbar_remote_auth_failed">Προειδοποίηση ασφαλείας: Ανιχνεύθηκαν πολλαπλές αποτυχημένες προσπάθειες απομακρυσμένης σύνδεσης από %1$s!</string>
+    <string name="pref_remote_control_auth_title">Έλεγχος ταυτότητας τηλεχειριστηρίου</string>
+    <string name="pref_remote_control_auth_summary">Απαιτείται κωδικός σύζευξης για απομακρυσμένη πρόσβαση.</string>
+    <string name="pref_remote_control_secret_title">Κωδικός σύζευξης</string>
+    <string name="pref_remote_control_secret_summary">Χρησιμοποιήστε αυτόν τον κωδικό για τη διεπαφή ιστού και το API.</string>
+    <string name="pref_remote_control_secret_regenerate">Αναγέννηση κωδικού σύζευξης</string>
+    <string name="toastmessage_secret_regenerated">Ο κωδικός σύζευξης αναγεννήθηκε.</string>
     <string name="error_webserver">Ο διακομιστής τηλεχειριστηρίου ιστού κατέρρευσε/σταμάτησε.</string>
 
     <string name="descr_player_search_button">Αναζήτηση σταθμών</string>

@@ -92,6 +92,14 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
                 val intent = Intent(Keys.ACTION_REMOTE_SERVER_ERROR)
                 LocalBroadcastManager.getInstance(this@PlayerService).sendBroadcast(intent)
             }
+
+            onAuthFailed = { ip ->
+                Log.w(TAG, "RemoteControlServer: Multiple failed auth attempts from $ip")
+                val intent = Intent(Keys.ACTION_REMOTE_AUTH_FAILED).apply {
+                    putExtra("REMOTE_IP", ip)
+                }
+                LocalBroadcastManager.getInstance(this@PlayerService).sendBroadcast(intent)
+            }
         }
     }
 

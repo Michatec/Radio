@@ -138,17 +138,21 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        // register remote server error receiver
+        // register remote server receivers
+        val filter = IntentFilter().apply {
+            addAction(Keys.ACTION_REMOTE_SERVER_ERROR)
+            addAction(Keys.ACTION_REMOTE_AUTH_FAILED)
+        }
         LocalBroadcastManager.getInstance(this).registerReceiver(
-            remoteServerErrorReceiver,
-            IntentFilter(Keys.ACTION_REMOTE_SERVER_ERROR)
+            remoteServerReceiver,
+            filter
         )
     }
 
     override fun onStop() {
         super.onStop()
-        // unregister remote server error receiver
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(remoteServerErrorReceiver)
+        // unregister remote server receiver
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(remoteServerReceiver)
     }
 
     /* Hides the loading/splash overlay */
@@ -242,21 +246,28 @@ class MainActivity : AppCompatActivity() {
 
 
     /*
-     * Receiver for remote server error
+     * Receiver for remote server events
      */
-    private val remoteServerErrorReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+    private val remoteServerReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == Keys.ACTION_REMOTE_SERVER_ERROR) {
-                val snackbar = Snackbar.make(
-                    binding.mainRoot,
-                    R.string.error_webserver,
-                    Snackbar.LENGTH_LONG
-                )
-                this@MainActivity.findViewById<View>(R.id.bottom_sheet)?.let {
-                    snackbar.anchorView = it
+            val message = when (intent.action) {
+                Keys.ACTION_REMOTE_SERVER_ERROR -> getString(R.string.error_webserver)
+                Keys.ACTION_REMOTE_AUTH_FAILED -> {
+                    val ip = intent.getStringExtra("REMOTE_IP") ?: "unknown"
+                    getString(R.string.snackbar_remote_auth_failed, ip)
                 }
-                snackbar.show()
+                else -> return
             }
+            
+            val snackbar = Snackbar.make(
+                binding.mainRoot,
+                message,
+                Snackbar.LENGTH_LONG
+            )
+            this@MainActivity.findViewById<View>(R.id.bottom_sheet)?.let {
+                snackbar.anchorView = it
+            }
+            snackbar.show()
         }
     }
     /*

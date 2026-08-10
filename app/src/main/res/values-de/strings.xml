@@ -193,6 +193,13 @@
     <string name="pref_remote_control_title">Fernbedienung</string>
     <string name="pref_remote_control_summary">Steuere das Radio über deinen Webbrowser</string>
     <string name="pref_remote_control_url">Steuere das Radio über http://%1$s:8080</string>
+    <string name="snackbar_remote_auth_failed">Sicherheitswarnung: Mehrere fehlgeschlagene Fernanmeldeversuche von %1$s erkannt!</string>
+    <string name="pref_remote_control_auth_title">Fernbedienungs-Authentifizierung</string>
+    <string name="pref_remote_control_auth_summary">Erfordert einen Pairing-Code für den Fernzugriff.</string>
+    <string name="pref_remote_control_secret_title">Pairing-Code</string>
+    <string name="pref_remote_control_secret_summary">Verwenden Sie diesen Code für das Web-Interface und die API.</string>
+    <string name="pref_remote_control_secret_regenerate">Pairing-Code neu generieren</string>
+    <string name="toastmessage_secret_regenerated">Pairing-Code neu generiert.</string>
     <string name="error_webserver">Web-Fernbedienungsserver abgestürzt/gestoppt.</string>
     <string name="search_hint">Sender suchen…</string>
     <string name="search_filter_favorites">Nur Favoriten</string>

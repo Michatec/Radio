@@ -418,6 +418,33 @@ object PreferencesHelper {
         }
     }
 
+    /* Loads whether remote control authentication is enabled */
+    fun loadRemoteControlAuthEnabled(): Boolean {
+        return sharedPreferences.getBoolean(Keys.PREF_REMOTE_CONTROL_AUTH_ENABLED, false)
+    }
+
+    /* Loads remote control secret token */
+    fun loadRemoteControlSecretToken(): String {
+        var token = sharedPreferences.getString(Keys.PREF_REMOTE_CONTROL_SECRET_TOKEN, "") ?: ""
+        if (token.isEmpty()) {
+            token = generateSecretToken()
+            saveRemoteControlSecretToken(token)
+        }
+        return token
+    }
+
+    /* Saves remote control secret token */
+    fun saveRemoteControlSecretToken(token: String) {
+        sharedPreferences.edit {
+            putString(Keys.PREF_REMOTE_CONTROL_SECRET_TOKEN, token)
+        }
+    }
+
+    /* Generates a random 6-digit secret token */
+    fun generateSecretToken(): String {
+        return (100000..999999).random().toString()
+    }
+
     /* SHA-256 helper */
     private fun String.sha256(): String {
         return try {

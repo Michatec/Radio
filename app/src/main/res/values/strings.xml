@@ -228,6 +228,13 @@
     <string name="pref_remote_control_title">Remote Control</string>
     <string name="pref_remote_control_summary">Control radio from your web browser</string>
     <string name="pref_remote_control_url">Control radio from http://%1$s:8080</string>
+    <string name="snackbar_remote_auth_failed">Security Warning: Multiple failed remote login attempts detected from %1$s!</string>
+    <string name="pref_remote_control_auth_title">Remote Control Authentication</string>
+    <string name="pref_remote_control_auth_summary">Require a pairing code for remote access.</string>
+    <string name="pref_remote_control_secret_title">Pairing Code</string>
+    <string name="pref_remote_control_secret_summary">Use this code for the web interface and API.</string>
+    <string name="pref_remote_control_secret_regenerate">Regenerate Pairing Code</string>
+    <string name="toastmessage_secret_regenerated">Pairing code regenerated.</string>
     <string name="error_webserver">Web Remote server crashed / stopped.</string>
     <string name="search_hint">Search stations…</string>
     <string name="search_filter_favorites">Only favorites</string>

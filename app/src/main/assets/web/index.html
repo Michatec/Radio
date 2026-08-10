@@ -50,6 +50,15 @@
                 <div class="api-content">
                     <p>The Radio app provides a REST API to control playback and query information.</p>
 
+                    <div class="auth-box glass">
+                        <h3>Authentication</h3>
+                        <p>If authentication is enabled in the app settings, you must include the pairing code in your requests:</p>
+                        <ul>
+                            <li><strong>HTTP Headers:</strong> Add <code>X-Remote-Key: YOUR_CODE</code></li>
+                            <li><strong>Query Parameter:</strong> Add <code>?token=YOUR_CODE</code> (fallback for images and WebSockets)</li>
+                        </ul>
+                    </div>
+
                     <h2>API Reference</h2>
 
                     <div class="endpoint">
@@ -72,7 +81,8 @@
                         <p>WebSocket endpoint for real-time status updates. Pushes status objects whenever state or metadata changes.</p>
                         <div class="code-example">Example Usage (JavaScript):</div>
                         <pre>
-const socket = new WebSocket('ws://' + location.host + '/api/updates');
+const token = '123456'; // From app settings
+const socket = new WebSocket('ws://' + location.host + '/api/updates?token=' + token);
 socket.onmessage = (event) => {
   const status = JSON.parse(event.data);
   console.log('Update received:', status);

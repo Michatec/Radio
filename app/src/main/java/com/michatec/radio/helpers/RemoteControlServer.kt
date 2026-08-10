@@ -14,10 +14,12 @@ import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -35,6 +37,7 @@ class RemoteControlServer(private val context: Context) {
     private var serverScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val lifecycleMutex = Mutex()
     private val gson = Gson()
+    private val failedAttemptsMap = ConcurrentHashMap<String, Int>()
     private val _statusUpdates = MutableSharedFlow<Map<String, Any>>(extraBufferCapacity = 1)
     private val statusUpdates = _statusUpdates.asSharedFlow()
 
@@ -130,6 +133,7 @@ class RemoteControlServer(private val context: Context) {
     var onNext: (() -> Unit)? = null
     var onPrev: (() -> Unit)? = null
     var onError: ((String) -> Unit)? = null
+    var onAuthFailed: ((String) -> Unit)? = null
 
     fun setPlayer(player: Player?) {
         this.player?.removeListener(playerListener)
@@ -170,6 +174,42 @@ class RemoteControlServer(private val context: Context) {
                                 maxFrameSize = Long.MAX_VALUE
                                 masking = false
                             }
+                            
+                            intercept(ApplicationCallPipeline.Plugins) {
+                                val authEnabled = PreferencesHelper.loadRemoteControlAuthEnabled()
+                                if (authEnabled) {
+                                    val secret = PreferencesHelper.loadRemoteControlSecretToken()
+                                    val requestPath = call.request.path()
+                                    val isStatic = requestPath == "/" || 
+                                                  requestPath == "/style.css" || 
+                                                  requestPath == "/script.js" || 
+                                                  requestPath == "/favicon.png" || 
+                                                  requestPath == "/translations.json"
+                                    
+                                    if (!isStatic) {
+                                        val providedKey = call.request.headers["X-Remote-Key"] 
+                                                          ?: call.request.queryParameters["token"]
+                                        val remoteHost = call.request.local.remoteHost
+                                        
+                                        if (providedKey != secret) {
+                                            val attempts = (failedAttemptsMap[remoteHost] ?: 0) + 1
+                                            failedAttemptsMap[remoteHost] = attempts
+                                            
+                                            if (attempts >= 10) {
+                                                withContext(Dispatchers.Main) {
+                                                    onAuthFailed?.invoke(remoteHost)
+                                                }
+                                            }
+                                            delay(2000.milliseconds)
+                                            call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Unauthorized"))
+                                            finish()
+                                        } else {
+                                            failedAttemptsMap.remove(remoteHost)
+                                        }
+                                    }
+                                }
+                            }
+
                             routing {
                                 get("/") {
                                     val content = safeReadAsset("web/index.html")
@@ -248,7 +288,7 @@ class RemoteControlServer(private val context: Context) {
                                     }
                                     try {
                                         for (frame in incoming) {
-                                            // Just consume to keep connection alive
+                                            frame.takeIf { it is Frame.Text } ?: continue
                                         }
                                     } catch (_: Exception) {
                                         Log.d("RemoteControlServer", "WebSocket client disconnected")

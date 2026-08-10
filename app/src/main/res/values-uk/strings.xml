@@ -192,6 +192,13 @@
     <string name="pref_remote_control_title">Дистанційне керування</string>
     <string name="pref_remote_control_summary">Керуйте радіо з вашого веб-браузера</string>
     <string name="pref_remote_control_url">Керуйте радіо через http://%1$s:8080</string>
+    <string name="snackbar_remote_auth_failed">Попередження про безпеку: виявлено кілька невдалих спроб віддаленого входу з %1$s!</string>
+    <string name="pref_remote_control_auth_title">Автентифікація віддаленого керування</string>
+    <string name="pref_remote_control_auth_summary">Вимагати код сполучення для віддаленого достуπου.</string>
+    <string name="pref_remote_control_secret_title">Код сполучення</string>
+    <string name="pref_remote_control_secret_summary">Використовуйте цей код для веб-інтерфейсу та API.</string>
+    <string name="pref_remote_control_secret_regenerate">Перегенерувати код сполучення</string>
+    <string name="toastmessage_secret_regenerated">Код сполучення перегенеровано.</string>
     <string name="error_webserver">Веб-сервер дистанційного керування аварійно зупинився/зупинено.</string>
     <string name="search_hint">Пошук станцій…</string>
     <string name="search_filter_favorites">Тільки улюблені</string>

@@ -5,6 +5,7 @@ let isUpdating = false;
 let stationsLoaded = false;
 let lastStatusData = null;
 let updateSocket = null;
+let authToken = localStorage.getItem('radio-remote-token') || '';
 const STATE_IDLE = 1;
 const STATE_BUFFERING = 2;
 const STATE_READY = 3;
@@ -79,9 +80,14 @@ function updateStatusUI(data) {
         if (currentStarEl) currentStarEl.classList.toggle('hidden', !data.starred);
         if (currentMetadataEl) currentMetadataEl.innerText = data.metadata || "";
         if (currentImageEl) {
-            const imageUrl = station.hasImage ? '/api/image/' + station.uuid : 'favicon.png';
-            const cacheBuster = station.lastModified ? '?t=' + station.lastModified : '';
-            currentImageEl.src = imageUrl + cacheBuster;
+            let imageUrl = station.hasImage ? '/api/image/' + station.uuid : 'favicon.png';
+            if (station.hasImage && authToken) {
+                imageUrl += '?token=' + encodeURIComponent(authToken);
+                imageUrl += station.lastModified ? '&t=' + station.lastModified : '';
+            } else if (station.hasImage) {
+                imageUrl += station.lastModified ? '?t=' + station.lastModified : '';
+            }
+            currentImageEl.src = imageUrl;
         }
     } else {
         if (stationsLoaded) {
@@ -112,10 +118,40 @@ function updateStatusUI(data) {
     }
 }
 
+async function apiFetch(url, options = {}) {
+    if (authToken) {
+        options.headers = options.headers || {};
+        options.headers['X-Remote-Key'] = authToken;
+    }
+
+    let response = await fetch(url, options);
+
+    if (response.status === 401) {
+        const code = prompt(t('prompt_pairing_code') || "Please enter the pairing code:");
+        if (code) {
+            authToken = code;
+            localStorage.setItem('radio-remote-token', authToken);
+            options.headers = options.headers || {};
+            options.headers['X-Remote-Key'] = authToken;
+            response = await fetch(url, options);
+            if (response.ok) {
+                window.location.reload();
+            } else if (response.status === 401) {
+                authToken = '';
+                localStorage.removeItem('radio-remote-token');
+            }
+        } else {
+            authToken = '';
+            localStorage.removeItem('radio-remote-token');
+        }
+    }
+    return response;
+}
+
 async function updateStatus() {
     if (isUpdating) return;
     try {
-        const response = await fetch('/api/status');
+        const response = await apiFetch('/api/status');
         const data = await response.json();
         if (!response.ok) {
             updateStatusUI({ error: data.error || "Service Unavailable" });
@@ -134,7 +170,10 @@ function initUpdateSocket() {
     }
 
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = protocol + '//' + window.location.host + '/api/updates';
+    let wsUrl = protocol + '//' + window.location.host + '/api/updates';
+    if (authToken) {
+        wsUrl += '?token=' + encodeURIComponent(authToken);
+    }
 
     updateSocket = new WebSocket(wsUrl);
 
@@ -165,7 +204,7 @@ function initUpdateSocket() {
 
 async function loadStations() {
     try {
-        const response = await fetch('/api/stations');
+        const response = await apiFetch('/api/stations');
         if (!response.ok) {
             document.getElementById('stationList').innerText = t('status_error');
             stationsLoaded = true;
@@ -202,8 +241,14 @@ function renderStationList() {
             const img = document.createElement('img');
             img.className = 'station-img';
             if (station.hasImage) {
-                const cacheBuster = station.lastModified ? '?t=' + station.lastModified : '';
-                img.src = '/api/image/' + station.uuid + cacheBuster;
+                let imageUrl = '/api/image/' + station.uuid;
+                if (authToken) {
+                    imageUrl += '?token=' + encodeURIComponent(authToken);
+                    imageUrl += station.lastModified ? '&t=' + station.lastModified : '';
+                } else {
+                    imageUrl += station.lastModified ? '?t=' + station.lastModified : '';
+                }
+                img.src = imageUrl;
             } else {
                 img.src = 'favicon.png';
             }
@@ -252,7 +297,7 @@ async function playStation(uuid) {
     }
 
     try {
-        await fetch('/api/play/' + uuid, { method: 'POST' });
+        await apiFetch('/api/play/' + uuid, { method: 'POST' });
     } catch (e) { console.error(e); }
 }
 
@@ -265,18 +310,18 @@ document.getElementById('playPauseBtn').onclick = async () => {
 
     try {
         if (isPlaying) {
-            await fetch('/api/pause', { method: 'POST' });
+            await apiFetch('/api/pause', { method: 'POST' });
         } else {
-            await fetch('/api/resume', { method: 'POST' });
+            await apiFetch('/api/resume', { method: 'POST' });
         }
     } catch (e) { console.error(e); }
 };
 
 document.getElementById('prevBtn').onclick = () => {
-    fetch('/api/prev', { method: 'POST' });
+    apiFetch('/api/prev', { method: 'POST' });
 };
 document.getElementById('nextBtn').onclick = () => {
-    fetch('/api/next', { method: 'POST' });
+    apiFetch('/api/next', { method: 'POST' });
 };
 
 function applyThemeUI(theme) {

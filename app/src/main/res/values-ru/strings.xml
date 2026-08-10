@@ -192,6 +192,13 @@
     <string name="pref_remote_control_title">Удалённое управление</string>
     <string name="pref_remote_control_summary">Управляйте радио из вашего веб-браузера</string>
     <string name="pref_remote_control_url">Управляйте радио через http://%1$s:8080</string>
+    <string name="snackbar_remote_auth_failed">Предупреждение системы безопасности: обнаружено несколько неудачных попыток удаленного входа с %1$s!</string>
+    <string name="pref_remote_control_auth_title">Аутентификация удаленного управления</string>
+    <string name="pref_remote_control_auth_summary">Требовать код сопряжения для удаленного доступа.</string>
+    <string name="pref_remote_control_secret_title">Код сопряжения</string>
+    <string name="pref_remote_control_secret_summary">Используйте этот код для веб-интерфейса и API.</string>
+    <string name="pref_remote_control_secret_regenerate">Перегенерировать код сопряжения</string>
+    <string name="toastmessage_secret_regenerated">Код сопряжения перегенерирован.</string>
     <string name="error_webserver">Веб-сервер удалённого управления упал/остановлен.</string>
     <string name="search_hint">Поиск станций…</string>
     <string name="search_filter_favorites">Только избранное</string>

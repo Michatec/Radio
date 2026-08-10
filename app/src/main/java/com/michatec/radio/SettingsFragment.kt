@@ -206,14 +206,47 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             getString(R.string.pref_remote_control_summary)
         }
         preferenceRemoteControl.setDefaultValue(PreferencesHelper.loadRemoteControlEnabled())
+        
+        // set up "Remote Control Auth" preference
+        val preferenceRemoteControlAuth = MarqueeSwitchPreference(context)
+        preferenceRemoteControlAuth.title = getString(R.string.pref_remote_control_auth_title)
+        preferenceRemoteControlAuth.setIcon(R.drawable.ic_security_24dp)
+        preferenceRemoteControlAuth.key = Keys.PREF_REMOTE_CONTROL_AUTH_ENABLED
+        preferenceRemoteControlAuth.summary = getString(R.string.pref_remote_control_auth_summary)
+        preferenceRemoteControlAuth.setDefaultValue(PreferencesHelper.loadRemoteControlAuthEnabled())
+        preferenceRemoteControlAuth.isVisible = PreferencesHelper.loadRemoteControlEnabled()
+
+        // set up "Remote Control Secret" preference
+        val preferenceRemoteControlSecret = Preference(context)
+        preferenceRemoteControlSecret.title = getString(R.string.pref_remote_control_secret_title)
+        preferenceRemoteControlSecret.setIcon(R.drawable.ic_info_24dp)
+        preferenceRemoteControlSecret.key = Keys.PREF_REMOTE_CONTROL_SECRET_TOKEN
+        preferenceRemoteControlSecret.summary = PreferencesHelper.loadRemoteControlSecretToken()
+        preferenceRemoteControlSecret.isVisible = PreferencesHelper.loadRemoteControlEnabled() && PreferencesHelper.loadRemoteControlAuthEnabled()
+        preferenceRemoteControlSecret.setOnPreferenceClickListener {
+            // regenerate secret
+            val newSecret = PreferencesHelper.generateSecretToken()
+            PreferencesHelper.saveRemoteControlSecretToken(newSecret)
+            preferenceRemoteControlSecret.summary = newSecret
+            Snackbar.make(requireView(), R.string.toastmessage_secret_regenerated, Snackbar.LENGTH_LONG).show()
+            return@setOnPreferenceClickListener true
+        }
+
         preferenceRemoteControl.setOnPreferenceChangeListener { _, newValue ->
             val enabled = newValue as Boolean
+            preferenceRemoteControlAuth.isVisible = enabled
+            preferenceRemoteControlSecret.isVisible = enabled && preferenceRemoteControlAuth.isChecked
             if (enabled) {
                 val intent = Intent(activity, PlayerService::class.java).apply {
                     action = Keys.ACTION_START
                 }
                 activity?.startService(intent)
             }
+            return@setOnPreferenceChangeListener true
+        }
+
+        preferenceRemoteControlAuth.setOnPreferenceChangeListener { _, newValue ->
+            preferenceRemoteControlSecret.isVisible = newValue as Boolean
             return@setOnPreferenceChangeListener true
         }
 
@@ -499,6 +532,9 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         val preferenceCategoryLinks = PreferenceCategory(context)
         preferenceCategoryLinks.title = getString(R.string.pref_links_title)
 
+        val preferenceCategoryRemoteControl = PreferenceCategory(context)
+        preferenceCategoryRemoteControl.title = getString(R.string.pref_remote_control_title)
+
 
         // setup preference screen
         screen.addPreference(preferenceAppVersion)
@@ -509,11 +545,15 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceCategoryGeneral.addPreference(preferenceLanguageSelection)
         preferenceCategoryGeneral.addPreference(preferenceCustomThemeEnabled)
         preferenceCategoryGeneral.addPreference(preferenceCustomTheme)
-        preferenceCategoryGeneral.addPreference(preferenceRemoteControl)
 
         if (!isAndroidTV && isPermissionGranted(activity as Context, android.Manifest.permission.POST_NOTIFICATIONS)) {
             preferenceCategoryGeneral.addPreference(preferenceTestNotification)
         }
+
+        screen.addPreference(preferenceCategoryRemoteControl)
+        preferenceCategoryRemoteControl.addPreference(preferenceRemoteControl)
+        preferenceCategoryRemoteControl.addPreference(preferenceRemoteControlAuth)
+        preferenceCategoryRemoteControl.addPreference(preferenceRemoteControlSecret)
 
         screen.addPreference(preferenceCategoryAudioEffects)
         preferenceCategoryAudioEffects.addPreference(preferenceBassBoost)

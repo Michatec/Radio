@@ -191,6 +191,13 @@
     <string name="pref_remote_control_title">リモコン</string>
     <string name="pref_remote_control_summary">ウェブブラウザからラジオを操作</string>
     <string name="pref_remote_control_url">http://%1$s:8080 からラジオを操作</string>
+    <string name="snackbar_remote_auth_failed">セキュリティ警告：%1$s からの複数のリモートログイン試行の失敗が検出されました！</string>
+    <string name="pref_remote_control_auth_title">リモートコントロール認証</string>
+    <string name="pref_remote_control_auth_summary">リモートアクセスのためにペアリングコードを要求します。</string>
+    <string name="pref_remote_control_secret_title">ペアリングコード</string>
+    <string name="pref_remote_control_secret_summary">WebインターフェースとAPIにはこのコードを使用してください。</string>
+    <string name="pref_remote_control_secret_regenerate">ペアリングコードを再生成</string>
+    <string name="toastmessage_secret_regenerated">ペアリングコードが再生成されました。</string>
     <string name="error_webserver">Webリモートサーバーがクラッシュ/停止しました。</string>
     <string name="search_hint">局を検索…</string>
     <string name="search_filter_favorites">お気に入りのみ</string>

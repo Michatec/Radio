@@ -22,7 +22,8 @@
     "theme_dark": "Dark",
     "theme_follow_browser": "Follow Browser",
     "lang_auto_browser": "Auto (Browser)",
-    "api_docs": "API Documentation"
+    "api_docs": "API Documentation",
+    "prompt_pairing_code": "Please enter the pairing code:"
   },
   "de": {
     "title": "Radio Fernbedienung",
@@ -47,7 +48,8 @@
     "theme_dark": "Dunkel",
     "theme_follow_browser": "Browser folgen",
     "lang_auto_browser": "Auto (Browser)",
-    "api_docs": "API Dokumentation"
+    "api_docs": "API Dokumentation",
+    "prompt_pairing_code": "Bitte geben Sie den Pairing-Code ein:"
   },
   "fr": {
     "title": "Télécommande Radio",
@@ -72,7 +74,8 @@
     "theme_dark": "Sombre",
     "theme_follow_browser": "Suivre le Navigateur",
     "lang_auto_browser": "Auto (Navigateur)",
-    "api_docs": "Documentation API"
+    "api_docs": "Documentation API",
+    "prompt_pairing_code": "Veuillez saisir le code de couplage :"
   },
   "ru": {
     "title": "Пульт Радио",
@@ -97,7 +100,8 @@
     "theme_dark": "Темная",
     "theme_follow_browser": "Как в браузере",
     "lang_auto_browser": "Авто (Браузер)",
-    "api_docs": "Документация API"
+    "api_docs": "Документация API",
+    "prompt_pairing_code": "Введите код сопряжения:"
   },
   "nl": {
     "title": "Radio Afstandsbediening",
@@ -122,7 +126,8 @@
     "theme_dark": "Donker",
     "theme_follow_browser": "Browser volgen",
     "lang_auto_browser": "Auto (Browser)",
-    "api_docs": "API Documentatie"
+    "api_docs": "API Documentatie",
+    "prompt_pairing_code": "Voer de koppelingscode in:"
   },
   "pl": {
     "title": "Pilot Radio",
@@ -147,7 +152,8 @@
     "theme_dark": "Ciemny",
     "theme_follow_browser": "Podążaj za przeglądarką",
     "lang_auto_browser": "Auto (Przeglądarkα)",
-    "api_docs": "Dokumentacja API"
+    "api_docs": "Dokumentacja API",
+    "prompt_pairing_code": "Wprowadź kod parowania:"
   },
   "ja": {
     "title": "ラジオ リモコン",
@@ -172,7 +178,8 @@
     "theme_dark": "ダーク",
     "theme_follow_browser": "ブラウザに従う",
     "lang_auto_browser": "自動 (ブラウザ)",
-    "api_docs": "API ドキュメント"
+    "api_docs": "API ドキュメント",
+    "prompt_pairing_code": "ペアリングコードを入力してください："
   },
   "uk": {
     "title": "Пульт Радіо",
@@ -197,7 +204,8 @@
     "theme_dark": "Темна",
     "theme_follow_browser": "Як у браузері",
     "lang_auto_browser": "Авто (Браузер)",
-    "api_docs": "Документація API"
+    "api_docs": "Документація API",
+    "prompt_pairing_code": "Введіть код сполучення:"
   },
   "el": {
     "title": "Ραδιοφωνικό Χειριστήριο",
@@ -222,7 +230,8 @@
     "theme_dark": "Σκοτεινό",
     "theme_follow_browser": "Ακολουθήστε το πρόγραμμα περιήγησης",
     "lang_auto_browser": "Αυτόματο (Browser)",
-    "api_docs": "Τεκμηρίωση API"
+    "api_docs": "Τεκμηρίωση API",
+    "prompt_pairing_code": "Εισαγάγετε τον κωδικό σύζευξης:"
   },
   "da": {
     "title": "Radio Fjernbetjening",
@@ -247,6 +256,7 @@
     "theme_dark": "Mørkt",
     "theme_follow_browser": "Følg browser",
     "lang_auto_browser": "Auto (Browser)",
-    "api_docs": "API Dokumentation"
+    "api_docs": "API Dokumentation",
+    "prompt_pairing_code": "Indtast parringskode:"
   }
 }

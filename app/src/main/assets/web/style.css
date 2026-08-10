@@ -261,6 +261,17 @@ body.light-theme .station-item {
     overflow-x: auto;
 }
 
+.auth-box {
+    margin: 20px 0;
+    padding: 20px;
+    border: 1px solid var(--accent-color);
+    box-shadow: 0 0 10px rgba(0, 132, 255, 0.2);
+}
+
+.auth-box h3 { margin-top: 0; color: var(--accent-color); }
+.auth-box ul { padding-left: 20px; margin-bottom: 0; }
+.auth-box li { margin-bottom: 8px; }
+
 body.light-theme .api-content pre {
     background: #f8f9fa;
     color: #0066cc;

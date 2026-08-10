@@ -190,6 +190,13 @@
     <string name="pref_remote_control_title">Télécommande</string>
     <string name="pref_remote_control_summary">Contrôlez la radio depuis votre navigateur web</string>
     <string name="pref_remote_control_url">Contrôlez la radio depuis http://%1$s:8080</string>
+    <string name="snackbar_remote_auth_failed">Avertissement de sécurité : plusieurs tentatives de connexion à distance échouées détectées depuis %1$s !</string>
+    <string name="pref_remote_control_auth_title">Authentification de la télécommande</string>
+    <string name="pref_remote_control_auth_summary">Nécessite un code de couplage pour l\'accès à distance.</string>
+    <string name="pref_remote_control_secret_title">Code de couplage</string>
+    <string name="pref_remote_control_secret_summary">Utilisez ce code pour l\'interface web et l\'API.</string>
+    <string name="pref_remote_control_secret_regenerate">Régénérer le code de couplage</string>
+    <string name="toastmessage_secret_regenerated">Code de couplage régénéré.</string>
     <string name="error_webserver">Serveur de télécommande Web planté/arrêté.</string>
 
     <string name="descr_player_search_button">Rechercher des stations</string>

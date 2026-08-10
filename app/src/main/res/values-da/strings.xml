@@ -190,6 +190,13 @@
     <string name="pref_remote_control_title">Fjernbetjening</string>
     <string name="pref_remote_control_summary">Betjen radioen fra din webbrowser</string>
     <string name="pref_remote_control_url">Betjen radioen fra http://%1$s:8080</string>
+    <string name="snackbar_remote_auth_failed">Sikkerhedsadvarsel: Flere mislykkede fjernloginforsøg detekteret fra %1$s!</string>
+    <string name="pref_remote_control_auth_title">Fjernbetjening godkendelse</string>
+    <string name="pref_remote_control_auth_summary">Kræv en parringskode for fjernadgang.</string>
+    <string name="pref_remote_control_secret_title">Parringskode</string>
+    <string name="pref_remote_control_secret_summary">Brug denne kode til webgrænsefladen og API\'en.</string>
+    <string name="pref_remote_control_secret_regenerate">Gendan parringskode</string>
+    <string name="toastmessage_secret_regenerated">Parringskode gendannet.</string>
     <string name="error_webserver">Web fjernbetjeningsserver crashet/stoppede.</string>
     <string name="search_hint">Søg stationer…</string>
     <string name="search_filter_favorites">Kun favoritter</string>

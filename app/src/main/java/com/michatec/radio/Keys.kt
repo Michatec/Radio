@@ -21,6 +21,7 @@ object Keys {
     const val ACTION_THEME_CHANGED: String = "com.michatec.radio.action.THEME_CHANGED"
     const val ACTION_START: String = "com.michatec.radio.action.START"
     const val ACTION_REMOTE_SERVER_ERROR: String = "com.michatec.radio.action.REMOTE_SERVER_ERROR"
+    const val ACTION_REMOTE_AUTH_FAILED: String = "com.michatec.radio.action.REMOTE_AUTH_FAILED"
 
     // intent extras
     const val EXTRA_COLLECTION_MODIFICATION_DATE: String = "COLLECTION_MODIFICATION_DATE"
@@ -99,6 +100,8 @@ object Keys {
     const val PREF_CUSTOM_THEME_INDEX: String = "CUSTOM_THEME_INDEX"
     const val PREF_ARGUMENTS: String = "ARGUMENTS"
     const val PREF_REMOTE_CONTROL_ENABLED: String = "REMOTE_CONTROL_ENABLED"
+    const val PREF_REMOTE_CONTROL_AUTH_ENABLED: String = "REMOTE_CONTROL_AUTH_ENABLED"
+    const val PREF_REMOTE_CONTROL_SECRET_TOKEN: String = "REMOTE_CONTROL_SECRET_TOKEN"
 
     // default const values
     const val DEFAULT_SIZE_OF_METADATA_HISTORY: Int = 25
