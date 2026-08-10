@@ -477,4 +477,12 @@ object FileHelper {
         return File(folder, ".nomedia")
     }
 
+    /* Returns the image file for a given station UUID */
+    fun getStationImageFile(context: Context, stationUuid: String): File {
+        return File(
+            context.getExternalFilesDir(""),
+            determineDestinationFolderPath(Keys.FILE_TYPE_IMAGE, stationUuid) + "/" + Keys.STATION_IMAGE_FILE
+        )
+    }
+
 }
