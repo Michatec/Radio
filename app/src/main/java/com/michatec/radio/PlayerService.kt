@@ -27,6 +27,7 @@ import androidx.media3.session.*
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
+import com.google.common.util.concurrent.SettableFuture
 import com.michatec.radio.core.Collection
 import com.michatec.radio.core.Station
 import com.michatec.radio.helpers.*
@@ -494,6 +495,25 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
             return Futures.immediateFuture(updatedMediaItems)
         }
 
+        @UnstableApi
+        override fun onPlaybackResumption(
+            mediaSession: MediaSession,
+            controller: MediaSession.ControllerInfo,
+            isForPlayback: Boolean
+        ): ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
+            val settableFuture = SettableFuture.create<MediaSession.MediaItemsWithStartPosition>()
+            CoroutineScope(Main).launch {
+                if (collection.stations.isEmpty()) {
+                    val deferred: Deferred<Collection> = async(Dispatchers.Default) { FileHelper.readCollectionSuspended(this@PlayerService) }
+                    collection = deferred.await()
+                }
+                val recentStation = CollectionHelper.getRecent(this@PlayerService, collection)
+                val mediaItems = ImmutableList.of(recentStation)
+                settableFuture.set(MediaSession.MediaItemsWithStartPosition(mediaItems, 0, 0))
+            }
+            return settableFuture
+        }
+
 
         override fun onConnect(
             session: MediaSession,
@@ -506,7 +526,12 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
             builder.add(SessionCommand(Keys.CMD_REQUEST_SLEEP_TIMER_REMAINING, Bundle.EMPTY))
             builder.add(SessionCommand(Keys.CMD_REQUEST_METADATA_HISTORY, Bundle.EMPTY))
             builder.add(SessionCommand(Keys.CMD_GET_VISUALIZER_DATA, Bundle.EMPTY))
-            return MediaSession.ConnectionResult.accept(builder.build(), connectionResult.availablePlayerCommands)
+
+            val playerCommands = connectionResult.availablePlayerCommands.buildUpon()
+                .addAllCommands()
+                .build()
+
+            return MediaSession.ConnectionResult.accept(builder.build(), playerCommands)
         }
 
         override fun onSubscribe(
