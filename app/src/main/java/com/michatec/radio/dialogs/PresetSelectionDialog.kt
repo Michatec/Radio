@@ -13,14 +13,7 @@ import com.michatec.radio.helpers.PreferencesHelper
 /*
  * PresetSelectionDialog class
  */
-class PresetSelectionDialog(private var presetSelectionDialogListener: PresetSelectionDialogListener) {
-
-    /* Interface used to communicate back to activity */
-    interface PresetSelectionDialogListener {
-        fun onPresetSelectionDialog(dialogResult: Boolean, selectedPreset: String)
-    }
-
-
+class PresetSelectionDialog {
     /* Main class variables */
     private lateinit var dialog: AlertDialog
 
@@ -56,19 +49,12 @@ class PresetSelectionDialog(private var presetSelectionDialogListener: PresetSel
             }
             // save preset selection to preferences
             PreferencesHelper.saveSelectedPreset(selectedPreset)
-            // notify listener
-            presetSelectionDialogListener.onPresetSelectionDialog(true, selectedPreset)
             // dismiss dialog
             dialog.dismiss()
         }
 
         // set custom view
         builder.setView(binding.root)
-
-        // handle outside-click as cancel
-        builder.setOnCancelListener {
-            presetSelectionDialogListener.onPresetSelectionDialog(false, "")
-        }
 
         // display dialog
         dialog = builder.create()

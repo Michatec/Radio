@@ -648,6 +648,9 @@ object CollectionHelper {
             // Set artwork URI for casting (remote devices need a public URL)
             if (station.remoteImageLocation.isNotEmpty()) {
                 setArtworkUri(station.remoteImageLocation.toUri())
+            } else {
+                // Fallback: Use a public app icon for casting if the station has no image
+                setArtworkUri("https://raw.githubusercontent.com/michatec/Radio/master/app/src/main/assets/web/favicon.png".toUri())
             }
 
             /* check for "file://" prevents a crash when an old backup was restored */

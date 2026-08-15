@@ -89,7 +89,6 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
             
             onError = { error ->
                 Log.e(TAG, "RemoteControlServer error: $error")
-                PreferencesHelper.saveRemoteControlEnabled(false)
                 val intent = Intent(Keys.ACTION_REMOTE_SERVER_ERROR)
                 LocalBroadcastManager.getInstance(this@PlayerService).sendBroadcast(intent)
             }
@@ -696,15 +695,18 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
             )
 
             if (!isPlaying) {
-                // cancel sleep timer
-                cancelSleepTimer()
+                // Only cancel sleep timer if user explicitly paused/stopped
+                if (!player.playWhenReady) {
+                    cancelSleepTimer()
+                }
                 // reset metadata
                 updateMetadata()
 
                 // Check playback state to decide whether to stop the service
                 when (player.playbackState) {
                     Player.STATE_ENDED, Player.STATE_IDLE -> {
-                        if (!PreferencesHelper.loadRemoteControlEnabled()) {
+                        // DO NOT stop the service if we are trying to play (e.g. transitioning) or if we are currently casting
+                        if (!player.playWhenReady && player.deviceInfo.playbackType != DeviceInfo.PLAYBACK_TYPE_REMOTE && !PreferencesHelper.loadRemoteControlEnabled()) {
                             stopSelf()
                         }
                     }

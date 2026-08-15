@@ -13,14 +13,7 @@ import com.michatec.radio.helpers.PreferencesHelper
 /*
  * LanguageSelectionDialog class
  */
-class LanguageSelectionDialog(private var languageSelectionDialogListener: LanguageSelectionDialogListener) {
-
-    /* Interface used to communicate back to activity */
-    interface LanguageSelectionDialogListener {
-        fun onLanguageSelectionDialog(dialogResult: Boolean, selectedLanguage: String)
-    }
-
-
+class LanguageSelectionDialog {
     /* Main class variables */
     private lateinit var dialog: AlertDialog
 
@@ -96,20 +89,12 @@ class LanguageSelectionDialog(private var languageSelectionDialogListener: Langu
             // save language selection to preferences
             PreferencesHelper.saveSelectedLanguage(selectedLanguageCode)
 
-            // notify listener
-            languageSelectionDialogListener.onLanguageSelectionDialog(true, selectedLanguageCode)
-
             // dismiss dialog
             dialog.dismiss()
         }
 
         // set custom view
         builder.setView(binding.root)
-
-        // handle outside-click as cancel
-        builder.setOnCancelListener {
-            languageSelectionDialogListener.onLanguageSelectionDialog(false, "")
-        }
 
         // display dialog
         dialog = builder.create()

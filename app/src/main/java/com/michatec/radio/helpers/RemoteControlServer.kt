@@ -26,10 +26,13 @@ import kotlin.time.Duration.Companion.seconds
 
 class RemoteControlServer(private val context: Context) {
 
-    private var server: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>? = null
+    companion object {
+        private var server: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>? = null
+        private val lifecycleMutex = Mutex()
+    }
+
     private var player: Player? = null
     private var serverScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    private val lifecycleMutex = Mutex()
     private val gson = Gson()
     private val _statusUpdates = MutableSharedFlow<WebSocketMessage>(extraBufferCapacity = 1)
     private val statusUpdates = _statusUpdates.asSharedFlow()

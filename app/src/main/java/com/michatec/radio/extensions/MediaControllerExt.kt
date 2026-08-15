@@ -54,7 +54,6 @@ fun MediaController.requestVisualizerData(): ListenableFuture<SessionResult> {
 
 /* Starts playback with a new media item */
 fun MediaController.play(context: Context, station: Station) {
-    if (isPlaying) pause()
     // set media item, prepare and play
     setMediaItem(CollectionHelper.buildMediaItem(context, station))
     prepare()

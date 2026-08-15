@@ -14,15 +14,7 @@ import com.michatec.radio.helpers.PreferencesHelper
 /*
  * ThemeSelectionDialog class
  */
-class ThemeSelectionDialog(private var themeSelectionDialogListener: ThemeSelectionDialogListener) {
-
-    /* Interface used to communicate back to activity */
-    interface ThemeSelectionDialogListener {
-        fun onThemeSelectionDialog(dialogResult: Boolean, selectedTheme: String) {
-        }
-    }
-
-
+class ThemeSelectionDialog {
     /* Main class variables */
     private lateinit var dialog: AlertDialog
 
@@ -61,19 +53,12 @@ class ThemeSelectionDialog(private var themeSelectionDialogListener: ThemeSelect
             PreferencesHelper.saveThemeSelection(selectedTheme)
             // apply theme immediately
             AppThemeHelper.setTheme(selectedTheme)
-            // notify listener
-            themeSelectionDialogListener.onThemeSelectionDialog(true, selectedTheme)
             // dismiss dialog
             dialog.dismiss()
         }
 
         // set custom view
         builder.setView(binding.root)
-
-        // handle outside-click as cancel
-        builder.setOnCancelListener {
-            themeSelectionDialogListener.onThemeSelectionDialog(false, Keys.STATE_THEME_FOLLOW_SYSTEM)
-        }
 
         // display dialog
         dialog = builder.create()

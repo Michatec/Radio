@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -44,7 +45,7 @@ import java.util.Locale
 /*
  * SettingsFragment class
  */
-class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListener, ThemeSelectionDialog.ThemeSelectionDialogListener, PresetSelectionDialog.PresetSelectionDialogListener, LanguageSelectionDialog.LanguageSelectionDialogListener {
+class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener, YesNoDialog.YesNoDialogListener {
 
 
     /* Define log tag */
@@ -69,6 +70,89 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.fragment_settings_title)
     }
 
+    /* Overrides onResume from PreferenceFragmentCompat */
+    override fun onResume() {
+        super.onResume()
+        // register preference change listener
+        PreferencesHelper.registerPreferenceChangeListener(this)
+    }
+
+    /* Overrides onPause from PreferenceFragmentCompat */
+    override fun onPause() {
+        super.onPause()
+        // unregister preference change listener
+        PreferencesHelper.unregisterPreferenceChangeListener(this)
+    }
+
+    /* Overrides onSharedPreferenceChanged from SharedPreferences.OnSharedPreferenceChangeListener */
+    @UnstableApi
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        when (key) {
+            Keys.PREF_THEME_SELECTION -> {
+                val theme = PreferencesHelper.loadThemeSelection()
+                AppThemeHelper.setTheme(theme)
+                val preferenceThemeSelection = findPreference<Preference>(Keys.PREF_THEME_SELECTION)
+                preferenceThemeSelection?.summary = "${getString(R.string.pref_theme_selection_summary)} ${
+                    AppThemeHelper.getCurrentTheme(activity as Context)
+                }"
+            }
+            Keys.PREF_PRESET_SELECTED -> {
+                val currentPreset = PreferencesHelper.loadSelectedPreset()
+                val presetPreference = findPreference<Preference>(Keys.PREF_PRESET_SELECTED)
+                val presetSummary = currentPreset.ifEmpty {
+                    getString(R.string.pref_preset_none)
+                }
+                presetPreference?.summary = "${getString(R.string.pref_preset_selection_summary)}: $presetSummary"
+                updateEqControlStates()
+            }
+            Keys.PREF_LANGUAGE_SELECTED -> {
+                val languagePreference = findPreference<Preference>(Keys.PREF_LANGUAGE_SELECTED)
+                val languageSummary = LanguageHelper.getCurrentLanguage(activity as Context)
+                languagePreference?.summary = "${getString(R.string.pref_language_selection_summary)}: $languageSummary"
+                LanguageHelper.setLanguage(activity as Context, PreferencesHelper.loadSelectedLanguage())
+            }
+            Keys.PREF_CUSTOM_THEME_ENABLED -> {
+                val enabled = PreferencesHelper.loadCustomThemeEnabled()
+                findPreference<Preference>(Keys.PREF_CUSTOM_THEME)?.isEnabled = enabled
+            }
+            Keys.PREF_REMOTE_CONTROL_SECRET_TOKEN -> {
+                val preferenceRemoteControlSecret = findPreference<Preference>(Keys.PREF_REMOTE_CONTROL_SECRET_TOKEN)
+                preferenceRemoteControlSecret?.summary = PreferencesHelper.loadRemoteControlSecretToken()
+            }
+            Keys.PREF_REMOTE_CONTROL_ENABLED -> {
+                val enabled = PreferencesHelper.loadRemoteControlEnabled()
+                findPreference<Preference>(Keys.PREF_REMOTE_CONTROL_AUTH_ENABLED)?.isVisible = enabled
+                findPreference<Preference>(Keys.PREF_REMOTE_CONTROL_SECRET_TOKEN)?.isVisible = enabled && PreferencesHelper.loadRemoteControlAuthEnabled()
+                if (enabled) {
+                    val intent = Intent(activity, PlayerService::class.java).apply {
+                        action = Keys.ACTION_START
+                    }
+                    activity?.startService(intent)
+                }
+            }
+            Keys.PREF_REMOTE_CONTROL_AUTH_ENABLED -> {
+                findPreference<Preference>(Keys.PREF_REMOTE_CONTROL_SECRET_TOKEN)?.isVisible = PreferencesHelper.loadRemoteControlEnabled() && PreferencesHelper.loadRemoteControlAuthEnabled()
+            }
+            Keys.PREF_EDIT_STATIONS -> {
+                val enabled = PreferencesHelper.loadEditStationsEnabled(activity as Context)
+                val preferenceEnableEditingStreamUri = findPreference<MarqueeSwitchPreference>(Keys.PREF_EDIT_STREAMS_URIS)
+                if (!enabled) {
+                    preferenceEnableEditingStreamUri?.isChecked = false
+                }
+                preferenceEnableEditingStreamUri?.isEnabled = enabled
+            }
+            Keys.PREF_ARGUMENTS -> {
+                val preferenceArguments = findPreference<EditTextPreference>(Keys.PREF_ARGUMENTS)
+                val currentArguments = PreferencesHelper.loadArguments()
+                preferenceArguments?.summary = if (currentArguments.isEmpty()) {
+                    getString(R.string.pref_arguments_summary)
+                } else {
+                    "${getString(R.string.pref_arguments_summary)}\n$currentArguments"
+                }
+            }
+        }
+    }
+
     /* Overrides onCreatePreferences from PreferenceFragmentCompat */
     @UnstableApi
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -89,7 +173,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         }"
         preferenceThemeSelection.setOnPreferenceClickListener {
             // show theme selection dialog
-            ThemeSelectionDialog(this).show(activity as Context)
+            ThemeSelectionDialog().show(activity as Context)
             return@setOnPreferenceClickListener true
         }
 
@@ -227,27 +311,8 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             // regenerate secret
             val newSecret = PreferencesHelper.generateSecretToken()
             PreferencesHelper.saveRemoteControlSecretToken(newSecret)
-            preferenceRemoteControlSecret.summary = newSecret
             Snackbar.make(requireView(), R.string.toastmessage_secret_regenerated, Snackbar.LENGTH_LONG).show()
             return@setOnPreferenceClickListener true
-        }
-
-        preferenceRemoteControl.setOnPreferenceChangeListener { _, newValue ->
-            val enabled = newValue as Boolean
-            preferenceRemoteControlAuth.isVisible = enabled
-            preferenceRemoteControlSecret.isVisible = enabled && preferenceRemoteControlAuth.isChecked
-            if (enabled) {
-                val intent = Intent(activity, PlayerService::class.java).apply {
-                    action = Keys.ACTION_START
-                }
-                activity?.startService(intent)
-            }
-            return@setOnPreferenceChangeListener true
-        }
-
-        preferenceRemoteControlAuth.setOnPreferenceChangeListener { _, newValue ->
-            preferenceRemoteControlSecret.isVisible = newValue as Boolean
-            return@setOnPreferenceChangeListener true
         }
 
         // set up "Arguments" preference
@@ -263,16 +328,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             "${getString(R.string.pref_arguments_summary)}\n$currentArguments"
         }
         preferenceArguments.setDefaultValue(currentArguments)
-        preferenceArguments.setOnPreferenceChangeListener { _, newValue ->
-            val arguments = newValue as String
-            preferenceArguments.summary = if (arguments.isEmpty()) {
-                getString(R.string.pref_arguments_summary)
-            } else {
-                "${getString(R.string.pref_arguments_summary)}\n$arguments"
-            }
-            return@setOnPreferenceChangeListener true
-        }
-
 
         // set up "Edit Stations" preference
         val preferenceEnableEditingGeneral = MarqueeSwitchPreference(context)
@@ -282,18 +337,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceEnableEditingGeneral.summaryOn = getString(R.string.pref_edit_station_summary_enabled)
         preferenceEnableEditingGeneral.summaryOff = getString(R.string.pref_edit_station_summary_disabled)
         preferenceEnableEditingGeneral.setDefaultValue(PreferencesHelper.loadEditStationsEnabled(context))
-        preferenceEnableEditingGeneral.setOnPreferenceChangeListener { _, newValue ->
-            when (newValue) {
-                true -> {
-                    preferenceEnableEditingStreamUri.isEnabled = true
-                }
-                false -> {
-                    preferenceEnableEditingStreamUri.isEnabled = false
-                    preferenceEnableEditingStreamUri.isChecked = false
-                }
-            }
-            return@setOnPreferenceChangeListener true
-        }
 
         // set up "Bass Boost" preference
         val preferenceBassBoost = MarqueeSwitchPreference(context)
@@ -332,7 +375,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         }
         preferencePresetSelection.summary = "${getString(R.string.pref_preset_selection_summary)}: $presetSummary"
         preferencePresetSelection.setOnPreferenceClickListener {
-            PresetSelectionDialog(this).show(activity as Context)
+            PresetSelectionDialog().show(activity as Context)
             return@setOnPreferenceClickListener true
         }
 
@@ -451,7 +494,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
             LanguageHelper.getCurrentLanguage(activity as Context)
         }"
         preferenceLanguageSelection.setOnPreferenceClickListener {
-            LanguageSelectionDialog(this).show(activity as Context)
+            LanguageSelectionDialog().show(activity as Context)
             return@setOnPreferenceClickListener true
         }
 
@@ -459,6 +502,7 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         val preferenceCustomTheme = Preference(context)
         preferenceCustomTheme.title = getString(R.string.pref_custom_theme_title)
         preferenceCustomTheme.setIcon(R.drawable.ic_rbrush_24dp)
+        preferenceCustomTheme.key = Keys.PREF_CUSTOM_THEME
         preferenceCustomTheme.summary = getString(R.string.pref_custom_theme_summary)
         preferenceCustomTheme.isEnabled = PreferencesHelper.loadCustomThemeEnabled()
         preferenceCustomTheme.setOnPreferenceClickListener {
@@ -474,19 +518,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceCustomThemeEnabled.summaryOff = getString(R.string.pref_custom_theme_disabled_summary)
         preferenceCustomThemeEnabled.key = Keys.PREF_CUSTOM_THEME_ENABLED
         preferenceCustomThemeEnabled.setDefaultValue(PreferencesHelper.loadCustomThemeEnabled())
-        preferenceCustomThemeEnabled.setOnPreferenceChangeListener { _, newValue ->
-            when (newValue) {
-                true -> {
-                    // enable custom theme
-                    preferenceCustomTheme.isEnabled = true
-                }
-                false -> {
-                    // disable custom theme
-                    preferenceCustomTheme.isEnabled = false
-                }
-            }
-            return@setOnPreferenceChangeListener true
-        }
 
         // set up "Share the App" preference
         val preferenceShareApp = Preference(context)
@@ -585,56 +616,6 @@ class SettingsFragment : PreferenceFragmentCompat(), YesNoDialog.YesNoDialogList
         preferenceCategoryLinks.addPreference(preferenceSecurity)
 
         preferenceScreen = screen
-    }
-
-    /* Overrides onThemeSelectionDialog from ThemeSelectionDialogListener */
-    override fun onThemeSelectionDialog(dialogResult: Boolean, selectedTheme: String) {
-        if (dialogResult) {
-            // update summary
-            val themes = arrayOf(
-                getString(R.string.pref_theme_selection_mode_device_default),
-                getString(R.string.pref_theme_selection_mode_light),
-                getString(R.string.pref_theme_selection_mode_dark)
-            )
-            val themeValues = arrayOf(
-                Keys.STATE_THEME_FOLLOW_SYSTEM,
-                Keys.STATE_THEME_LIGHT_MODE,
-                Keys.STATE_THEME_DARK_MODE
-            )
-            val index = themeValues.indexOf(selectedTheme)
-            val preferenceThemeSelection = findPreference<Preference>(Keys.PREF_THEME_SELECTION)
-            preferenceThemeSelection?.summary = "${getString(R.string.pref_theme_selection_summary)} ${themes[index]}"
-        }
-    }
-
-
-    /* Overrides onPresetSelectionDialog from PresetSelectionDialogListener */
-    override fun onPresetSelectionDialog(dialogResult: Boolean, selectedPreset: String) {
-        if (dialogResult) {
-            // update summary
-            val presetPreference = findPreference<Preference>(Keys.PREF_PRESET_SELECTED)
-            val presetSummary = selectedPreset.ifEmpty {
-                getString(R.string.pref_preset_none)
-            }
-            presetPreference?.summary = "${getString(R.string.pref_preset_selection_summary)}: $presetSummary"
-
-            // Enable/disable manual EQ controls based on preset selection
-            updateEqControlStates()
-        }
-    }
-
-    /* Overrides onLanguageSelectionDialog from LanguageSelectionDialogListener */
-    override fun onLanguageSelectionDialog(dialogResult: Boolean, selectedLanguage: String) {
-        if (dialogResult) {
-            // update summary
-            val languagePreference = findPreference<Preference>(Keys.PREF_LANGUAGE_SELECTED)
-            val languageSummary = if (selectedLanguage.isEmpty()) {
-                getString(R.string.pref_language_system)
-            } else {
-                LanguageHelper.getCurrentLanguage(activity as Context)
-            }
-            languagePreference?.summary = "${getString(R.string.pref_language_selection_summary)}: $languageSummary"
-        }
     }
 
     /* Updates the enabled/disabled state of EQ controls based on preset selection */
