@@ -3,12 +3,11 @@ package com.michatec.radio.ui
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.widget.TextView
 import androidx.mediarouter.app.MediaRouteControllerDialogFragment
 import com.google.android.gms.cast.framework.CastContext
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.michatec.radio.R
+import com.michatec.radio.databinding.DialogCastConnectedBinding
 
 /**
  * A custom DialogFragment that replaces the default Google Cast controller dialog.
@@ -16,30 +15,38 @@ import com.michatec.radio.R
  */
 class CustomCastControllerDialogFragment : MediaRouteControllerDialogFragment() {
 
+    private var _binding: DialogCastConnectedBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val context = requireContext()
 
-        val view = LayoutInflater.from(context).inflate(R.layout.dialog_cast_connected, null)
+        _binding = DialogCastConnectedBinding.inflate(LayoutInflater.from(context))
 
         val castContext = CastContext.getSharedInstance(context)
         val castSession = castContext.sessionManager.currentCastSession
         val deviceName = castSession?.castDevice?.friendlyName ?: context.getString(R.string.media_route_menu_title)
 
-        view.findViewById<TextView>(R.id.textViewDeviceName).text = deviceName
+        binding.textViewDeviceName.text = deviceName
 
         val dialog = MaterialAlertDialogBuilder(context)
-            .setView(view)
+            .setView(binding.root)
             .create()
 
-        view.findViewById<MaterialButton>(R.id.buttonStopCasting).setOnClickListener {
+        binding.buttonStopCasting.setOnClickListener {
             castContext.sessionManager.endCurrentSession(true)
             dialog.dismiss()
         }
 
-        view.findViewById<MaterialButton>(R.id.buttonCancel).setOnClickListener {
+        binding.buttonCancel.setOnClickListener {
             dialog.dismiss()
         }
 
         return dialog
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

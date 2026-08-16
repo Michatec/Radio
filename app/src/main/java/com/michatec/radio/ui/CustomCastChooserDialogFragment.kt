@@ -3,9 +3,7 @@ package com.michatec.radio.ui
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.mediarouter.app.MediaRouteChooserDialogFragment
 import androidx.mediarouter.media.MediaControlIntent
@@ -16,7 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.michatec.radio.R
+import com.michatec.radio.databinding.DialogCastChooserBinding
+import com.michatec.radio.databinding.ItemCastDeviceBinding
 
 /**
  * A custom DialogFragment that replaces the default Google Cast device selection dialog.
@@ -26,8 +25,8 @@ class CustomCastChooserDialogFragment : MediaRouteChooserDialogFragment() {
     private lateinit var router: MediaRouter
     private lateinit var selector: MediaRouteSelector
     private var adapter: CastDeviceAdapter? = null
-    private var recyclerView: RecyclerView? = null
-    private var noDevicesText: TextView? = null
+    private var _binding: DialogCastChooserBinding? = null
+    private val binding get() = _binding!!
 
     private val callback = object : MediaRouter.Callback() {
         override fun onRouteAdded(router: MediaRouter, route: MediaRouter.RouteInfo) {
@@ -63,22 +62,25 @@ class CustomCastChooserDialogFragment : MediaRouteChooserDialogFragment() {
             .addControlCategory(MediaControlIntent.CATEGORY_REMOTE_PLAYBACK)
             .build()
 
-        val view = LayoutInflater.from(context).inflate(R.layout.dialog_cast_chooser, null)
-        recyclerView = view.findViewById(R.id.recyclerViewDevices)
-        noDevicesText = view.findViewById(R.id.textViewNoDevices)
+        _binding = DialogCastChooserBinding.inflate(LayoutInflater.from(context))
 
-        recyclerView?.layoutManager = LinearLayoutManager(context)
+        binding.recyclerViewDevices.layoutManager = LinearLayoutManager(context)
         adapter = CastDeviceAdapter { routeItem ->
             routeItem.originalRoute.select()
             dismiss()
         }
-        recyclerView?.adapter = adapter
+        binding.recyclerViewDevices.adapter = adapter
 
         updateRouteList()
 
         return MaterialAlertDialogBuilder(context)
-            .setView(view)
+            .setView(binding.root)
             .create()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onStart() {
@@ -107,8 +109,8 @@ class CustomCastChooserDialogFragment : MediaRouteChooserDialogFragment() {
         adapter?.submitList(routes)
         
         val hasDevices = routes.isNotEmpty()
-        recyclerView?.isVisible = hasDevices
-        noDevicesText?.isVisible = !hasDevices
+        binding.recyclerViewDevices.isVisible = hasDevices
+        binding.textViewNoDevices.isVisible = !hasDevices
     }
 
     /**
@@ -118,29 +120,26 @@ class CustomCastChooserDialogFragment : MediaRouteChooserDialogFragment() {
         ListAdapter<RouteItem, CastDeviceAdapter.ViewHolder>(RouteDiffCallback()) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_cast_device, parent, false)
-            return ViewHolder(view)
+            val binding = ItemCastDeviceBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            return ViewHolder(binding)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = getItem(position)
-            holder.nameText.text = item.name
+            holder.binding.textViewName.text = item.name
 
             val description = item.description
             if (!description.isNullOrEmpty()) {
-                holder.descriptionText.text = description
-                holder.descriptionText.isVisible = true
+                holder.binding.textViewDescription.text = description
+                holder.binding.textViewDescription.isVisible = true
             } else {
-                holder.descriptionText.isVisible = false
+                holder.binding.textViewDescription.isVisible = false
             }
             
             holder.itemView.setOnClickListener { onRouteSelected(item) }
         }
 
-        class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val nameText: TextView = view.findViewById(R.id.textViewName)
-            val descriptionText: TextView = view.findViewById(R.id.textViewDescription)
-        }
+        class ViewHolder(val binding: ItemCastDeviceBinding) : RecyclerView.ViewHolder(binding.root)
 
         private class RouteDiffCallback : DiffUtil.ItemCallback<RouteItem>() {
             override fun areItemsTheSame(oldItem: RouteItem, newItem: RouteItem): Boolean {
