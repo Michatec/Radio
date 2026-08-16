@@ -2,6 +2,7 @@ package com.michatec.radio.extensions
 
 import android.content.Context
 import android.os.Bundle
+import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
@@ -54,10 +55,14 @@ fun MediaController.requestVisualizerData(): ListenableFuture<SessionResult> {
 
 /* Starts playback with a new media item */
 fun MediaController.play(context: Context, station: Station) {
-    // set media item, prepare and play
-    setMediaItem(CollectionHelper.buildMediaItem(context, station))
-    prepare()
-    play()
+    if (currentMediaItem?.mediaId == station.uuid && playbackState != Player.STATE_IDLE && playbackState != Player.STATE_ENDED) {
+        play()
+    } else {
+        // set media item, prepare and play
+        setMediaItem(CollectionHelper.buildMediaItem(context, station))
+        prepare()
+        play()
+    }
 }
 
 
