@@ -8,7 +8,7 @@
 
 ### ℹ️ About Radio
 **Radio is an application with a minimalist approach to listening to radio over the Internet.** <br>
-**Radio only offers a very basic search option, and it imports audio streaming links when you tap them in a web browser.** <br>
+**Radio only offers a basic search option, and it imports audio streaming links when you tap them in a web browser.** <br>
 **Radio 15.1+  features support for Android TV and Google Cast, along with a Web Control interface and a developer API.** <br>
 **Pull request are welcome at any time.**<br>
 
