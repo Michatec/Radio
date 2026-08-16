@@ -4,6 +4,7 @@ import android.content.Context
 import android.webkit.URLUtil
 import android.widget.Toast
 import com.michatec.radio.R
+import com.michatec.radio.Keys
 import com.michatec.radio.core.Station
 import com.michatec.radio.helpers.CollectionHelper
 import kotlinx.coroutines.CoroutineScope
@@ -64,6 +65,7 @@ class DirectInputCheck(private var directInputCheckListener: DirectInputCheckLis
             val client = OkHttpClient()
             val request = Request.Builder()
                 .url(streamUri)
+                .addHeader("User-Agent", Keys.USER_AGENT)
                 .build()
 
             val response = client.newCall(request).execute()

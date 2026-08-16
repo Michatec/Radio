@@ -177,6 +177,7 @@ object Keys {
     // server addresses
     const val RADIO_BROWSER_API_BASE: String = "all.api.radio-browser.info"
     const val RADIO_BROWSER_API_DEFAULT: String = "de1.api.radio-browser.info"
+    val USER_AGENT: String = "${R.string.app_name}/${BuildConfig.VERSION_NAME}"
 
     // sizes (in dp)
     const val SIZE_STATION_IMAGE_CARD: Int = 72

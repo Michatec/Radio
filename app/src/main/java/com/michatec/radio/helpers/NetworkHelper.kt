@@ -93,6 +93,7 @@ object NetworkHelper {
     fun downloadPlaylist(playlistUrlString: String): List<String> {
         val lines = mutableListOf<String>()
         val connection = URL(playlistUrlString).openConnection()
+        connection.setRequestProperty("User-Agent", Keys.USER_AGENT)
         val reader = connection.getInputStream().bufferedReader()
         reader.useLines { sequence ->
             sequence.take(100).forEach { line ->
@@ -138,6 +139,7 @@ object NetworkHelper {
             // try to open connection and get status
             Log.i(TAG, "Opening http connection.")
             connection = URL(urlString).openConnection() as HttpURLConnection
+            connection.setRequestProperty("User-Agent", Keys.USER_AGENT)
             val status = connection.responseCode
 
             // CHECK for non-HTTP_OK status

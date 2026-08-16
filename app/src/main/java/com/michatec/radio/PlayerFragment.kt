@@ -9,7 +9,11 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -41,7 +45,6 @@ import androidx.media3.session.SessionToken
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -57,19 +60,32 @@ import com.michatec.radio.collection.CollectionAdapter
 import com.michatec.radio.collection.CollectionViewModel
 import com.michatec.radio.core.Collection
 import com.michatec.radio.core.Station
+import com.michatec.radio.databinding.FragmentPlayerBinding
 import com.michatec.radio.dialogs.AddStationDialog
 import com.michatec.radio.dialogs.FindStationDialog
 import com.michatec.radio.dialogs.YesNoDialog
-import com.michatec.radio.extensions.*
-import com.michatec.radio.databinding.FragmentPlayerBinding
-import com.michatec.radio.helpers.*
+import com.michatec.radio.extensions.cancelSleepTimer
+import com.michatec.radio.extensions.play
+import com.michatec.radio.extensions.playStreamDirectly
+import com.michatec.radio.extensions.requestMetadataHistory
+import com.michatec.radio.extensions.requestSleepTimerRemaining
+import com.michatec.radio.extensions.startSleepTimer
+import com.michatec.radio.helpers.BackupHelper
+import com.michatec.radio.helpers.CollectionHelper
+import com.michatec.radio.helpers.DownloadHelper
+import com.michatec.radio.helpers.NetworkHelper
+import com.michatec.radio.helpers.PreferencesHelper
+import com.michatec.radio.helpers.UiHelper
+import com.michatec.radio.helpers.UpdateHelper
 import com.michatec.radio.ui.LayoutHolder
 import com.michatec.radio.ui.PlayerState
 import com.michatec.radio.ui.ShaderEffectView
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import java.util.*
+import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 /*
@@ -900,7 +916,7 @@ class PlayerFragment : Fragment(),
      */
     private fun checkForUpdates() {
         val url = getString(R.string.snackbar_github_update_check_url)
-        val request = StringRequest(Request.Method.GET, url, { reply ->
+        val request = object : StringRequest(Method.GET, url, { reply ->
             val latestVersion = Gson().fromJson(reply, JsonObject::class.java).get("tag_name").asString
             val current = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     activity?.packageManager?.getPackageInfo(requireActivity().packageName, PackageManager.PackageInfoFlags.of(0))?.versionName
@@ -945,7 +961,13 @@ class PlayerFragment : Fragment(),
             }
         }, { error ->
             Log.w(TAG, "Update check failed", error)
-        })
+        }) {
+            override fun getHeaders(): Map<String, String> {
+                val params = HashMap<String, String>()
+                params["User-Agent"] = Keys.USER_AGENT
+                return params
+            }
+        }
 
         request.tag = TAG
         queue.add(request)

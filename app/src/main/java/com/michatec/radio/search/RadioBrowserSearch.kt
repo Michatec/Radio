@@ -63,7 +63,7 @@ class RadioBrowserSearch(private var radioBrowserSearchListener: RadioBrowserSea
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String> {
                 val params = HashMap<String, String>()
-                params["User-Agent"] = "$Keys.APPLICATION_NAME ${BuildConfig.VERSION_NAME}"
+                params["User-Agent"] = Keys.USER_AGENT
                 return params
             }
         }
