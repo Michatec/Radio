@@ -42,6 +42,13 @@
     <string name="dialog_yes_no_positive_button_remove_station">Remove</string>
     <string name="dialog_yes_no_positive_button_update_covers">Update</string>
 
+    <!-- Custom Cast Dialog -->
+    <string name="cast_connected_to">Connected with</string>
+    <string name="cast_stop_casting">Stop casting</string>
+    <string name="cast_cancel">Cancel</string>
+    <string name="cast_chooser_title">Cast to</string>
+    <string name="cast_no_devices">No devices found</string>
+
     <!-- Fragment -->
     <string name="fragment_settings_title">Settings</string>
 

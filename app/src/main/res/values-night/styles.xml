@@ -28,7 +28,8 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
-    <style name="CustomCastExpandedControllerStyle" parent="CastExpandedController">
+    <style name="CustomCastExpandedControllerStyle" parent="Theme.AppCompat.NoActionBar">
+        <item name="castExpandedControllerStyle">@style/CastExpandedController</item>
         <item name="android:windowBackground">#FFFFFF</item>
         <item name="castBackground">#FFFFFF</item>
         <item name="castButtonColor">#FF495D92</item>

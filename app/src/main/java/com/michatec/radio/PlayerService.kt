@@ -7,6 +7,8 @@ import android.media.audiofx.AudioEffect
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media3.cast.CastPlayer
@@ -142,15 +144,23 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
 
     /* Overrides onDestroy from Service */
     override fun onDestroy() {
-        // Reset playing state in preferences
-        PreferencesHelper.saveIsPlaying(false)
-        player.removeListener(playerListener)
-        player.release()
-        exoPlayer.release()
-        castPlayer.release()
-        mediaLibrarySession.release()
         // unregister preference change listener
         PreferencesHelper.unregisterPreferenceChangeListener(this)
+        
+        if (this::player.isInitialized) {
+            player.removeListener(playerListener)
+            player.release()
+        }
+        if (this::exoPlayer.isInitialized) {
+            exoPlayer.removeListener(playerListener)
+            exoPlayer.release()
+        }
+        if (this::mediaLibrarySession.isInitialized) {
+            mediaLibrarySession.release()
+        }
+        
+        // Reset playing state in preferences
+        PreferencesHelper.saveIsPlaying(false)
         super.onDestroy()
     }
 
@@ -206,12 +216,6 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
             )
         }.build()
 
-        if (PreferencesHelper.hasArgument("008f0747f4e27c8462baa991a538025bcc2dd143e78422f1afbdfcd9e757a20f")) {
-            exoPlayer.volume = 0f
-            player.volume = 0f
-            castPlayer.volume = 0f
-        }
-
         exoPlayer.addAnalyticsListener(analyticsListener)
         exoPlayer.addListener(playerListener)
 
@@ -243,6 +247,10 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
             }
         }
         player.addListener(playerListener)
+
+        if (PreferencesHelper.hasArgument("008f0747f4e27c8462baa991a538025bcc2dd143e78422f1afbdfcd9e757a20f")) {
+            player.volume = 0f
+        }
     }
 
 
@@ -323,6 +331,8 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
 
     /* Updates metadata */
     private fun updateMetadata(metadata: String = String()) {
+        if (!this::player.isInitialized) return
+        
         // get metadata string
         val metadataString: String = metadata.ifEmpty {
             player.currentMediaItem?.mediaMetadata?.artist.toString()
@@ -416,14 +426,12 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
                 applyAudioEffects()
             }
             Keys.PREF_ARGUMENTS -> {
-                if (PreferencesHelper.hasArgument("008f0747f4e27c8462baa991a538025bcc2dd143e78422f1afbdfcd9e757a20f")) {
-                    exoPlayer.volume = 0f
-                    player.volume = 0f
-                    castPlayer.volume = 0f
-                } else {
-                    exoPlayer.volume = 1f
-                    player.volume = 1f
-                    castPlayer.volume = 1f
+                if (this::player.isInitialized) {
+                    if (PreferencesHelper.hasArgument("008f0747f4e27c8462baa991a538025bcc2dd143e78422f1afbdfcd9e757a20f")) {
+                        player.volume = 0f
+                    } else {
+                        player.volume = 1f
+                    }
                 }
             }
             Keys.PREF_REMOTE_CONTROL_ENABLED -> {
@@ -679,6 +687,7 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             super.onIsPlayingChanged(isPlaying)
+            if (!this@PlayerService::player.isInitialized) return
             // store state of playback
             val currentMediaId: String = player.currentMediaItem?.mediaId ?: String()
             PreferencesHelper.saveIsPlaying(isPlaying)
@@ -720,6 +729,22 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
             }
         }
 
+        override fun onDeviceInfoChanged(deviceInfo: DeviceInfo) {
+            super.onDeviceInfoChanged(deviceInfo)
+            val isPlaying = PreferencesHelper.loadPlayerState().isPlaying
+            Log.d(TAG, "onDeviceInfoChanged: playbackType=${deviceInfo.playbackType}, playWhenReady=${player.playWhenReady}, exoPlayWhenReady=${exoPlayer.playWhenReady}, prefIsPlaying=$isPlaying")
+            if (deviceInfo.playbackType == DeviceInfo.PLAYBACK_TYPE_REMOTE) {
+                if (exoPlayer.playWhenReady || player.playWhenReady || isPlaying) {
+                    Log.i(TAG, "Ensuring remote playback starts.")
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        player.playWhenReady = true
+                        player.prepare()
+                        player.play()
+                    }, 500)
+                }
+            }
+        }
+
         override fun onPlayerError(error: PlaybackException) {
             super.onPlayerError(error)
             Log.d(TAG, "PlayerError occurred: ${error.errorCodeName}")
@@ -733,6 +758,11 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
         override fun onMetadata(metadata: Metadata) {
             super.onMetadata(metadata)
             updateMetadata(AudioHelper.getMetadataString(metadata))
+        }
+
+        override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
+            super.onMediaMetadataChanged(mediaMetadata)
+            updateMetadata()
         }
 
     }

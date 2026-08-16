@@ -36,6 +36,14 @@
     <string name="dialog_yes_no_positive_button_default">はい</string>
     <string name="dialog_yes_no_positive_button_remove_station">削除</string>
     <string name="dialog_yes_no_positive_button_update_covers">更新</string>
+
+    <!-- Custom Cast Dialog -->
+    <string name="cast_connected_to">接続先:</string>
+    <string name="cast_stop_casting">キャストを停止</string>
+    <string name="cast_cancel">キャンセル</string>
+    <string name="cast_chooser_title">キャスト先</string>
+    <string name="cast_no_devices">デバイスが見つかりません</string>
+
     <!-- フラグメント -->
     <string name="fragment_settings_title">設定</string>
     <!-- 通知 -->

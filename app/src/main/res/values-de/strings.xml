@@ -37,6 +37,14 @@
     <string name="dialog_yes_no_positive_button_default">Ja</string>
     <string name="dialog_yes_no_positive_button_remove_station">Entfernen</string>
     <string name="dialog_yes_no_positive_button_update_covers">Aktualisieren</string>
+
+    <!-- Custom Cast Dialog -->
+    <string name="cast_connected_to">Verbunden mit</string>
+    <string name="cast_stop_casting">Streaming beenden</string>
+    <string name="cast_cancel">Abbrechen</string>
+    <string name="cast_chooser_title">Streamen auf</string>
+    <string name="cast_no_devices">Keine Geräte gefunden</string>
+
     <!-- Fragment -->
     <string name="fragment_settings_title">Einstellungen</string>
     <!-- Notification -->

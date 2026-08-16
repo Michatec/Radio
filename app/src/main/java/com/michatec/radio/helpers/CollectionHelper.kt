@@ -644,6 +644,8 @@ object CollectionHelper {
         val mediaMetadata = MediaMetadata.Builder().apply {
             setTitle(station.name)
             setArtist(station.name)
+            setAlbumArtist(station.name)
+            setDisplayTitle(station.name)
             
             // Set artwork URI for casting (remote devices need a public URL)
             if (station.remoteImageLocation.isNotEmpty()) {

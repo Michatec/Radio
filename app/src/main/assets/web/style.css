@@ -93,6 +93,7 @@ body.light-theme .current-station-info {
     align-items: center;
     gap: 8px;
     margin-bottom: 4px;
+    overflow: hidden;
 }
 
 .current-name {
@@ -100,19 +101,38 @@ body.light-theme .current-station-info {
     font-weight: 800;
     color: var(--accent-color);
     text-shadow: var(--accent-glow);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .current-metadata {
     font-size: 0.95rem;
     font-weight: 500;
     opacity: 0.6;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     color: var(--text-color);
+}
+
+/* Marquee Styles */
+.marquee-container {
+    overflow: hidden;
+    white-space: nowrap;
+    flex: 1;
+    position: relative;
+}
+
+.marquee-content {
+    display: inline-block;
+    white-space: nowrap;
+    min-width: 100%;
+}
+
+@media (max-width: 600px) {
+    .animate-marquee {
+        animation: marquee 15s linear infinite;
+    }
+}
+
+@keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
 }
 
 .current-img {

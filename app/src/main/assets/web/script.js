@@ -38,6 +38,17 @@ async function loadTranslations() {
     }
 }
 
+function checkOverflow(el) {
+    if (!el) return;
+    el.classList.remove('animate-marquee');
+    setTimeout(() => {
+        const container = el.parentElement;
+        if (container && el.scrollWidth > container.offsetWidth) {
+            el.classList.add('animate-marquee');
+        }
+    }, 50);
+}
+
 function updateStatusUI(data) {
     if (!data) return;
     lastStatusData = data;
@@ -56,6 +67,7 @@ function updateStatusUI(data) {
     if (data.error) {
         statusEl.innerText = t('status_error');
         currentNameEl.innerText = data.error;
+        checkOverflow(currentNameEl);
         return;
     }
 
@@ -77,8 +89,12 @@ function updateStatusUI(data) {
     const station = allStations.find(s => s.uuid === stationUuid);
     if (station) {
         currentNameEl.innerText = station.name;
+        checkOverflow(currentNameEl);
         if (currentStarEl) currentStarEl.classList.toggle('hidden', !data.starred);
-        if (currentMetadataEl) currentMetadataEl.innerText = data.metadata || "";
+        if (currentMetadataEl) {
+            currentMetadataEl.innerText = data.metadata || "";
+            checkOverflow(currentMetadataEl);
+        }
         if (currentImageEl) {
             let imageUrl = station.hasImage ? '/api/image/' + station.uuid : 'favicon.png';
             if (station.hasImage && authToken) {
@@ -99,8 +115,12 @@ function updateStatusUI(data) {
         } else {
             currentNameEl.innerText = t('status_loading');
         }
+        checkOverflow(currentNameEl);
         if (currentStarEl) currentStarEl.classList.add('hidden');
-        if (currentMetadataEl) currentMetadataEl.innerText = "";
+        if (currentMetadataEl) {
+            currentMetadataEl.innerText = "";
+            checkOverflow(currentMetadataEl);
+        }
         if (currentImageEl) currentImageEl.src = 'favicon.png';
     }
 
@@ -337,6 +357,11 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e =
         applyThemeUI(e.matches ? 'dark' : 'light');
     }
 });
+
+window.onresize = () => {
+    checkOverflow(document.getElementById('currentName'));
+    checkOverflow(document.getElementById('currentMetadata'));
+};
 
 const themeSelect = document.getElementById('themeSelect');
 themeSelect.onchange = () => {

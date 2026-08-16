@@ -36,6 +36,14 @@
     <string name="dialog_yes_no_positive_button_default">Ja</string>
     <string name="dialog_yes_no_positive_button_remove_station">Verwijder</string>
     <string name="dialog_yes_no_positive_button_update_covers">Bijwerken</string>
+
+    <!-- Custom Cast Dialog -->
+    <string name="cast_connected_to">Verbonden met</string>
+    <string name="cast_stop_casting">Stoppen met casten</string>
+    <string name="cast_cancel">Annuleren</string>
+    <string name="cast_chooser_title">Casten naar</string>
+    <string name="cast_no_devices">Geen apparaten gevonden</string>
+
     <!-- Fragment -->
     <string name="fragment_settings_title">Instellingen</string>
     <!-- Notification -->

@@ -36,6 +36,14 @@
     <string name="dialog_yes_no_positive_button_default">Tak</string>
     <string name="dialog_yes_no_positive_button_remove_station">Usuń</string>
     <string name="dialog_yes_no_positive_button_update_covers">Aktualizuj</string>
+
+    <!-- Custom Cast Dialog -->
+    <string name="cast_connected_to">Połączono z</string>
+    <string name="cast_stop_casting">Zatrzymaj przesyłanie</string>
+    <string name="cast_cancel">Anuluj</string>
+    <string name="cast_chooser_title">Prześlij do</string>
+    <string name="cast_no_devices">Nie znaleziono urządzeń</string>
+
     <!-- Fragment -->
     <string name="fragment_settings_title">Ustawienia</string>
     <!-- Notification -->

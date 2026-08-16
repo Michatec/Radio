@@ -3,9 +3,12 @@ package com.michatec.radio
 import android.content.Context
 import android.content.res.Configuration
 import android.view.Menu
+import androidx.core.view.MenuItemCompat
+import androidx.mediarouter.app.MediaRouteActionProvider
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.gms.cast.framework.media.widget.ExpandedControllerActivity
 import com.michatec.radio.helpers.PreferencesHelper
+import com.michatec.radio.ui.CustomCastDialogFactory
 import java.util.Locale
 
 class ExpandedControllerActivity : ExpandedControllerActivity() {
@@ -27,6 +30,11 @@ class ExpandedControllerActivity : ExpandedControllerActivity() {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.expanded_controller, menu)
         CastButtonFactory.setUpMediaRouteButton(this, menu, R.id.media_route_menu_item)
+
+        val item = menu.findItem(R.id.media_route_menu_item)
+        val actionProvider = MenuItemCompat.getActionProvider(item) as? MediaRouteActionProvider
+        actionProvider?.dialogFactory = CustomCastDialogFactory()
+
         return true
     }
 

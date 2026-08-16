@@ -36,6 +36,14 @@
     <string name="dialog_yes_no_positive_button_default">Так</string>
     <string name="dialog_yes_no_positive_button_remove_station">Видалити</string>
     <string name="dialog_yes_no_positive_button_update_covers">Оновити</string>
+
+    <!-- Custom Cast Dialog -->
+    <string name="cast_connected_to">Підключено до</string>
+    <string name="cast_stop_casting">Зупинити трансляцію</string>
+    <string name="cast_cancel">Скасувати</string>
+    <string name="cast_chooser_title">Транслювати на</string>
+    <string name="cast_no_devices">Пристроїв не знайдено</string>
+
     <!-- Fragment -->
     <string name="fragment_settings_title">Налаштування</string>
     <!-- Notification -->

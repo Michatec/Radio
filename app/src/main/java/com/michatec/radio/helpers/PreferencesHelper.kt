@@ -411,13 +411,6 @@ object PreferencesHelper {
         return sharedPreferences.getBoolean(Keys.PREF_REMOTE_CONTROL_ENABLED, false)
     }
 
-    /* Saves whether remote control is enabled */
-    fun saveRemoteControlEnabled(enabled: Boolean) {
-        sharedPreferences.edit {
-            putBoolean(Keys.PREF_REMOTE_CONTROL_ENABLED, enabled)
-        }
-    }
-
     /* Loads whether remote control authentication is enabled */
     fun loadRemoteControlAuthEnabled(): Boolean {
         return sharedPreferences.getBoolean(Keys.PREF_REMOTE_CONTROL_AUTH_ENABLED, false)

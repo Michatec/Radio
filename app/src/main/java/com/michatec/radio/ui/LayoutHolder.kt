@@ -134,6 +134,7 @@ class LayoutHolder(binding: FragmentPlayerBinding) {
         // Set up MediaRouteButton (Google Cast)
         mediaRouteButton?.let {
             CastButtonFactory.setUpMediaRouteButton(rootView.context, it)
+            it.dialogFactory = CustomCastDialogFactory()
         }
 
         // Apply custom theme color

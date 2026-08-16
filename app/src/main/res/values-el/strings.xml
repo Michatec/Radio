@@ -36,6 +36,14 @@
     <string name="dialog_yes_no_positive_button_default">Ναι</string>
     <string name="dialog_yes_no_positive_button_remove_station">Αφαίρεση</string>
     <string name="dialog_yes_no_positive_button_update_covers">Ενημέρωση</string>
+
+    <!-- Custom Cast Dialog -->
+    <string name="cast_connected_to">Συνδεδεμένο με</string>
+    <string name="cast_stop_casting">Διακοπή μετάδοσης</string>
+    <string name="cast_cancel">Ακύρωση</string>
+    <string name="cast_chooser_title">Μετάδοση σε</string>
+    <string name="cast_no_devices">Δεν βρέθηκαν συσκευές</string>
+
     <!-- Fragment -->
     <string name="fragment_settings_title">Ρυθμίσεις</string>
     <!-- Notification -->

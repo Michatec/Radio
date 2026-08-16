@@ -36,6 +36,14 @@
     <string name="dialog_yes_no_positive_button_default">Ja</string>
     <string name="dialog_yes_no_positive_button_remove_station">Fjern</string>
     <string name="dialog_yes_no_positive_button_update_covers">Opdater</string>
+
+    <!-- Custom Cast Dialog -->
+    <string name="cast_connected_to">Forbundet med</string>
+    <string name="cast_stop_casting">Stop afspilning</string>
+    <string name="cast_cancel">Annuller</string>
+    <string name="cast_chooser_title">Cast til</string>
+    <string name="cast_no_devices">Ingen enheder fundet</string>
+
     <!-- Fragment -->
     <string name="fragment_settings_title">Indstillinger</string>
     <!-- Notifikation -->
