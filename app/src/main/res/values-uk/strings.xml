@@ -216,4 +216,9 @@
     <string name="search_filter_favorites">Тільки улюблені</string>
     <string name="search_no_results">Станцій не знайдено.</string>
     <string name="descr_player_search_button">Пошук станцій</string>
+
+    <!-- About Screen -->
+    <string name="about_title">Про застосунок</string>
+    <string name="about_version">Версія %1$s</string>
+    <string name="about_description">Простий сучасний радіоплеєр.</string>
 </resources>

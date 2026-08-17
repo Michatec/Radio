@@ -215,4 +215,9 @@
     <string name="search_hint">Rechercher des stations…</string>
     <string name="search_filter_favorites">Favoris uniquement</string>
     <string name="search_no_results">Aucune station trouvée.</string>
+
+    <!-- About Screen -->
+    <string name="about_title">À propos</string>
+    <string name="about_version">Version %1$s</string>
+    <string name="about_description">Application radio simple et moderne.</string>
 </resources>

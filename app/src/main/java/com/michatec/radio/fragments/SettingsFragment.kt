@@ -429,6 +429,15 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             return@setOnPreferenceClickListener true
         }
 
+        // set up "About" preference
+        val preferenceAbout = Preference(context)
+        preferenceAbout.title = "${getString(R.string.about_title)} ${getString(R.string.app_name)}"
+        preferenceAbout.setIcon(R.drawable.ic_home_24dp)
+        preferenceAbout.summary = getString(R.string.about_description)
+        preferenceAbout.setOnPreferenceClickListener {
+            findNavController().navigate(R.id.action_settings_to_about)
+            return@setOnPreferenceClickListener true
+        }
 
         // set up "GitHub" preference
         val preferenceGitHub = Preference(context)
@@ -585,6 +594,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
         // setup preference screen
         screen.addPreference(preferenceAppVersion)
+        screen.addPreference(preferenceAbout)
         screen.addPreference(preferenceShareApp)
 
         screen.addPreference(preferenceCategoryGeneral)

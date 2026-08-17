@@ -216,4 +216,9 @@
     <string name="search_hint">Sender suchen…</string>
     <string name="search_filter_favorites">Nur Favoriten</string>
     <string name="search_no_results">Keine Sender gefunden.</string>
+
+    <!-- About Screen -->
+    <string name="about_title">Über</string>
+    <string name="about_version">Version %1$s</string>
+    <string name="about_description">Einfache moderne Radio-App.</string>
 </resources>

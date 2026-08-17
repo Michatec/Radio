@@ -216,4 +216,9 @@
     <string name="search_filter_favorites">Alleen favorieten</string>
     <string name="search_no_results">Geen zenders gevonden.</string>
     <string name="descr_player_search_button">Zenders zoeken</string>
+
+    <!-- About Screen -->
+    <string name="about_title">Over</string>
+    <string name="about_version">Versie %1$s</string>
+    <string name="about_description">Eenvoudige moderne radio-app.</string>
 </resources>

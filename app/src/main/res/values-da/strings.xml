@@ -214,4 +214,9 @@
     <string name="search_filter_favorites">Kun favoritter</string>
     <string name="search_no_results">Ingen stationer fundet.</string>
     <string name="descr_player_search_button">Søg stationer</string>
+
+    <!-- About Screen -->
+    <string name="about_title">Om</string>
+    <string name="about_version">Version %1$s</string>
+    <string name="about_description">Enkel moderne radio-app.</string>
 </resources>

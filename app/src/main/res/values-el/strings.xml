@@ -217,4 +217,9 @@
     <string name="search_hint">Αναζήτηση σταθμών…</string>
     <string name="search_filter_favorites">Μόνο αγαπημένα</string>
     <string name="search_no_results">Δεν βρέθηκαν σταθμοί.</string>
+
+    <!-- About Screen -->
+    <string name="about_title">Σχετικά</string>
+    <string name="about_version">Έκδοση %1$s</string>
+    <string name="about_description">Απλή σύγχρονη εφαρμογή ραδιοφώνου.</string>
 </resources>

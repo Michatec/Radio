@@ -38,6 +38,9 @@
         <action
             android:id="@+id/action_settings_to_license"
             app:destination="@id/license_destination" />
+        <action
+            android:id="@+id/action_settings_to_about"
+            app:destination="@id/about_destination" />
     </fragment>
 
     <!-- EQUALIZER -->
@@ -71,4 +74,10 @@
         android:id="@+id/license_destination"
         android:name="com.michatec.radio.fragments.LicenseFragment"
         android:label="@string/license_name" />
+
+    <!-- ABOUT -->
+    <fragment
+        android:id="@+id/about_destination"
+        android:name="com.michatec.radio.fragments.AboutFragment"
+        android:label="@string/about_title" />
 </navigation>

@@ -335,8 +335,14 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
         
         // get metadata string
         val metadataString: String = metadata.ifEmpty {
-            player.currentMediaItem?.mediaMetadata?.artist.toString()
+            player.currentMediaItem?.mediaMetadata?.artist?.toString() ?: ""
         }
+
+        // prevent adding empty or "null" strings
+        if (metadataString.isEmpty() || metadataString == "null") {
+            return
+        }
+
         // remove duplicates
         if (metadataHistory.contains(metadataString)) {
             metadataHistory.removeAll { it == metadataString }

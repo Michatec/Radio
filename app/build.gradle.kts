@@ -107,4 +107,5 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
     implementation(libs.aboutLibraries.compose)
+    implementation(libs.compose.material.icons.extended)
 }

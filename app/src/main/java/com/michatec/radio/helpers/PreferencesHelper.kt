@@ -8,6 +8,7 @@ import android.util.TypedValue
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.michatec.radio.Keys
 import com.michatec.radio.ui.PlayerState
 import java.security.MessageDigest.getInstance
@@ -180,14 +181,20 @@ object PreferencesHelper {
 
     /* Loads history of metadata from shared preferences */
     fun loadMetadataHistory(): MutableList<String> {
-        var metadataHistory: MutableList<String> = mutableListOf()
         val json: String =
             sharedPreferences.getString(Keys.PREF_PLAYER_METADATA_HISTORY, String()) ?: String()
         if (json.isNotEmpty()) {
-            val gson = Gson()
-            metadataHistory = gson.fromJson(json, metadataHistory::class.java)
+            return try {
+                val gson = Gson()
+                val type = object : TypeToken<MutableList<String>>() {}.type
+                val history: MutableList<String?>? = gson.fromJson(json, type)
+                history?.filterNotNull()?.filter { it.isNotEmpty() && it != "null" }?.toMutableList() ?: mutableListOf()
+            } catch (e: Exception) {
+                Log.e(TAG, "Error loading metadata history: $e")
+                mutableListOf()
+            }
         }
-        return metadataHistory
+        return mutableListOf()
     }
 
 
