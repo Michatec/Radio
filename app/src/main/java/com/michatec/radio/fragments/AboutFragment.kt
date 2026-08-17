@@ -2,9 +2,12 @@ package com.michatec.radio.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,8 +56,8 @@ import com.michatec.radio.ui.theme.RadioTheme
 class AboutFragment : Fragment() {
 
     override fun onCreateView(
-        inflater: android.view.LayoutInflater,
-        container: android.view.ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): android.view.View {
         return ComposeView(requireContext()).apply {
@@ -93,7 +96,8 @@ class AboutFragment : Fragment() {
                                     MaterialTheme.colorScheme.background
                                 )
                             )
-                        ),
+                        )
+                        .focusable(),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(
@@ -312,7 +316,8 @@ class AboutFragment : Fragment() {
                 .padding(
                     horizontal = 16.dp,
                     vertical = 8.dp
-                ),
+                )
+                .focusable(),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface
             ),
@@ -455,6 +460,7 @@ class AboutFragment : Fragment() {
                             )
                             context?.startActivity(intent)
                         }
+                        .focusable()
                     } else {
                         Modifier
                     }
