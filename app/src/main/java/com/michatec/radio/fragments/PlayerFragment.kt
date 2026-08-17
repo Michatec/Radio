@@ -1,4 +1,4 @@
-package com.michatec.radio
+package com.michatec.radio.fragments
 
 import android.Manifest
 import android.app.Activity
@@ -50,12 +50,16 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
-import com.google.android.material.timepicker.MaterialTimePicker.INPUT_MODE_KEYBOARD
 import com.google.android.material.timepicker.TimeFormat
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.michatec.radio.BuildConfig
+import com.michatec.radio.Keys
+import com.michatec.radio.NotificationSys
+import com.michatec.radio.PlayerService
+import com.michatec.radio.R
 import com.michatec.radio.collection.CollectionAdapter
 import com.michatec.radio.collection.CollectionViewModel
 import com.michatec.radio.core.Collection
@@ -81,12 +85,10 @@ import com.michatec.radio.ui.LayoutHolder
 import com.michatec.radio.ui.PlayerState
 import com.michatec.radio.ui.ShaderEffectView
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
 
 /*
  * PlayerFragment class
@@ -354,13 +356,14 @@ class PlayerFragment : Fragment(),
             collection = CollectionHelper.addStation(activity as Context, collection, station)
         } else {
             // detect content type on background thread
-            CoroutineScope(IO).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 val contentType: NetworkHelper.ContentType = NetworkHelper.detectContentType(station.getStreamUri())
                 // set content type
                 station.streamContent = contentType.type
                 // add station and save collection
-                withContext(Main) {
-                    collection = CollectionHelper.addStation(activity as Context, collection, station)
+                withContext(Dispatchers.Main) {
+                    collection =
+                        CollectionHelper.addStation(activity as Context, collection, station)
                 }
             }
         }
@@ -399,7 +402,10 @@ class PlayerFragment : Fragment(),
         if (activity?.packageManager?.hasSystemFeature(PackageManager.FEATURE_LEANBACK) == true) {
             findNavController().navigate(R.id.action_map_fragment_to_player_to_add_station)
         } else {
-            FindStationDialog(activity as Activity, this as FindStationDialog.FindStationDialogListener).show()
+            FindStationDialog(
+                activity as Activity,
+                this as FindStationDialog.FindStationDialogListener
+            ).show()
         }
     }
 
@@ -540,7 +546,7 @@ class PlayerFragment : Fragment(),
                         .setTimeFormat(TimeFormat.CLOCK_24H)
                         .setHour(0)
                         .setMinute(1)
-                        .setInputMode(INPUT_MODE_KEYBOARD)
+                        .setInputMode(MaterialTimePicker.INPUT_MODE_KEYBOARD)
                         .build()
 
                     timePicker.addOnPositiveButtonClickListener {
@@ -709,7 +715,7 @@ class PlayerFragment : Fragment(),
     private fun handleViewIntent() {
         val intentUri: Uri? = (activity as Activity).intent.data
         if (intentUri != null) {
-            CoroutineScope(IO).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 // get station list from intent source
                 val stationList: MutableList<Station> = mutableListOf()
                 val scheme: String = intentUri.scheme ?: String()
@@ -723,14 +729,22 @@ class PlayerFragment : Fragment(),
                     Log.i(TAG, "Radio was started to handle a local audio playlist.")
                     stationList.addAll(CollectionHelper.createStationListFromContentUri(activity as Context, intentUri))
                 }
-                withContext(Main) {
+                withContext(Dispatchers.Main) {
                     if (stationList.isNotEmpty()) {
                         // stop playback when adding a new station via intent
                         controller?.stop()
-                        AddStationDialog(activity as Activity, stationList, this@PlayerFragment as AddStationDialog.AddStationDialogListener).show()
+                        AddStationDialog(
+                            activity as Activity,
+                            stationList,
+                            this@PlayerFragment as AddStationDialog.AddStationDialogListener
+                        ).show()
                     } else {
                         // invalid address
-                        Toast.makeText(context, R.string.toastmessage_station_not_valid, Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            context,
+                            R.string.toastmessage_station_not_valid,
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
             }
@@ -926,7 +940,8 @@ class PlayerFragment : Fragment(),
             if (latestVersion != current && !BuildConfig.IS_DEBUG_ENABLED) {
                 // We have an update available, tell our user about it
                 view?.let {
-                    val snackbar = Snackbar.make(it, getString(R.string.app_name) + " " + latestVersion + " " + getString(R.string.snackbar_update_available), 10000)
+                    val snackbar = Snackbar.make(it, getString(R.string.app_name) + " " + latestVersion + " " + getString(
+                        R.string.snackbar_update_available), 10000)
                         .setAction(R.string.snackbar_show) {
                             val releaseurl = getString(R.string.snackbar_url_app_home_page)
                             val i = Intent(Intent.ACTION_VIEW)

@@ -32,13 +32,12 @@ import com.google.android.material.textfield.TextInputEditText
 import com.michatec.radio.Keys
 import com.michatec.radio.R
 import com.michatec.radio.core.Station
+import com.michatec.radio.databinding.FragmentPlayerBinding
 import com.michatec.radio.helpers.DateTimeHelper
 import com.michatec.radio.helpers.ImageHelper
 import com.michatec.radio.helpers.PreferencesHelper
 import com.michatec.radio.helpers.ThemeHelper
-import com.michatec.radio.databinding.FragmentPlayerBinding
-import com.michatec.radio.helpers.*
-import java.util.Locale
+import com.michatec.radio.helpers.UiHelper
 
 
 /*
@@ -185,20 +184,12 @@ class LayoutHolder(binding: FragmentPlayerBinding) {
                 // show only the codec when the bitrate is at "0" from radio-browser.info API
                 station.codec
             } else {
-                val kiloBytesPerSecond = station.bitrate / 8F
-                val dataRateString = if (kiloBytesPerSecond >= 1000) {
-                    String.format(Locale.ROOT, "%.2f mb/s", kiloBytesPerSecond / 1000F)
-                } else {
-                    String.format(Locale.ROOT, "%.0f kb/s", kiloBytesPerSecond)
-                }
                 // show the bitrate and codec if the result is available in the radio-browser.info API
                 buildString {
                     append(station.codec)
                     append(" | ")
                     append(station.bitrate)
                     append("kbps")
-                    append(" | ")
-                    append(dataRateString)
                 }
             }
         } else {

@@ -46,6 +46,8 @@
 
     <!-- Fragment -->
     <string name="fragment_settings_title">Indstillinger</string>
+    <string name="license_name">Licenser</string>
+    <string name="player_name">Player</string>
     <!-- Notifikation -->
     <string name="notification_now_playing_channel_name">Afspilningskontrol</string>
     <string name="notification_play">Afspil</string>
@@ -79,6 +81,8 @@
     <string name="pref_general_title">Generelt</string>
     <string name="pref_license_title">Denne app er open source</string>
     <string name="pref_license_summary">Licenseret under GPLv3-licensen</string>
+    <string name="pref_license_app_title">Tredjepartslicenser</string>
+    <string name="pref_license_app_summary">Open source-biblioteker brugt i dette projekt</string>
     <string name="pref_links_title">Links</string>
     <string name="pref_m3u_export_summary">Gem stationer som M3U-playlister til brug i andre afspillere.</string>
     <string name="pref_m3u_export_title">Eksportér M3U-playliste</string>

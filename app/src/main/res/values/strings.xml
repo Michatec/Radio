@@ -51,6 +51,8 @@
 
     <!-- Fragment -->
     <string name="fragment_settings_title">Settings</string>
+    <string name="license_name">Licenses</string>
+    <string name="player_name">Player</string>
 
     <!-- Notification -->
     <string name="notification_now_playing_channel_name">Playback Controls</string>
@@ -138,6 +140,8 @@
     <string name="pref_github_summary" translatable="false">github.com/michatec/Radio</string>
     <string name="pref_license_title">This application is open source</string>
     <string name="pref_license_summary">Licensed under the GPLv3 License</string>
+    <string name="pref_license_app_title">Third-Party Licenses</string>
+    <string name="pref_license_app_summary">Open source libraries used in this project</string>
     <string name="pref_security_title">Security</string>
     <string name="pref_security_summary">Learn more about the security of this application</string>
     <string name="pref_links_title">Links</string>

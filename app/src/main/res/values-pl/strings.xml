@@ -46,6 +46,8 @@
 
     <!-- Fragment -->
     <string name="fragment_settings_title">Ustawienia</string>
+    <string name="license_name">Licencje</string>
+    <string name="player_name">Odtwarzacz</string>
     <!-- Notification -->
     <string name="notification_now_playing_channel_name">Sterowanie odtwarzaniem</string>
     <string name="notification_play">Odtwarzaj</string>
@@ -83,6 +85,8 @@
     <string name="pref_pls_export_title">Eksportuj PLS</string>
     <string name="pref_license_title">Ta aplikacja jest open source</string>
     <string name="pref_license_summary">Licencjonowane na licencji GPLv3</string>
+    <string name="pref_license_app_title">Licencje stron trzecich</string>
+    <string name="pref_license_app_summary">Biblioteki open source użyte w tym projekcie</string>
     <string name="pref_links_title">Linki</string>
     <string name="pref_maintenance_title">Zarządzanie</string>
     <string name="pref_station_export_summary">Zapisz do pamięci urządzenia całą kolekcję stacji radiowych, w tym obrazy.</string>

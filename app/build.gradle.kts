@@ -1,7 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.serialization)
-    id("kotlin-parcelize")
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.aboutLibraries)
+    alias(libs.plugins.composeCompiler)
 }
 
 android {
@@ -24,6 +26,7 @@ android {
     buildFeatures {
         buildConfig = true
         viewBinding = true
+        compose = true
     }
 
     buildTypes {
@@ -65,6 +68,7 @@ android {
 dependencies {
     // Google Stuff //
     implementation(libs.material)
+    implementation(libs.material3)
     implementation(libs.gson)
     implementation(libs.play.services.cast.framework)
 
@@ -96,5 +100,11 @@ dependencies {
 
     // Volley HTTP request //
     implementation(libs.volley)
-    implementation(libs.material3)
+    
+    // Compose //
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.material3)
+    implementation(libs.aboutLibraries.compose)
 }

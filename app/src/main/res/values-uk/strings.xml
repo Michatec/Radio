@@ -46,6 +46,8 @@
 
     <!-- Fragment -->
     <string name="fragment_settings_title">Налаштування</string>
+    <string name="license_name">Ліцензії</string>
+    <string name="player_name">Плеєр</string>
     <!-- Notification -->
     <string name="notification_now_playing_channel_name">Керування відтворенням</string>
     <string name="notification_play">Відтворити</string>
@@ -79,6 +81,8 @@
     <string name="pref_general_title">Загальні</string>
     <string name="pref_license_title">Цей застосунок має відкритий початковий код</string>
     <string name="pref_license_summary">На умовах ліцензії GPLv3</string>
+    <string name="pref_license_app_title">Ліцензії третіх сторін</string>
+    <string name="pref_license_app_summary">Бібліотеки з відкритим кодом, що використовуються в цьому проекті</string>
     <string name="pref_links_title">Посилання</string>
     <string name="pref_m3u_export_summary">Збережіть свої радіостанції у файлі списку відтворення M3U, який можна імпортувати в інші програвачі.</string>
     <string name="pref_m3u_export_title">Експорт M3U</string>

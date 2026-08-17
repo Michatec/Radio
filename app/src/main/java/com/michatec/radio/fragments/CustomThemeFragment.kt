@@ -1,5 +1,6 @@
-package com.michatec.radio
+package com.michatec.radio.fragments
 
+import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.pm.PackageManager
@@ -18,6 +19,7 @@ import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.michatec.radio.R
 import com.michatec.radio.databinding.ElementColorCircleBinding
 import com.michatec.radio.databinding.FragmentCustomThemeBinding
 import com.michatec.radio.helpers.PreferencesHelper
@@ -142,7 +144,7 @@ class CustomThemeFragment : Fragment() {
 
     private fun copyToClipboard(text: String) {
         val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = android.content.ClipData.newPlainText(getString(R.string.hex_code), text)
+        val clip = ClipData.newPlainText(getString(R.string.hex_code), text)
         clipboard.setPrimaryClip(clip)
         Toast.makeText(requireContext(), R.string.toastmessage_copied_to_clipboard, Toast.LENGTH_SHORT).show()
     }
@@ -195,7 +197,7 @@ class CustomThemeFragment : Fragment() {
             val color = colors[position]
             val drawable = holder.binding.colorCircle.background as GradientDrawable
             drawable.setColor(color)
-            
+
             // Set selection state
             holder.itemView.isSelected = (position == selectedPosition)
         }

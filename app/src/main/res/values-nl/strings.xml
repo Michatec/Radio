@@ -46,6 +46,8 @@
 
     <!-- Fragment -->
     <string name="fragment_settings_title">Instellingen</string>
+    <string name="license_name">Licenties</string>
+    <string name="player_name">Speler</string>
     <!-- Notification -->
     <string name="notification_now_playing_channel_name">Afspeelbediening</string>
     <string name="notification_play">Afspelen</string>
@@ -83,6 +85,8 @@
     <string name="pref_pls_export_title">Exporteer PLS</string>
     <string name="pref_license_title">Deze applicatie is open source</string>
     <string name="pref_license_summary">Gelicentieerd onder de GPLv3 licentie</string>
+    <string name="pref_license_app_title">Licenties van derden</string>
+    <string name="pref_license_app_summary">Open-source bibliotheken gebruikt in dit project</string>
     <string name="pref_links_title">Links</string>
     <string name="pref_maintenance_title">Onderhoud</string>
     <string name="pref_station_export_summary">Sla de gehele collectie radiozenders, inclusief afbeeldingen, in de apparaatopslag op.</string>

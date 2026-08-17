@@ -46,6 +46,8 @@
 
     <!-- フラグメント -->
     <string name="fragment_settings_title">設定</string>
+    <string name="license_name">ライセンス</string>
+    <string name="player_name">プレイヤー</string>
     <!-- 通知 -->
     <string name="notification_now_playing_channel_name">再生コントロール</string>
     <string name="notification_play">再生</string>
@@ -79,6 +81,8 @@
     <string name="pref_general_title">一般</string>
     <string name="pref_license_title">このアプリはオープンソースです</string>
     <string name="pref_license_summary">GPLv3ライセンスで提供されています</string>
+    <string name="pref_license_app_title">サードパーティライセンス</string>
+    <string name="pref_license_app_summary">このプロジェクトで使用されているオープンソースライブラリ</string>
     <string name="pref_links_title">リンク</string>
     <string name="pref_m3u_export_summary">ラジオ局をM3Uプレイリストとして保存し、他のプレイヤーにインポートできます。</string>
     <string name="pref_m3u_export_title">M3Uプレイリストをエクスポート</string>

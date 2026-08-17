@@ -1,4 +1,4 @@
-package com.michatec.radio
+package com.michatec.radio.fragments
 
 import android.os.Bundle
 import android.view.View
@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SeekBarPreference
+import com.michatec.radio.Keys
+import com.michatec.radio.R
 import com.michatec.radio.helpers.PreferencesHelper
 
 /*

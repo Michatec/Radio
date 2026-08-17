@@ -2,17 +2,23 @@ package com.michatec.radio.search
 
 import android.content.Context
 import android.util.Log
-import com.android.volley.*
+import com.android.volley.AuthFailureError
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.android.volley.RetryPolicy
+import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
-import org.json.JSONArray
-import com.michatec.radio.BuildConfig
 import com.michatec.radio.Keys
 import com.michatec.radio.helpers.NetworkHelper
 import com.michatec.radio.helpers.PreferencesHelper
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import org.json.JSONArray
 
 
 /*

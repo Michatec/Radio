@@ -7,8 +7,8 @@
     <!-- PLAYER -->
     <fragment
         android:id="@+id/player_destination"
-        android:name="com.michatec.radio.PlayerFragment"
-        android:label="Player"
+        android:name="com.michatec.radio.fragments.PlayerFragment"
+        android:label="@string/player_name"
         tools:layout="@layout/fragment_player">
         <action
             android:id="@+id/action_map_fragment_to_settings_fragment"
@@ -24,8 +24,8 @@
     <!-- SETTINGS -->
     <fragment
         android:id="@+id/settings_destination"
-        android:name="com.michatec.radio.SettingsFragment"
-        android:label="Settings">
+        android:name="com.michatec.radio.fragments.SettingsFragment"
+        android:label="@string/fragment_settings_title">
         <action
             android:id="@+id/action_settings_to_equalizer"
             app:destination="@id/equalizer_destination" />
@@ -35,31 +35,40 @@
         <action
             android:id="@+id/action_settings_to_cstheme"
             app:destination="@id/custom_theme_destination" />
+        <action
+            android:id="@+id/action_settings_to_license"
+            app:destination="@id/license_destination" />
     </fragment>
 
     <!-- EQUALIZER -->
     <fragment
         android:id="@+id/equalizer_destination"
-        android:name="com.michatec.radio.EqualizerFragment"
-        android:label="Equalizer" />
+        android:name="com.michatec.radio.fragments.EqualizerFragment"
+        android:label="@string/pref_equalizer_title" />
 
     <!-- VISUALIZER -->
     <fragment
         android:id="@+id/visualizer_destination"
-        android:name="com.michatec.radio.VisualizerFragment"
-        android:label="Visualizer" />
+        android:name="com.michatec.radio.fragments.VisualizerFragment"
+        android:label="@string/pref_visualizer_title" />
 
     <!-- ADD STATION (TV) -->
     <fragment
         android:id="@+id/add_station_destination"
-        android:name="com.michatec.radio.AddStationFragment"
-        android:label="Add Station"
+        android:name="com.michatec.radio.fragments.AddStationFragment"
+        android:label="@string/dialog_add_station_title"
         tools:layout="@layout/dialog_find_station" />
 
     <!-- CUSTOM THEME -->
     <fragment
         android:id="@+id/custom_theme_destination"
-        android:name="com.michatec.radio.CustomThemeFragment"
-        android:label="Custom Theme"
+        android:name="com.michatec.radio.fragments.CustomThemeFragment"
+        android:label="@string/pref_custom_theme_title"
         tools:layout="@layout/fragment_custom_theme" />
+
+    <!-- LICENSE -->
+    <fragment
+        android:id="@+id/license_destination"
+        android:name="com.michatec.radio.fragments.LicenseFragment"
+        android:label="@string/license_name" />
 </navigation>

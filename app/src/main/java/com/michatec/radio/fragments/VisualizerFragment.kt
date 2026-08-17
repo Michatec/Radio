@@ -1,4 +1,4 @@
-package com.michatec.radio
+package com.michatec.radio.fragments
 
 import android.content.ComponentName
 import android.os.Bundle
@@ -10,10 +10,14 @@ import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
+import androidx.media3.session.SessionResult
 import androidx.media3.session.SessionToken
 import androidx.preference.PreferenceFragmentCompat
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
+import com.michatec.radio.Keys
+import com.michatec.radio.PlayerService
+import com.michatec.radio.R
 import com.michatec.radio.extensions.requestVisualizerData
 import com.michatec.radio.helpers.ExtrasHelper
 
@@ -42,7 +46,7 @@ class VisualizerFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         val context = preferenceManager.context
         val screen = preferenceManager.createPreferenceScreen(context)
-        
+
         visualizerPref = ExtrasHelper.VisualizerPreference(context)
         visualizerPref?.key = "visualizer_key"
         screen.addPreference(visualizerPref!!)
@@ -73,7 +77,10 @@ class VisualizerFragment : PreferenceFragmentCompat() {
     private fun initializeController() {
         controllerFuture = MediaController.Builder(
             requireContext(),
-            SessionToken(requireContext(), ComponentName(requireContext(), PlayerService::class.java))
+            SessionToken(
+                requireContext(),
+                ComponentName(requireContext(), PlayerService::class.java)
+            )
         ).buildAsync()
         controllerFuture.addListener({
             Log.d(TAG, "MediaController connected: ${controller != null}")
@@ -94,7 +101,7 @@ class VisualizerFragment : PreferenceFragmentCompat() {
                 resultFuture.addListener({
                     try {
                         val result = resultFuture.get()
-                        if (result.resultCode == androidx.media3.session.SessionResult.RESULT_SUCCESS) {
+                        if (result.resultCode == SessionResult.RESULT_SUCCESS) {
                             val data = result.extras.getFloatArray(Keys.EXTRA_VISUALIZER_DATA)
                             if (data != null && data.isNotEmpty()) {
                                 visualizerPref?.update(data)

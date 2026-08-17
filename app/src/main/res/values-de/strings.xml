@@ -47,6 +47,8 @@
 
     <!-- Fragment -->
     <string name="fragment_settings_title">Einstellungen</string>
+    <string name="license_name">Lizenzen</string>
+    <string name="player_name">Player</string>
     <!-- Notification -->
     <string name="notification_now_playing_channel_name">Wiedergabesteuerung</string>
     <string name="notification_play">Wiedergabe</string>
@@ -89,6 +91,8 @@
     <string name="pref_language_en" translatable="false">🇬🇧 Englisch</string>
     <string name="pref_license_title">Diese Anwendung ist Open Source</string>
     <string name="pref_license_summary">Lizenziert unter der GPLv3 License</string>
+    <string name="pref_license_app_title">Drittanbieter-Lizenzen</string>
+    <string name="pref_license_app_summary">In diesem Projekt verwendete Open-Source-Bibliotheken</string>
     <string name="pref_links_title">Links</string>
     <string name="pref_m3u_export_summary">Radiosender in einer M3U-Playlistdatei sichern, die in andere Player importiert werden können.</string>
     <string name="pref_m3u_export_title">M3U-Playlist exportieren</string>

@@ -1,18 +1,19 @@
-package com.michatec.radio
+package com.michatec.radio.fragments
 
+import android.Manifest
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
@@ -22,6 +23,11 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.snackbar.Snackbar
+import com.michatec.radio.BuildConfig
+import com.michatec.radio.Keys
+import com.michatec.radio.NotificationSys
+import com.michatec.radio.PlayerService
+import com.michatec.radio.R
 import com.michatec.radio.dialogs.ErrorDialog
 import com.michatec.radio.dialogs.LanguageSelectionDialog
 import com.michatec.radio.dialogs.PresetSelectionDialog
@@ -35,12 +41,11 @@ import com.michatec.radio.helpers.MarqueeSwitchPreference
 import com.michatec.radio.helpers.NetworkHelper
 import com.michatec.radio.helpers.PreferencesHelper
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
 
 /*
  * SettingsFragment class
@@ -290,7 +295,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             getString(R.string.pref_remote_control_summary)
         }
         preferenceRemoteControl.setDefaultValue(PreferencesHelper.loadRemoteControlEnabled())
-        
+
         // set up "Remote Control Auth" preference
         val preferenceRemoteControlAuth = MarqueeSwitchPreference(context)
         preferenceRemoteControlAuth.title = getString(R.string.pref_remote_control_auth_title)
@@ -413,7 +418,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         val preferenceAppVersion = Preference(context)
         preferenceAppVersion.title = getString(R.string.pref_app_version_title)
         preferenceAppVersion.setIcon(R.drawable.ic_info_24dp)
-        preferenceAppVersion.summary = "${getString(R.string.pref_app_version_summary)} ${BuildConfig.VERSION_NAME} (${getString(R.string.app_version_name)})"
+        preferenceAppVersion.summary = "${getString(R.string.pref_app_version_summary)} ${BuildConfig.VERSION_NAME} (${getString(
+            R.string.app_version_name)})"
         preferenceAppVersion.setOnPreferenceClickListener {
             // copy to clipboard
             val clip: ClipData = ClipData.newPlainText("simple text", preferenceAppVersion.summary)
@@ -451,6 +457,16 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 data = "https://github.com/michatec/Radio/blob/master/LICENSE.md".toUri()
             }
             startActivity(intent)
+            return@setOnPreferenceClickListener true
+        }
+
+        // set up "Third-Party Licenses" preference
+        val preferenceLicenseApp = Preference(context)
+        preferenceLicenseApp.title = getString(R.string.pref_license_app_title)
+        preferenceLicenseApp.setIcon(R.drawable.ic_license_app_24dp)
+        preferenceLicenseApp.summary = getString(R.string.pref_license_app_summary)
+        preferenceLicenseApp.setOnPreferenceClickListener {
+            findNavController().navigate(R.id.action_settings_to_license)
             return@setOnPreferenceClickListener true
         }
 
@@ -533,7 +549,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.pref_share_app_share_text))
             }, null)
             startActivity(share)
-            if (!isAndroidTV && isPermissionGranted(activity as Context, android.Manifest.permission.POST_NOTIFICATIONS)) {
+            if (!isAndroidTV && isPermissionGranted(activity as Context, Manifest.permission.POST_NOTIFICATIONS)) {
                 NotificationSys.showNotification(
                     context,
                     getString(R.string.pref_share_app_thank_title),
@@ -577,7 +593,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         preferenceCategoryGeneral.addPreference(preferenceCustomThemeEnabled)
         preferenceCategoryGeneral.addPreference(preferenceCustomTheme)
 
-        if (!isAndroidTV && isPermissionGranted(activity as Context, android.Manifest.permission.POST_NOTIFICATIONS)) {
+        if (!isAndroidTV && isPermissionGranted(activity as Context, Manifest.permission.POST_NOTIFICATIONS)) {
             preferenceCategoryGeneral.addPreference(preferenceTestNotification)
         }
 
@@ -613,6 +629,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         screen.addPreference(preferenceCategoryLinks)
         preferenceCategoryLinks.addPreference(preferenceGitHub)
         preferenceCategoryLinks.addPreference(preferenceLicense)
+        preferenceCategoryLinks.addPreference(preferenceLicenseApp)
         preferenceCategoryLinks.addPreference(preferenceSecurity)
 
         preferenceScreen = screen
@@ -675,22 +692,22 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     /* Register the ActivityResultLauncher for the save m3u dialog */
     private val requestSaveM3uLauncher =
-        registerForActivityResult(StartActivityForResult(), this::requestSaveM3uResult)
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult(), this::requestSaveM3uResult)
 
 
     /* Register the ActivityResultLauncher for the save pls dialog */
     private val requestSavePlsLauncher =
-        registerForActivityResult(StartActivityForResult(), this::requestSavePlsResult)
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult(), this::requestSavePlsResult)
 
 
     /* Register the ActivityResultLauncher for the backup dialog */
     private val requestBackupCollectionLauncher =
-        registerForActivityResult(StartActivityForResult(), this::requestBackupCollectionResult)
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult(), this::requestBackupCollectionResult)
 
 
     /* Register the ActivityResultLauncher for the restore dialog */
     private val requestRestoreCollectionLauncher =
-        registerForActivityResult(StartActivityForResult(), this::requestRestoreCollectionResult)
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult(), this::requestRestoreCollectionResult)
 
 
     /* Pass the activity result for the save m3u dialog */
@@ -701,7 +718,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             val targetUri: Uri? = result.data?.data
             if (targetUri != null && sourceUri != null) {
                 // copy file async (= fire & forget - no return value needed)
-                CoroutineScope(IO).launch {
+                CoroutineScope(Dispatchers.IO).launch {
                     FileHelper.saveCopyOfFileSuspended(activity as Context, sourceUri, targetUri)
                 }
                 Snackbar.make(requireView(), R.string.toastmessage_save_m3u, Snackbar.LENGTH_LONG).show()
@@ -720,7 +737,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             val targetUri: Uri? = result.data?.data
             if (targetUri != null && sourceUri != null) {
                 // copy file async (= fire & forget - no return value needed)
-                CoroutineScope(IO).launch {
+                CoroutineScope(Dispatchers.IO).launch {
                     FileHelper.saveCopyOfFileSuspended(activity as Context, sourceUri, targetUri)
                 }
                 Snackbar.make(requireView(), R.string.toastmessage_save_pls, Snackbar.LENGTH_LONG).show()

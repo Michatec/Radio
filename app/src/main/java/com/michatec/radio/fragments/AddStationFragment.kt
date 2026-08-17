@@ -1,4 +1,4 @@
-package com.michatec.radio
+package com.michatec.radio.fragments
 
 import android.content.Context
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.appcompat.R
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -15,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.michatec.radio.Keys
 import com.michatec.radio.collection.CollectionViewModel
 import com.michatec.radio.core.Station
 import com.michatec.radio.databinding.DialogFindStationBinding
@@ -25,8 +27,7 @@ import com.michatec.radio.search.RadioBrowserResult
 import com.michatec.radio.search.RadioBrowserSearch
 import com.michatec.radio.search.SearchResultAdapter
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -50,7 +51,7 @@ class AddStationFragment : Fragment(),
     ): View {
         // We reuse the dialog layout as it's already optimized for TV in layout-television
         _binding = DialogFindStationBinding.inflate(inflater, container, false)
-        
+
         collectionViewModel = ViewModelProvider(requireActivity())[CollectionViewModel::class.java]
         radioBrowserSearch = RadioBrowserSearch(this)
         directInputCheck = DirectInputCheck(this)
@@ -106,7 +107,7 @@ class AddStationFragment : Fragment(),
         binding.stationSearchBoxView.setOnQueryTextFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 // Find the internal EditText of the SearchView
-                val searchEditText = v.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
+                val searchEditText = v.findViewById<EditText>(R.id.search_src_text)
                 if (searchEditText != null) {
                     searchEditText.requestFocus()
                     val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -139,10 +140,10 @@ class AddStationFragment : Fragment(),
             CollectionHelper.addStation(requireContext(), currentCollection, station)
             findNavController().navigateUp()
         } else {
-            CoroutineScope(IO).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 val contentType = NetworkHelper.detectContentType(station.getStreamUri())
                 station.streamContent = contentType.type
-                withContext(Main) {
+                withContext(Dispatchers.Main) {
                     CollectionHelper.addStation(requireContext(), currentCollection, station)
                     findNavController().navigateUp()
                 }
