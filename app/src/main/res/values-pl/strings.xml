@@ -50,6 +50,7 @@
     <string name="player_name">Odtwarzacz</string>
     <!-- Notification -->
     <string name="notification_now_playing_channel_name">Sterowanie odtwarzaniem</string>
+    <string name="notification_channel_name">Powiadomienia</string>
     <string name="notification_play">Odtwarzaj</string>
     <string name="notification_stop">Zatrzymaj</string>
     <string name="notification_skip_to_previous">Poprzedni</string>

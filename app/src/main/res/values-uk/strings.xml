@@ -50,6 +50,7 @@
     <string name="player_name">Плеєр</string>
     <!-- Notification -->
     <string name="notification_now_playing_channel_name">Керування відтворенням</string>
+    <string name="notification_channel_name">Сповіщення</string>
     <string name="notification_play">Відтворити</string>
     <string name="notification_stop">Зупинити</string>
     <string name="notification_skip_to_previous">Попередня</string>

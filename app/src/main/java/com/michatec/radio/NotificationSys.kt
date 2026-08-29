@@ -1,33 +1,41 @@
 package com.michatec.radio
 
-import androidx.core.app.NotificationCompat
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
+import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
 
 object NotificationSys {
     private const val CHANNEL_ID = "com.michatec.radio.channel_messages"
-    private const val CHANNEL_NAME = "Notifications"
-    private const val NOTIFICATION_ID = 5000
 
     fun createNotificationChannel(context: Context) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (notificationManager.getNotificationChannel(CHANNEL_ID) == null) {
+            val soundUri = "android.resource://${context.packageName}/${R.raw.notification}".toUri()
+
+            val audioAttributes = AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .build()
+
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_LOW
+                context.getString(R.string.notification_channel_name),
+                NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
                 description = context.getString(R.string.notification_channel_description)
+                setSound(soundUri, audioAttributes)
             }
             notificationManager.createNotificationChannel(channel)
         }
     }
 
-    fun showNotification(context: Context, title: String, content: String, intent: Intent? = null, id: Int = NOTIFICATION_ID) {
+    fun showNotification(context: Context, title: String, content: String, intent: Intent? = null, id: Int = 5000) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         createNotificationChannel(context)
 

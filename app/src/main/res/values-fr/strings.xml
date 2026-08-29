@@ -50,6 +50,7 @@
     <string name="player_name">Lecteur</string>
     <!-- Notification -->
     <string name="notification_now_playing_channel_name">Contrôle de lecture</string>
+    <string name="notification_channel_name">Notifications</string>
     <string name="notification_play">Lecture</string>
     <string name="notification_stop">Arrêt</string>
     <string name="notification_skip_to_previous">Précédent</string>

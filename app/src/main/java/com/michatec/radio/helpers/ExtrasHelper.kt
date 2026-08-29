@@ -15,7 +15,7 @@ import androidx.core.view.isEmpty
 
 class ExtrasHelper {
     companion object {
-        private const val TAG = "ExtrasHelper"
+        private val TAG = ExtrasHelper::class.java.simpleName
         init {
             try {
                 System.loadLibrary("extra")

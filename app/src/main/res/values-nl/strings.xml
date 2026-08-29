@@ -50,6 +50,7 @@
     <string name="player_name">Speler</string>
     <!-- Notification -->
     <string name="notification_now_playing_channel_name">Afspeelbediening</string>
+    <string name="notification_channel_name">Meldingen</string>
     <string name="notification_play">Afspelen</string>
     <string name="notification_stop">Stoppen</string>
     <string name="notification_skip_to_previous">Vorige</string>

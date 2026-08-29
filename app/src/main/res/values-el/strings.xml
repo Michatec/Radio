@@ -50,6 +50,7 @@
     <string name="player_name">Αναπαραγωγή</string>
     <!-- Notification -->
     <string name="notification_now_playing_channel_name">Έλεγχοι Αναπαραγωγής</string>
+    <string name="notification_channel_name">Ειδοποιήσεις</string>
     <string name="notification_play">Αναπαραγωγή</string>
     <string name="notification_stop">Διακοπή</string>
     <string name="notification_skip_to_previous">Προηγούμενο</string>

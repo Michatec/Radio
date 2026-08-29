@@ -50,6 +50,7 @@
     <string name="player_name">Плеер</string>
     <!-- Notification -->
     <string name="notification_now_playing_channel_name">Управление воспроизведением</string>
+    <string name="notification_channel_name">Уведомления</string>
     <string name="notification_play">Воспроизвести</string>
     <string name="notification_stop">Остановить</string>
     <string name="notification_skip_to_previous">Предыдущий</string>

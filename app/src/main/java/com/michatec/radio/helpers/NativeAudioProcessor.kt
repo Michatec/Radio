@@ -14,7 +14,7 @@ import java.nio.ByteOrder
 class NativeAudioProcessor : BaseAudioProcessor() {
 
     companion object {
-        private const val TAG = "NativeAudioProcessor"
+        private val TAG = NativeAudioProcessor::class.java.simpleName
         init {
             try {
                 System.loadLibrary("dsp")
