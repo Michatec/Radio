@@ -14,13 +14,13 @@ android {
         applicationId = "com.michatec.radio"
         minSdk = 28
         targetSdk = 37
-        versionCode = 151
-        versionName = "15.1"
+        versionCode = 152
+        versionName = "15.2"
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     buildFeatures {
