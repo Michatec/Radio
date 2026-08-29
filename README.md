@@ -48,7 +48,7 @@ Since the developers of this app do not agree to this requirement, this app will
 
 <details>
 <summary>💡 Frequent Questions</summary>
-
+<br>
 Q: How can I add a radio station  
 A: There are three ways to add a radio station to Radio: Use Search, add playlist file address (M3U, PLS), enter a raw stream address. The last way will not support the update feature.
 
