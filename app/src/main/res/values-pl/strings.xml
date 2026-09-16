@@ -176,6 +176,8 @@
     <string name="media_route_menu_title">Przesyłanie</string>
     <string name="pref_visualizer_title">Analizator Widma</string>
     <string name="pref_visualizer_summary">Pokaż Analizator Widma.</string>
+    <string name="pref_shader_effect_title">Efekt shadera</string>
+    <string name="pref_shader_effect_summary">Pokazuje efekt shadera w odtwarzaczu.</string>
 
     <string name="pref_share_app_title">Udostępnij aplikację</string>
     <string name="pref_share_app_summary">Poleć tę aplikację znajomemu.</string>

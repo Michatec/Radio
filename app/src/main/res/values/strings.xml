@@ -218,6 +218,8 @@
     <string name="media_route_menu_title">Cast</string>
     <string name="pref_visualizer_title">Spectrum Analyzer</string>
     <string name="pref_visualizer_summary">Show the Spectrum Analyzer.</string>
+    <string name="pref_shader_effect_title">Shader Effect</string>
+    <string name="pref_shader_effect_summary">Shows a shader effect in the player.</string>
 
     <!-- Custom Theme -->
     <string name="pref_custom_theme_enabled_summary">Enables the custom theme tab.</string>

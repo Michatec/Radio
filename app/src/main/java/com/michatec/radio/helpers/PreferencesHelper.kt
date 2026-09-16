@@ -402,6 +402,11 @@ object PreferencesHelper {
         return sharedPreferences.getBoolean(Keys.PREF_CUSTOM_THEME_ENABLED, false)
     }
 
+    /* Loads whether shader effect is enabled */
+    fun loadShaderEffectEnabled(): Boolean {
+        return sharedPreferences.getBoolean(Keys.PREF_SHADER_EFFECT, true)
+    }
+
     /* Loads the arguments from shared preferences */
     fun loadArguments(): String {
         return sharedPreferences.getString(Keys.PREF_ARGUMENTS, "") ?: ""

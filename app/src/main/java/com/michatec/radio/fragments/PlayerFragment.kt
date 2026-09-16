@@ -346,6 +346,9 @@ class PlayerFragment : Fragment(),
         if (key == Keys.PREF_CUSTOM_THEME_COLOR || key == Keys.PREF_CUSTOM_THEME_ENABLED || key == Keys.PREF_CUSTOM_THEME_INDEX) {
             layout.applyCustomTheme(activity as Context)
         }
+        if (key == Keys.PREF_SHADER_EFFECT) {
+            updatePlayerViews()
+        }
     }
 
 

@@ -174,6 +174,8 @@
     <string name="media_route_menu_title">Cast</string>
     <string name="pref_visualizer_title">Spektrumanalysator</string>
     <string name="pref_visualizer_summary">Vis spektrumanalysatoren.</string>
+    <string name="pref_shader_effect_title">Shader-effekt</string>
+    <string name="pref_shader_effect_summary">Viser en shader-effekt i afspilleren.</string>
 
     <string name="pref_share_app_title">Del app</string>
     <string name="pref_share_app_summary">Anbefal denne app til en ven.</string>

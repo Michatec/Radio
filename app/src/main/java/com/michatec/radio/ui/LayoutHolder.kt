@@ -162,7 +162,7 @@ class LayoutHolder(binding: FragmentPlayerBinding) {
 
         // update cover
         hasStationImage = station.smallImage.isNotEmpty()
-        if (hasStationImage) {
+        if (hasStationImage && PreferencesHelper.loadShaderEffectEnabled()) {
             shaderEffectView?.isVisible = true
         } else {
             shaderEffectView?.isGone = true
@@ -317,7 +317,7 @@ class LayoutHolder(binding: FragmentPlayerBinding) {
             playButtonView.setImageResource(R.drawable.ic_audio_waves_animated)
             val animatedVectorDrawable = playButtonView.drawable as? AnimatedVectorDrawable
             animatedVectorDrawable?.start()
-            if (hasStationImage) {
+            if (hasStationImage && PreferencesHelper.loadShaderEffectEnabled()) {
                 shaderEffectView?.startAnimation()
             }
             sheetSleepTimerStartButtonView?.isVisible = true

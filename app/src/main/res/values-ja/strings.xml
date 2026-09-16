@@ -175,6 +175,8 @@
     <string name="media_route_menu_title">キャスト</string>
     <string name="pref_visualizer_title">スペクトラムアナライザー</string>
     <string name="pref_visualizer_summary">スペクトラムアナライザーを表示します。</string>
+    <string name="pref_shader_effect_title">シェーダー効果</string>
+    <string name="pref_shader_effect_summary">プレーヤーにシェーダー効果を表示します。</string>
 
     <string name="pref_share_app_title">アプリを共有</string>
     <string name="pref_share_app_summary">このアプリを友達に勧める。</string>

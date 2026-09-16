@@ -176,6 +176,8 @@
     <string name="media_route_menu_title">Μετάδοση</string>
     <string name="pref_visualizer_title">Αναλυτής Φάσματος</string>
     <string name="pref_visualizer_summary">Εμφάνιση του Αναλυτή Φάσματος.</string>
+    <string name="pref_shader_effect_title">Εφέ Shader</string>
+    <string name="pref_shader_effect_summary">Εμφανίζει ένα εφέ shader στην εφαρμογή αναπαραγωγής.</string>
 
     <string name="pref_share_app_title">Κοινοποίηση Εφαρμογής</string>
     <string name="pref_share_app_summary">Προτείνετε αυτήν την εφαρμογή σε έναν φίλο.</string>

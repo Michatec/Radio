@@ -414,6 +414,14 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             return@setOnPreferenceClickListener true
         }
 
+        // set up "Shader Effect" preference
+        val preferenceShaderEffect = MarqueeSwitchPreference(context)
+        preferenceShaderEffect.title = getString(R.string.pref_shader_effect_title)
+        preferenceShaderEffect.setIcon(R.drawable.ic_brush_24dp)
+        preferenceShaderEffect.key = Keys.PREF_SHADER_EFFECT
+        preferenceShaderEffect.summary = getString(R.string.pref_shader_effect_summary)
+        preferenceShaderEffect.setDefaultValue(true)
+
         // set up "App Version" preference
         val preferenceAppVersion = Preference(context)
         preferenceAppVersion.title = getString(R.string.pref_app_version_title)
@@ -602,6 +610,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         preferenceCategoryGeneral.addPreference(preferenceLanguageSelection)
         preferenceCategoryGeneral.addPreference(preferenceCustomThemeEnabled)
         preferenceCategoryGeneral.addPreference(preferenceCustomTheme)
+        preferenceCategoryGeneral.addPreference(preferenceShaderEffect)
 
         if (!isAndroidTV && isPermissionGranted(activity as Context, Manifest.permission.POST_NOTIFICATIONS)) {
             preferenceCategoryGeneral.addPreference(preferenceTestNotification)
