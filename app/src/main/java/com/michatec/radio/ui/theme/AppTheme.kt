@@ -6,6 +6,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalContext
@@ -17,36 +18,38 @@ fun RadioTheme(
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
-    val customThemeEnabled = PreferencesHelper.loadCustomThemeEnabled()
+    val isSystemDark = isSystemInDarkTheme()
 
-    val colorScheme = if (customThemeEnabled) {
-        var colorInt = PreferencesHelper.loadCustomThemeColor(context)
-        val index = PreferencesHelper.loadCustomThemeIndex()
-        if (index != -1) {
-            val colors = ThemeHelper.getPredefinedColors(context)
-            if (index < colors.size) {
-                colorInt = colors[index]
+    val colorScheme = remember(context, isSystemDark) {
+        val customThemeEnabled = PreferencesHelper.loadCustomThemeEnabled()
+        if (customThemeEnabled) {
+            var colorInt = PreferencesHelper.loadCustomThemeColor(context)
+            val index = PreferencesHelper.loadCustomThemeIndex()
+            if (index != -1) {
+                val colors = ThemeHelper.getPredefinedColors(context)
+                if (index < colors.size) {
+                    colorInt = colors[index]
+                }
             }
-        }
-        val backgroundColor = Color(colorInt)
-        val isDark = backgroundColor.luminance() < 0.5f
-        if (isDark) {
-            darkColorScheme(
-                background = backgroundColor,
-                surface = backgroundColor
-            )
+            val backgroundColor = Color(colorInt)
+            val isDark = backgroundColor.luminance() < 0.5f
+            if (isDark) {
+                darkColorScheme(
+                    background = backgroundColor,
+                    surface = backgroundColor
+                )
+            } else {
+                lightColorScheme(
+                    background = backgroundColor,
+                    surface = backgroundColor
+                )
+            }
         } else {
-            lightColorScheme(
-                background = backgroundColor,
-                surface = backgroundColor
-            )
-        }
-    } else {
-        val isDark = isSystemInDarkTheme()
-        if (isDark) {
-            darkColorScheme()
-        } else {
-            lightColorScheme()
+            if (isSystemDark) {
+                darkColorScheme()
+            } else {
+                lightColorScheme()
+            }
         }
     }
 
