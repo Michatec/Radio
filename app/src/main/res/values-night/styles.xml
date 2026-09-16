@@ -25,6 +25,7 @@
         <item name="materialTimePickerTheme">@style/ThemeOverlay.App.TimePicker</item>
 
         <!-- Don't show light status bar -->
+        <item name="android:windowLightStatusBar">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 

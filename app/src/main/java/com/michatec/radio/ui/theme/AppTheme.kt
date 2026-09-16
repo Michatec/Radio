@@ -2,6 +2,7 @@ package com.michatec.radio.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -17,10 +18,8 @@ fun RadioTheme(
 ) {
     val context = LocalContext.current
     val customThemeEnabled = PreferencesHelper.loadCustomThemeEnabled()
-    val isDark: Boolean
-    val backgroundColor: Color
 
-    if (customThemeEnabled) {
+    val colorScheme = if (customThemeEnabled) {
         var colorInt = PreferencesHelper.loadCustomThemeColor(context)
         val index = PreferencesHelper.loadCustomThemeIndex()
         if (index != -1) {
@@ -29,27 +28,32 @@ fun RadioTheme(
                 colorInt = colors[index]
             }
         }
-        backgroundColor = Color(colorInt)
-        isDark = backgroundColor.luminance() < 0.5f
+        val backgroundColor = Color(colorInt)
+        val isDark = backgroundColor.luminance() < 0.5f
+        if (isDark) {
+            darkColorScheme(
+                background = backgroundColor,
+                surface = backgroundColor
+            )
+        } else {
+            lightColorScheme(
+                background = backgroundColor,
+                surface = backgroundColor
+            )
+        }
     } else {
-        isDark = isSystemInDarkTheme()
-        backgroundColor = if (isDark) Color(0xFF1C1B1F) else Color(0xFFFFFBFE)
-    }
-
-    val colorScheme = if (isDark) {
-        darkColorScheme(
-            background = backgroundColor,
-            surface = backgroundColor
-        )
-    } else {
-        lightColorScheme(
-            background = backgroundColor,
-            surface = backgroundColor
-        )
+        val isDark = isSystemInDarkTheme()
+        if (isDark) {
+            darkColorScheme()
+        } else {
+            lightColorScheme()
+        }
     }
 
     MaterialTheme(
         colorScheme = colorScheme,
-        content = content
+        content = {
+            Surface(content = content)
+        }
     )
 }

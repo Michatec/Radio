@@ -417,7 +417,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         // set up "Shader Effect" preference
         val preferenceShaderEffect = MarqueeSwitchPreference(context)
         preferenceShaderEffect.title = getString(R.string.pref_shader_effect_title)
-        preferenceShaderEffect.setIcon(R.drawable.ic_brush_24dp)
+        preferenceShaderEffect.setIcon(R.drawable.ic_shader_24dp)
         preferenceShaderEffect.key = Keys.PREF_SHADER_EFFECT
         preferenceShaderEffect.summary = getString(R.string.pref_shader_effect_summary)
         preferenceShaderEffect.setDefaultValue(true)
