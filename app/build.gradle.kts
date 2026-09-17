@@ -19,8 +19,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_25
-        targetCompatibility = JavaVersion.VERSION_25
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     buildFeatures {
@@ -61,8 +61,8 @@ android {
         resources {
             excludes += "/META-INF/INDEX.LIST"
             excludes += "/META-INF/io.netty.versions.properties"
-            excludes += "/META-INF/native-image/*"
-            excludes += "/META-INF/license/*"
+            excludes += "/META-INF/native-image/**"
+            excludes += "/META-INF/license/**"
         }
     }
 }
