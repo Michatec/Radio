@@ -35,10 +35,10 @@ class RemoteRoutes(
     fun Routing.installRoutes() {
         // Static Content
         get(Routes.ROOT) { call.respondAsset(context, "web/index.html", ContentType.Text.Html) }
-        get(Routes.STYLE) { call.respondAsset(context, "web/style.css", ContentType.Text.CSS) }
-        get(Routes.SCRIPT) { call.respondAsset(context, "web/script.js", ContentType.Application.JavaScript) }
-        get(Routes.API_SCRIPT) { call.respondAsset(context, "web/api.js", ContentType.Application.JavaScript) }
-        get(Routes.UI_SCRIPT) { call.respondAsset(context, "web/ui.js", ContentType.Application.JavaScript) }
+        get(Routes.STYLE) { call.respondAsset(context, "web/css/style.css", ContentType.Text.CSS) }
+        get(Routes.SCRIPT) { call.respondAsset(context, "web/js/script.js", ContentType.Application.JavaScript) }
+        get(Routes.API_SCRIPT) { call.respondAsset(context, "web/js/api.js", ContentType.Application.JavaScript) }
+        get(Routes.UI_SCRIPT) { call.respondAsset(context, "web/js/ui.js", ContentType.Application.JavaScript) }
         get(Routes.TRANSLATIONS) { call.respondAsset(context, "web/translations.json", ContentType.Application.Json) }
         get(Routes.FAVICON) { call.respondAsset(context, "web/favicon.png", ContentType.Image.PNG) }
 

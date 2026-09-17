@@ -6,10 +6,10 @@ object RemoteConstants {
     
     object Routes {
         const val ROOT = "/"
-        const val STYLE = "/style.css"
-        const val SCRIPT = "/script.js"
-        const val API_SCRIPT = "/api.js"
-        const val UI_SCRIPT = "/ui.js"
+        const val STYLE = "/css/style.css"
+        const val SCRIPT = "/js/script.js"
+        const val API_SCRIPT = "/js/api.js"
+        const val UI_SCRIPT = "/js/ui.js"
         const val TRANSLATIONS = "/translations.json"
         const val FAVICON = "/favicon.png"
         
