@@ -63,7 +63,8 @@ android {
             excludes += "/META-INF/io.netty.versions.properties"
             excludes += "/META-INF/license/LICENSE.jbzip2.txt"
             excludes += "/META-INF/license/LICENSE.webbit.txt"
-            excludes += "META-INF/license/LICENSE.base64.txt"
+            excludes += "/META-INF/license/LICENSE.base64.txt"
+            excludes += "/META-INF/license/LICENSE.jzlib.txt"
         }
     }
 }
