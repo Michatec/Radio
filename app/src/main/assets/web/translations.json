@@ -23,7 +23,8 @@
     "theme_follow_browser": "Follow Browser",
     "lang_auto_browser": "Auto (Browser)",
     "api_docs": "API Documentation",
-    "prompt_pairing_code": "Please enter the pairing code:"
+    "prompt_pairing_code": "Please enter the pairing code:",
+    "web_stream_toggle": "Listen on Web"
   },
   "de": {
     "title": "Radio Fernbedienung",
@@ -49,7 +50,8 @@
     "theme_follow_browser": "Browser folgen",
     "lang_auto_browser": "Auto (Browser)",
     "api_docs": "API Dokumentation",
-    "prompt_pairing_code": "Bitte geben Sie den Pairing-Code ein:"
+    "prompt_pairing_code": "Bitte geben Sie den Pairing-Code ein:",
+    "web_stream_toggle": "Im Web hören"
   },
   "fr": {
     "title": "Télécommande Radio",
@@ -75,7 +77,8 @@
     "theme_follow_browser": "Suivre le Navigateur",
     "lang_auto_browser": "Auto (Navigateur)",
     "api_docs": "Documentation API",
-    "prompt_pairing_code": "Veuillez saisir le code de couplage :"
+    "prompt_pairing_code": "Veuillez saisir le code de couplage :",
+    "web_stream_toggle": "Écouter sur le Web"
   },
   "ru": {
     "title": "Пульт Радио",
@@ -101,7 +104,8 @@
     "theme_follow_browser": "Как в браузере",
     "lang_auto_browser": "Авто (Браузер)",
     "api_docs": "Документация API",
-    "prompt_pairing_code": "Введите код сопряжения:"
+    "prompt_pairing_code": "Введите код сопряжения:",
+    "web_stream_toggle": "Слушать в Интернете"
   },
   "nl": {
     "title": "Radio Afstandsbediening",
@@ -127,7 +131,8 @@
     "theme_follow_browser": "Browser volgen",
     "lang_auto_browser": "Auto (Browser)",
     "api_docs": "API Documentatie",
-    "prompt_pairing_code": "Voer de koppelingscode in:"
+    "prompt_pairing_code": "Voer de koppelingscode in:",
+    "web_stream_toggle": "Luister op internet"
   },
   "pl": {
     "title": "Pilot Radio",
@@ -153,7 +158,8 @@
     "theme_follow_browser": "Podążaj za przeglądarką",
     "lang_auto_browser": "Auto (Przeglądarkα)",
     "api_docs": "Dokumentacja API",
-    "prompt_pairing_code": "Wprowadź kod parowania:"
+    "prompt_pairing_code": "Wprowadź kod parowania:",
+    "web_stream_toggle": "Słuchaj w internecie"
   },
   "ja": {
     "title": "ラジオ リモコン",
@@ -179,7 +185,8 @@
     "theme_follow_browser": "ブラウザに従う",
     "lang_auto_browser": "自動 (ブラウザ)",
     "api_docs": "API ドキュメント",
-    "prompt_pairing_code": "ペアリングコードを入力してください："
+    "prompt_pairing_code": "ペアリングコードを入力してください：",
+    "web_stream_toggle": "ウェブで聴く"
   },
   "uk": {
     "title": "Пульт Радіо",
@@ -205,7 +212,8 @@
     "theme_follow_browser": "Як у браузері",
     "lang_auto_browser": "Авто (Браузер)",
     "api_docs": "Документація API",
-    "prompt_pairing_code": "Введіть код сполучення:"
+    "prompt_pairing_code": "Введіть код сполучення:",
+    "web_stream_toggle": "Слухати в Інтернеті"
   },
   "el": {
     "title": "Ραδιοφωνικό Χειριστήριο",
@@ -231,7 +239,8 @@
     "theme_follow_browser": "Ακολουθήστε το πρόγραμμα περιήγησης",
     "lang_auto_browser": "Αυτόματο (Browser)",
     "api_docs": "Τεκμηρίωση API",
-    "prompt_pairing_code": "Εισαγάγετε τον κωδικό σύζευξης:"
+    "prompt_pairing_code": "Εισαγάγετε τον κωδικό σύζευξης:",
+    "web_stream_toggle": "Ακούστε στο Web"
   },
   "da": {
     "title": "Radio Fjernbetjening",
@@ -257,6 +266,7 @@
     "theme_follow_browser": "Følg browser",
     "lang_auto_browser": "Auto (Browser)",
     "api_docs": "API Dokumentation",
-    "prompt_pairing_code": "Indtast parringskode:"
+    "prompt_pairing_code": "Indtast parringskode:",
+    "web_stream_toggle": "Lyt på webben"
   }
 }

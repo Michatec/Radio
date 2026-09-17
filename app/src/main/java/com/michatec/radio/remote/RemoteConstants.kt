@@ -8,6 +8,8 @@ object RemoteConstants {
         const val ROOT = "/"
         const val STYLE = "/style.css"
         const val SCRIPT = "/script.js"
+        const val API_SCRIPT = "/api.js"
+        const val UI_SCRIPT = "/ui.js"
         const val TRANSLATIONS = "/translations.json"
         const val FAVICON = "/favicon.png"
         
@@ -16,6 +18,7 @@ object RemoteConstants {
         const val API_STATIONS = "/api/stations"
         const val API_UPDATES = "/api/updates"
         const val API_IMAGE = "/api/image/{uuid}"
+        const val API_STREAM = "/api/stream"
         
         const val API_PLAY = "/api/play/{uuid}"
         const val API_PAUSE = "/api/pause"

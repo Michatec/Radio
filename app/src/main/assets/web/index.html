@@ -36,6 +36,7 @@
                     <button id="prevBtn" class="icon-btn large"><span class="material-icons">skip_previous</span></button>
                     <button id="playPauseBtn" class="icon-btn x-large"><span class="material-icons" id="playPauseIcon">play_arrow</span></button>
                     <button id="nextBtn" class="icon-btn large"><span class="material-icons">skip_next</span></button>
+                    <button id="webStreamBtn" class="icon-btn large" data-t-title="web_stream_toggle"><span class="material-icons" id="webStreamIcon">volume_off</span></button>
                 </div>
             </section>
 
@@ -122,6 +123,13 @@ socket.onmessage = (event) => {
                     </div>
 
                     <div class="endpoint">
+                        <h3><span class="method get">GET</span> <code>/api/stream</code></h3>
+                        <p>Returns the actual live audio stream URI of the currently playing radio station.</p>
+                        <div class="code-example">Response Example:</div>
+                        <pre>{ "status": "http://stream-url.example.com/live.mp3" }</pre>
+                    </div>
+
+                    <div class="endpoint">
                         <h3><span class="method post">POST</span> <code>/api/play/{uuid}</code></h3>
                         <p>Starts playback of a specific station.</p>
                         <div class="code-example">Response Example:</div>
@@ -197,6 +205,9 @@ socket.onmessage = (event) => {
             </div>
         </div>
     </div>
-    <script src="script.js?v=18"></script>
+    <audio id="webAudio" preload="none"></audio>
+    <script src="ui.js"></script>
+    <script src="api.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

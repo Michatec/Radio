@@ -22,10 +22,12 @@ val RemoteAuthPlugin = createApplicationPlugin(name = "RemoteAuthPlugin", create
         if (!authEnabled) return@onCall
 
         val requestPath = call.request.path()
-        val isStatic = (requestPath == RemoteConstants.Routes.ROOT) || 
-                      (requestPath == RemoteConstants.Routes.STYLE) || 
-                      (requestPath == RemoteConstants.Routes.SCRIPT) || 
-                      (requestPath == RemoteConstants.Routes.FAVICON) || 
+        val isStatic = (requestPath == RemoteConstants.Routes.ROOT) ||
+                      (requestPath == RemoteConstants.Routes.STYLE) ||
+                      (requestPath == RemoteConstants.Routes.SCRIPT) ||
+                      (requestPath == RemoteConstants.Routes.API_SCRIPT) ||
+                      (requestPath == RemoteConstants.Routes.UI_SCRIPT) ||
+                      (requestPath == RemoteConstants.Routes.FAVICON) ||
                       (requestPath == RemoteConstants.Routes.TRANSLATIONS)
         
         if (isStatic) return@onCall

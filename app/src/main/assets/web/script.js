@@ -1,455 +1,340 @@
-let currentLang = 'en';
-let translations = {};
-let allStations = [];
-let isUpdating = false;
-let stationsLoaded = false;
-let lastStatusData = null;
-let updateSocket = null;
-let authToken = localStorage.getItem('radio-remote-token') || '';
+/**
+ * Radio Remote Main Controller
+ */
+
 const STATE_IDLE = 1;
 const STATE_BUFFERING = 2;
 const STATE_READY = 3;
 const STATE_ENDED = 4;
 
-function t(key) {
-    return (translations[currentLang] && translations[currentLang][key]) ||
-           (translations['en'] && translations['en'][key]) || key;
-}
+const App = {
+    state: {
+        allStations: [],
+        lastStatusData: null,
+        isUpdating: false,
+        stationsLoaded: false,
+        isWebStreaming: false
+    },
 
-function updateUILanguage() {
-    document.querySelectorAll('[data-t]').forEach(el => {
-        const key = el.getAttribute('data-t');
-        const text = t(key);
-        if (el.tagName === 'INPUT' && el.placeholder) {
-            el.placeholder = text;
+    init() {
+        this.setupEventListeners();
+
+        API.onStatusUpdate = (data) => this.updateStatusUI(data);
+        API.onStationsUpdate = (data) => {
+            this.state.allStations = data;
+            this.state.stationsLoaded = true;
+            this.renderStationList();
+        };
+
+        this.boot();
+    },
+
+    async boot() {
+        UI.elements.status.innerText = '...';
+        UI.elements.currentName.innerText = '...';
+
+        await UI.loadTranslations();
+        this.loadSettings();
+
+        await this.loadStations();
+        API.initUpdateSocket();
+    },
+
+    loadSettings() {
+        const savedTheme = localStorage.getItem('radio-remote-theme') || 'auto_browser';
+        UI.elements.themeSelect.value = savedTheme;
+        if (savedTheme === 'auto_browser') {
+            UI.applyThemeUI(UI.getBrowserTheme());
         } else {
-            el.innerText = text;
+            UI.applyThemeUI(savedTheme);
         }
-    });
-}
 
-async function loadTranslations() {
-    try {
-        const res = await fetch('/translations.json');
-        translations = await res.json();
-        updateUILanguage();
-    } catch (e) {
-        console.error("Failed to load translations", e);
-    }
-}
-
-function checkOverflow(el) {
-    if (!el) return;
-    el.classList.remove('animate-marquee');
-    setTimeout(() => {
-        const container = el.parentElement;
-        if (container && el.scrollWidth > container.offsetWidth) {
-            el.classList.add('animate-marquee');
+        const savedLang = localStorage.getItem('radio-remote-lang') || 'auto_browser';
+        UI.elements.langSelect.value = savedLang;
+        if (savedLang === 'auto_browser') {
+            const browserLang = navigator.language.split('-')[0];
+            UI.currentLang = UI.translations[browserLang] ? browserLang : 'en';
+        } else {
+            UI.currentLang = savedLang;
         }
-    }, 50);
-}
 
-function updateStatusUI(data) {
-    if (!data) return;
-    lastStatusData = data;
-    const statusEl = document.getElementById('status');
-    const currentNameEl = document.getElementById('currentName');
+        UI.updateUILanguage();
+    },
 
-    if (!statusEl || !currentNameEl) return;
+    setupEventListeners() {
+        UI.elements.playPauseBtn.onclick = () => this.togglePlayback();
+        UI.elements.prevBtn.onclick = () => API.prev();
+        UI.elements.nextBtn.onclick = () => API.next();
+        UI.elements.webStreamBtn.onclick = () => this.toggleWebStream();
 
-    const playPauseIcon = document.getElementById('playPauseIcon');
-    const currentStarEl = document.getElementById('currentStar');
-    const currentMetadataEl = document.getElementById('currentMetadata');
-    const currentImageEl = document.getElementById('currentImage');
-    const themeSelect = document.getElementById('themeSelect');
-    const langSelect = document.getElementById('langSelect');
+        UI.elements.themeSelect.onchange = (e) => {
+            const val = e.target.value;
+            localStorage.setItem('radio-remote-theme', val);
+            UI.applyThemeUI(val === 'auto_browser' ? UI.getBrowserTheme() : val);
+        };
 
-    if (data.error) {
-        statusEl.innerText = t('status_error');
-        currentNameEl.innerText = data.error;
-        checkOverflow(currentNameEl);
-        return;
-    }
-
-    let statusText = data.isPlaying ? t('status_playing') : t('status_paused');
-    if (data.playWhenReady && !data.isPlaying) {
-        statusText = t('status_buffering');
-    }
-    if (data.playbackState === STATE_BUFFERING) {
-        statusText = t('status_buffering');
-    }
-    statusEl.innerText = statusText;
-    if (playPauseIcon) {
-        playPauseIcon.innerText = (data.isPlaying || data.playWhenReady) ? 'pause' : 'play_arrow';
-    }
-
-    const stationUuid = data.currentStationUuid;
-    updateActiveStation(stationUuid);
-
-    const station = allStations.find(s => s.uuid === stationUuid);
-    if (station) {
-        currentNameEl.innerText = station.name;
-        checkOverflow(currentNameEl);
-        if (currentStarEl) currentStarEl.classList.toggle('hidden', !data.starred);
-        if (currentMetadataEl) {
-            currentMetadataEl.innerText = data.metadata || "";
-            checkOverflow(currentMetadataEl);
-        }
-        if (currentImageEl) {
-            let imageUrl = station.hasImage ? '/api/image/' + station.uuid : 'favicon.png';
-            if (station.hasImage && authToken) {
-                imageUrl += '?token=' + encodeURIComponent(authToken);
-                imageUrl += station.lastModified ? '&t=' + station.lastModified : '';
-            } else if (station.hasImage) {
-                imageUrl += station.lastModified ? '?t=' + station.lastModified : '';
-            }
-            currentImageEl.src = imageUrl;
-        }
-    } else {
-        if (stationsLoaded) {
-            if (allStations.length === 0) {
-                currentNameEl.innerText = t('status_no_stations_available');
+        UI.elements.langSelect.onchange = (e) => {
+            const val = e.target.value;
+            localStorage.setItem('radio-remote-lang', val);
+            if (val === 'auto_browser') {
+                const browserLang = navigator.language.split('-')[0];
+                UI.currentLang = UI.translations[browserLang] ? browserLang : 'en';
             } else {
-                currentNameEl.innerText = (data.isPlaying || data.playWhenReady) ? t('status_unknown_station') : t('status_no_station');
+                UI.currentLang = val;
             }
-        } else {
-            currentNameEl.innerText = t('status_loading');
-        }
-        checkOverflow(currentNameEl);
-        if (currentStarEl) currentStarEl.classList.add('hidden');
-        if (currentMetadataEl) {
-            currentMetadataEl.innerText = "";
-            checkOverflow(currentMetadataEl);
-        }
-        if (currentImageEl) currentImageEl.src = 'favicon.png';
-    }
+            UI.updateUILanguage();
+            if (this.state.lastStatusData) this.updateStatusUI(this.state.lastStatusData);
+            this.renderStationList();
+        };
 
-    if (themeSelect && themeSelect.value === 'auto_browser') {
-        applyThemeUI(getBrowserTheme());
-    }
+        UI.elements.menuBtn.onclick = (e) => {
+            e.stopPropagation();
+            UI.elements.settingsPanel.classList.toggle('hidden');
+        };
+        UI.elements.closeMenuBtn.onclick = () => UI.elements.settingsPanel.classList.add('hidden');
+        UI.elements.showApiDocsBtn.onclick = () => {
+            UI.elements.mainDashboard.classList.add('hidden');
+            UI.elements.apiDocsView.classList.remove('hidden');
+            UI.elements.settingsPanel.classList.add('hidden');
+        };
+        UI.elements.backToDashboard.onclick = () => {
+            UI.elements.apiDocsView.classList.add('hidden');
+            UI.elements.mainDashboard.classList.remove('hidden');
+        };
 
-    if (langSelect && langSelect.value === 'auto_browser') {
-        const browserLang = navigator.language.split('-')[0];
-        const targetLang = translations[browserLang] ? browserLang : 'en';
-        if (targetLang !== currentLang) {
-            currentLang = targetLang;
-            updateUILanguage();
-        }
-    }
-}
-
-async function apiFetch(url, options = {}) {
-    if (authToken) {
-        options.headers = options.headers || {};
-        options.headers['X-Remote-Key'] = authToken;
-    }
-
-    let response = await fetch(url, options);
-
-    if (response.status === 401) {
-        const code = prompt(t('prompt_pairing_code') || "Please enter the pairing code:");
-        if (code) {
-            authToken = code;
-            localStorage.setItem('radio-remote-token', authToken);
-            options.headers = options.headers || {};
-            options.headers['X-Remote-Key'] = authToken;
-            response = await fetch(url, options);
-            if (response.ok) {
-                window.location.reload();
-            } else if (response.status === 401) {
-                authToken = '';
-                localStorage.removeItem('radio-remote-token');
+        document.addEventListener('click', (e) => {
+            if (!UI.elements.settingsPanel.classList.contains('hidden') &&
+                !UI.elements.settingsPanel.contains(e.target) &&
+                !UI.elements.menuBtn.contains(e.target)) {
+                UI.elements.settingsPanel.classList.add('hidden');
             }
-        } else {
-            authToken = '';
-            localStorage.removeItem('radio-remote-token');
-        }
-    }
-    return response;
-}
+        });
 
-async function updateStatus() {
-    if (isUpdating) return;
-    try {
-        const response = await apiFetch('/api/status');
-        const data = await response.json();
-        if (!response.ok) {
-            updateStatusUI({ error: data.error || "Service Unavailable" });
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (UI.elements.themeSelect.value === 'auto_browser') {
+                UI.applyThemeUI(e.matches ? 'dark' : 'light');
+            }
+        });
+
+        window.onresize = () => {
+            UI.checkOverflow(UI.elements.currentName);
+            UI.checkOverflow(UI.elements.currentMetadata);
+        };
+    },
+
+    updateStatusUI(data) {
+        if (!data) return;
+        const prevStationUuid = this.state.lastStatusData ? this.state.lastStatusData.currentStationUuid : null;
+        this.state.lastStatusData = data;
+
+        if (data.error) {
+            UI.elements.status.innerText = UI.t('status_error');
+            UI.elements.currentName.innerText = data.error;
+            UI.checkOverflow(UI.elements.currentName);
             return;
         }
-        updateStatusUI(data);
-    } catch (e) {
-        console.error("Status fetch failed", e);
-        updateStatusUI({ error: t('status_connection_error') });
-    }
-}
 
-function initUpdateSocket() {
-    if (updateSocket) {
-        updateSocket.close();
-    }
+        let statusText = data.isPlaying ? UI.t('status_playing') : UI.t('status_paused');
+        if (data.playWhenReady && !data.isPlaying) statusText = UI.t('status_buffering');
+        if (data.playbackState === STATE_BUFFERING) statusText = UI.t('status_buffering');
 
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    let wsUrl = protocol + '//' + window.location.host + '/api/updates';
-    if (authToken) {
-        wsUrl += '?token=' + encodeURIComponent(authToken);
-    }
+        UI.elements.status.innerText = statusText;
+        if (UI.elements.playPauseIcon) {
+            UI.elements.playPauseIcon.innerText = (data.isPlaying || data.playWhenReady) ? 'pause' : 'play_arrow';
+        }
 
-    updateSocket = new WebSocket(wsUrl);
+        this.updateActiveStation(data.currentStationUuid);
 
-    updateSocket.onmessage = (event) => {
+        const station = this.state.allStations.find(s => s.uuid === data.currentStationUuid);
+        if (station) {
+            UI.elements.currentName.innerText = station.name;
+            UI.checkOverflow(UI.elements.currentName);
+            UI.elements.currentStar.classList.toggle('hidden', !data.starred);
+            UI.elements.currentMetadata.innerText = data.metadata || "";
+            UI.checkOverflow(UI.elements.currentMetadata);
+
+            let imageUrl = station.hasImage ? `/api/image/${station.uuid}` : 'favicon.png';
+            if (station.hasImage) {
+                const params = new URLSearchParams();
+                if (API.authToken) params.append('token', API.authToken);
+                if (station.lastModified) params.append('t', station.lastModified);
+                const query = params.toString();
+                if (query) imageUrl += '?' + query;
+            }
+            UI.elements.currentImage.src = imageUrl;
+        } else {
+            this.handleUnknownStation(data);
+        }
+
+        if (this.state.isWebStreaming && prevStationUuid && data.currentStationUuid !== prevStationUuid) {
+            this.loadAndPlayWebStream();
+        }
+    },
+
+    handleUnknownStation(data) {
+        if (this.state.stationsLoaded) {
+            UI.elements.currentName.innerText = this.state.allStations.length === 0 ?
+                UI.t('status_no_stations_available') :
+                ((data.isPlaying || data.playWhenReady) ? UI.t('status_unknown_station') : UI.t('status_no_station'));
+        } else {
+            UI.elements.currentName.innerText = UI.t('status_loading');
+        }
+        UI.checkOverflow(UI.elements.currentName);
+        UI.elements.currentStar.classList.add('hidden');
+        UI.elements.currentMetadata.innerText = "";
+        UI.elements.currentImage.src = 'favicon.png';
+    },
+
+    async loadStations() {
         try {
-            const message = JSON.parse(event.data);
-            if (message.type === 'status') {
-                updateStatusUI(message.data);
-            } else if (message.type === 'stations') {
-                allStations = message.data;
-                stationsLoaded = true;
-                renderStationList();
+            this.state.allStations = await API.getStations();
+            this.state.stationsLoaded = true;
+            this.renderStationList();
+            this.updateStatus();
+        } catch (e) {
+            console.error("Load stations failed", e);
+            UI.elements.stationList.innerText = UI.t('status_connection_error');
+            this.state.stationsLoaded = true;
+            this.updateStatus();
+        }
+    },
+
+    async updateStatus() {
+        if (this.state.isUpdating) return;
+        this.state.isUpdating = true;
+        try {
+            const data = await API.getStatus();
+            this.updateStatusUI(data);
+        } catch (e) {
+            console.error("Status fetch failed", e);
+            this.updateStatusUI({ error: UI.t('status_connection_error') });
+        } finally {
+            this.state.isUpdating = false;
+        }
+    },
+
+    renderStationList() {
+        if (!UI.elements.stationList) return;
+        UI.elements.stationList.innerHTML = '';
+
+        if (this.state.allStations.length === 0) {
+            UI.elements.stationList.innerText = UI.t('stations_empty');
+        } else {
+            this.state.allStations.forEach(station => {
+                const div = this.createStationItem(station);
+                UI.elements.stationList.appendChild(div);
+            });
+        }
+        if (this.state.lastStatusData) {
+            this.updateActiveStation(this.state.lastStatusData.currentStationUuid);
+        }
+    },
+
+    createStationItem(station) {
+        const div = document.createElement('div');
+        div.className = 'station-item';
+        div.id = 'station-' + station.uuid;
+
+        const content = document.createElement('div');
+        content.className = 'station-item-content';
+
+        const img = document.createElement('img');
+        img.className = 'station-img';
+        let imageUrl = station.hasImage ? `/api/image/${station.uuid}` : 'favicon.png';
+        if (station.hasImage) {
+            const params = new URLSearchParams();
+            if (API.authToken) params.append('token', API.authToken);
+            if (station.lastModified) params.append('t', station.lastModified);
+            const query = params.toString();
+            if (query) imageUrl += '?' + query;
+        }
+        img.src = imageUrl;
+
+        const name = document.createElement('div');
+        name.className = 'station-name';
+        name.innerText = station.name || 'Unnamed Station';
+
+        content.appendChild(img);
+        content.appendChild(name);
+
+        if (station.starred) {
+            const star = document.createElement('span');
+            star.className = 'material-icons starred-icon';
+            star.innerText = 'star';
+            content.appendChild(star);
+        }
+
+        div.appendChild(content);
+        div.onclick = () => this.playStation(station.uuid);
+        return div;
+    },
+
+    updateActiveStation(uuid) {
+        document.querySelectorAll('.station-item').forEach(el => el.classList.remove('active'));
+        if (!uuid) return;
+        const active = document.getElementById('station-' + uuid);
+        if (active) active.classList.add('active');
+    },
+
+    async playStation(uuid) {
+        this.updateActiveStation(uuid);
+        UI.elements.status.innerText = UI.t('status_starting');
+        UI.elements.playPauseIcon.innerText = 'pause';
+
+        const station = this.state.allStations.find(s => s.uuid === uuid);
+        if (station) {
+            UI.elements.currentName.innerText = station.name;
+            UI.elements.currentStar.classList.toggle('hidden', !station.starred);
+            UI.elements.currentMetadata.innerText = "";
+            let imageUrl = station.hasImage ? `/api/image/${station.uuid}` : 'favicon.png';
+            if (station.hasImage && station.lastModified) imageUrl += `?t=${station.lastModified}`;
+            UI.elements.currentImage.src = imageUrl;
+        }
+
+        try {
+            await API.playStation(uuid);
+        } catch (e) { console.error(e); }
+    },
+
+    async togglePlayback() {
+        const isPlaying = UI.elements.playPauseIcon.innerText === 'pause';
+        UI.elements.playPauseIcon.innerText = isPlaying ? 'play_arrow' : 'pause';
+        UI.elements.status.innerText = isPlaying ? UI.t('status_paused') : UI.t('status_playing');
+
+        try {
+            if (isPlaying) await API.pause();
+            else await API.resume();
+        } catch (e) { console.error(e); }
+    },
+
+    async toggleWebStream() {
+        this.state.isWebStreaming = !this.state.isWebStreaming;
+        if (this.state.isWebStreaming) {
+            await this.loadAndPlayWebStream();
+        } else {
+            UI.elements.webAudio.pause();
+            UI.elements.webAudio.src = '';
+            UI.elements.webStreamIcon.innerText = 'volume_off';
+            UI.elements.webStreamBtn.classList.remove('active-stream');
+        }
+    },
+
+    async loadAndPlayWebStream() {
+        try {
+            const absoluteStreamUrl = await API.getStreamUrl();
+            if (absoluteStreamUrl) {
+                UI.elements.webAudio.src = absoluteStreamUrl;
+                await UI.elements.webAudio.play();
+                UI.elements.webStreamIcon.innerText = 'volume_up';
+                UI.elements.webStreamBtn.classList.add('active-stream');
             }
         } catch (e) {
-            console.error("Failed to parse WebSocket message", e, event.data);
+            console.error("Playback failed", e);
+            this.state.isWebStreaming = false;
+            UI.elements.webStreamIcon.innerText = 'volume_off';
+            UI.elements.webStreamBtn.classList.remove('active-stream');
         }
-    };
-
-    updateSocket.onclose = () => {
-        console.log("WebSocket closed, retrying in 5s...");
-        setTimeout(initUpdateSocket, 5000);
-    };
-
-    updateSocket.onerror = (error) => {
-        console.error("WebSocket error", error);
-    };
-}
-
-async function loadStations() {
-    try {
-        const response = await apiFetch('/api/stations');
-        if (!response.ok) {
-            document.getElementById('stationList').innerText = t('status_error');
-            stationsLoaded = true;
-            updateStatus();
-            return;
-        }
-        allStations = await response.json();
-        stationsLoaded = true;
-        renderStationList();
-        updateStatus();
-    } catch (e) {
-        console.error("Load stations failed", e);
-        document.getElementById('stationList').innerText = t('status_connection_error');
-        stationsLoaded = true;
-        updateStatus();
-    }
-}
-
-function renderStationList() {
-    const list = document.getElementById('stationList');
-    if (!list) return;
-    list.innerHTML = '';
-    if (allStations.length === 0) {
-        list.innerText = t('stations_empty');
-    } else {
-        allStations.forEach(station => {
-            const div = document.createElement('div');
-            div.className = 'station-item';
-            div.id = 'station-' + station.uuid;
-
-            const content = document.createElement('div');
-            content.className = 'station-item-content';
-
-            const img = document.createElement('img');
-            img.className = 'station-img';
-            if (station.hasImage) {
-                let imageUrl = '/api/image/' + station.uuid;
-                if (authToken) {
-                    imageUrl += '?token=' + encodeURIComponent(authToken);
-                    imageUrl += station.lastModified ? '&t=' + station.lastModified : '';
-                } else {
-                    imageUrl += station.lastModified ? '?t=' + station.lastModified : '';
-                }
-                img.src = imageUrl;
-            } else {
-                img.src = 'favicon.png';
-            }
-            content.appendChild(img);
-
-            const name = document.createElement('div');
-            name.className = 'station-name';
-            name.innerText = station.name || 'Unnamed Station';
-            content.appendChild(name);
-
-            if (station.starred) {
-                const star = document.createElement('span');
-                star.className = 'material-icons starred-icon';
-                star.innerText = 'star';
-                content.appendChild(star);
-            }
-
-            div.appendChild(content);
-            div.onclick = () => playStation(station.uuid);
-            list.appendChild(div);
-        });
-    }
-    if (lastStatusData) {
-        updateActiveStation(lastStatusData.currentStationUuid);
-    }
-}
-
-function updateActiveStation(uuid) {
-    document.querySelectorAll('.station-item').forEach(el => el.classList.remove('active'));
-    if (!uuid) return;
-    const active = document.getElementById('station-' + uuid);
-    if (active) active.classList.add('active');
-}
-
-async function playStation(uuid) {
-    updateActiveStation(uuid);
-    document.getElementById('status').innerText = t('status_starting');
-    document.getElementById('playPauseIcon').innerText = 'pause';
-
-    const station = allStations.find(s => s.uuid === uuid);
-    if (station) {
-        document.getElementById('currentName').innerText = station.name;
-        document.getElementById('currentStar').classList.toggle('hidden', !station.starred);
-        document.getElementById('currentMetadata').innerText = "";
-        document.getElementById('currentImage').src = station.hasImage ? '/api/image/' + station.uuid : 'favicon.png';
-    }
-
-    try {
-        await apiFetch('/api/play/' + uuid, { method: 'POST' });
-    } catch (e) { console.error(e); }
-}
-
-document.getElementById('playPauseBtn').onclick = async () => {
-    const icon = document.getElementById('playPauseIcon');
-    const isPlaying = icon.innerText === 'pause';
-
-    icon.innerText = isPlaying ? 'play_arrow' : 'pause';
-    document.getElementById('status').innerText = isPlaying ? t('status_paused') : t('status_playing');
-
-    try {
-        if (isPlaying) {
-            await apiFetch('/api/pause', { method: 'POST' });
-        } else {
-            await apiFetch('/api/resume', { method: 'POST' });
-        }
-    } catch (e) { console.error(e); }
-};
-
-document.getElementById('prevBtn').onclick = () => {
-    apiFetch('/api/prev', { method: 'POST' });
-};
-document.getElementById('nextBtn').onclick = () => {
-    apiFetch('/api/next', { method: 'POST' });
-};
-
-function applyThemeUI(theme) {
-    document.body.className = theme + '-theme';
-}
-
-function getBrowserTheme() {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
-
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-    if (themeSelect.value === 'auto_browser') {
-        applyThemeUI(e.matches ? 'dark' : 'light');
-    }
-});
-
-window.onresize = () => {
-    checkOverflow(document.getElementById('currentName'));
-    checkOverflow(document.getElementById('currentMetadata'));
-};
-
-const themeSelect = document.getElementById('themeSelect');
-themeSelect.onchange = () => {
-    const val = themeSelect.value;
-    localStorage.setItem('radio-remote-theme', val);
-    if (val === 'auto_browser') {
-        applyThemeUI(getBrowserTheme());
-    } else {
-        applyThemeUI(val);
     }
 };
 
-const langSelect = document.getElementById('langSelect');
-langSelect.onchange = () => {
-    const val = langSelect.value;
-    localStorage.setItem('radio-remote-lang', val);
-    if (val === 'auto_browser') {
-        const browserLang = navigator.language.split('-')[0];
-        currentLang = translations[browserLang] ? browserLang : 'en';
-    } else {
-        currentLang = val;
-    }
-    updateUILanguage();
-    if (lastStatusData) updateStatusUI(lastStatusData);
-    renderStationList();
-};
-
-const menuBtn = document.getElementById('menuBtn');
-const closeMenuBtn = document.getElementById('closeMenuBtn');
-const settingsPanel = document.getElementById('settingsPanel');
-const showApiDocsBtn = document.getElementById('showApiDocsBtn');
-const backToDashboard = document.getElementById('backToDashboard');
-const mainDashboard = document.getElementById('mainDashboard');
-const apiDocsView = document.getElementById('apiDocsView');
-
-function toggleMenu(e) {
-    if (e) e.stopPropagation();
-    settingsPanel.classList.toggle('hidden');
-}
-
-menuBtn.onclick = toggleMenu;
-closeMenuBtn.onclick = () => settingsPanel.classList.add('hidden');
-
-showApiDocsBtn.onclick = () => {
-    mainDashboard.classList.add('hidden');
-    apiDocsView.classList.remove('hidden');
-    settingsPanel.classList.add('hidden');
-};
-
-backToDashboard.onclick = () => {
-    apiDocsView.classList.add('hidden');
-    mainDashboard.classList.remove('hidden');
-};
-
-document.addEventListener('click', (e) => {
-    if (!settingsPanel.classList.contains('hidden') &&
-        !settingsPanel.contains(e.target) &&
-        !menuBtn.contains(e.target)) {
-        settingsPanel.classList.add('hidden');
-    }
-});
-
-async function init() {
-    document.getElementById('status').innerText = '...';
-    document.getElementById('currentName').innerText = '...';
-
-    await loadTranslations();
-
-    const savedTheme = localStorage.getItem('radio-remote-theme') || 'auto_browser';
-    themeSelect.value = savedTheme;
-    if (savedTheme === 'auto_browser') {
-        applyThemeUI(getBrowserTheme());
-    } else {
-        applyThemeUI(savedTheme);
-    }
-
-    const savedLang = localStorage.getItem('radio-remote-lang') || 'auto_browser';
-    langSelect.value = savedLang;
-    if (savedLang === 'auto_browser') {
-        const browserLang = navigator.language.split('-')[0];
-        currentLang = translations[browserLang] ? browserLang : 'en';
-    } else {
-        currentLang = savedLang;
-    }
-
-    updateUILanguage();
-    await loadStations();
-    initUpdateSocket();
-}
-
-init();
+App.init();

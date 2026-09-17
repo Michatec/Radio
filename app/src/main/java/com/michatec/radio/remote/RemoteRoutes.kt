@@ -37,6 +37,8 @@ class RemoteRoutes(
         get(Routes.ROOT) { call.respondAsset(context, "web/index.html", ContentType.Text.Html) }
         get(Routes.STYLE) { call.respondAsset(context, "web/style.css", ContentType.Text.CSS) }
         get(Routes.SCRIPT) { call.respondAsset(context, "web/script.js", ContentType.Application.JavaScript) }
+        get(Routes.API_SCRIPT) { call.respondAsset(context, "web/api.js", ContentType.Application.JavaScript) }
+        get(Routes.UI_SCRIPT) { call.respondAsset(context, "web/ui.js", ContentType.Application.JavaScript) }
         get(Routes.TRANSLATIONS) { call.respondAsset(context, "web/translations.json", ContentType.Application.Json) }
         get(Routes.FAVICON) { call.respondAsset(context, "web/favicon.png", ContentType.Image.PNG) }
 
@@ -86,6 +88,27 @@ class RemoteRoutes(
             } catch (_: Exception) {
                 call.respond(HttpStatusCode.InternalServerError)
             }
+        }
+
+        get(Routes.API_STREAM) {
+            val status = getStatus()
+            val uuid = status?.currentStationUuid
+            if (uuid.isNullOrEmpty()) {
+                call.respond(HttpStatusCode.NotFound, ErrorResponse("No station playing"))
+                return@get
+            }
+            val collection = withContext(Dispatchers.IO) { FileHelper.readCollection(context) }
+            val station = try {
+                CollectionHelper.getStation(collection, uuid)
+            } catch (_: Exception) {
+                null
+            }
+            val streamUri = station?.streamUris?.getOrNull(station.stream)
+            if (streamUri.isNullOrEmpty()) {
+                call.respond(HttpStatusCode.NotFound, ErrorResponse("Stream URL not found"))
+                return@get
+            }
+            call.respond(GenericResponse(status = streamUri))
         }
 
         // WebSockets

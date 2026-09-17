@@ -178,6 +178,7 @@ body.light-theme .current-station-info {
 
 .icon-btn:hover { background: rgba(128,128,128,0.1); transform: scale(1.1); }
 .icon-btn:active { transform: scale(0.9); }
+.icon-btn.active-stream { color: var(--accent-color); background: rgba(0, 132, 255, 0.15); box-shadow: var(--accent-glow); }
 
 .icon-btn.large .material-icons { font-size: 42px; }
 .icon-btn.x-large {
