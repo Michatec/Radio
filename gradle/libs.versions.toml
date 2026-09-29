@@ -19,6 +19,8 @@ workRuntimeKtx = "2.12.0"
 playServicesCastFramework = "22.3.1"
 composeBom = "2026.09.00"
 aboutLibraries = "15.2.0"
+zxingCore = "3.5.4"
+zxingEmbedded = "4.3.0"
 
 [libraries]
 activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
@@ -41,6 +43,8 @@ preference-ktx = { group = "androidx.preference", name = "preference-ktx", versi
 volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
 play-services-cast-framework = { group = "com.google.android.gms", name = "play-services-cast-framework", version.ref = "playServicesCastFramework" }
+zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxingCore" }
+zxing-embedded = { group = "com.journeyapps", name = "zxing-android-embedded", version.ref = "zxingEmbedded" }
 
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 compose-ui = { group = "androidx.compose.ui", name = "ui" }

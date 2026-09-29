@@ -26,6 +26,11 @@ data class WebSocketMessage(
     val data: Any
 )
 
+data class PairStartResponse(
+    val code: String,
+    val expiresInSeconds: Long
+)
+
 data class ErrorResponse(
     val error: String
 )

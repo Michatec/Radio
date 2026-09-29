@@ -24,7 +24,15 @@
     "lang_auto_browser": "Auto (Browser)",
     "api_docs": "API Documentation",
     "prompt_pairing_code": "Please enter the pairing code:",
-    "web_stream_toggle": "Listen on Web"
+    "web_stream_toggle": "Listen on Web",
+    "qr_pairing_title": "QR Code Pairing",
+    "qr_pairing_desc": "Scan this QR code with the server app to verify:",
+    "auth_title": "Authentication Required",
+    "auth_tab_token": "Pairing Code",
+    "auth_tab_qr": "QR Code",
+    "auth_token_desc": "Enter the pairing code from the server app:",
+    "auth_qr_desc": "Scan this QR code with the server app (Settings -> Verify with QR Code):",
+    "auth_submit": "Connect"
   },
   "de": {
     "title": "Radio Fernbedienung",
@@ -51,7 +59,15 @@
     "lang_auto_browser": "Auto (Browser)",
     "api_docs": "API Dokumentation",
     "prompt_pairing_code": "Bitte geben Sie den Pairing-Code ein:",
-    "web_stream_toggle": "Im Web hören"
+    "web_stream_toggle": "Im Web hören",
+    "qr_pairing_title": "QR-Code Kopplung",
+    "qr_pairing_desc": "Scanne diesen QR-Code mit der Server-App zur Verifizierung:",
+    "auth_title": "Authentifizierung erforderlich",
+    "auth_tab_token": "Pairing-Code",
+    "auth_tab_qr": "QR-Code",
+    "auth_token_desc": "Gib den Pairing-Code aus der Server-App ein:",
+    "auth_qr_desc": "Scanne diesen QR-Code mit der Server-App (Einstellungen -> Mit QR-Code verifizieren):",
+    "auth_submit": "Verbinden"
   },
   "fr": {
     "title": "Télécommande Radio",
@@ -78,7 +94,15 @@
     "lang_auto_browser": "Auto (Navigateur)",
     "api_docs": "Documentation API",
     "prompt_pairing_code": "Veuillez saisir le code de couplage :",
-    "web_stream_toggle": "Écouter sur le Web"
+    "web_stream_toggle": "Écouter sur le Web",
+    "qr_pairing_title": "Couplage par QR Code",
+    "qr_pairing_desc": "Scannez ce QR Code avec l'application serveur pour vérifier :",
+    "auth_title": "Authentification requise",
+    "auth_tab_token": "Code de couplage",
+    "auth_tab_qr": "QR Code",
+    "auth_token_desc": "Saisissez le code de couplage de l'application serveur :",
+    "auth_qr_desc": "Scannez ce QR Code avec l'application serveur (Paramètres -> Vérifier avec un QR Code) :",
+    "auth_submit": "Connecter"
   },
   "ru": {
     "title": "Пульт Радио",
@@ -105,7 +129,15 @@
     "lang_auto_browser": "Авто (Браузер)",
     "api_docs": "Документация API",
     "prompt_pairing_code": "Введите код сопряжения:",
-    "web_stream_toggle": "Слушать в Интернете"
+    "web_stream_toggle": "Слушать в Интернете",
+    "qr_pairing_title": "Сопряжение по QR-коду",
+    "qr_pairing_desc": "Отсканируйте этот QR-код в серверном приложении для подтверждения:",
+    "auth_title": "Требуется авторизация",
+    "auth_tab_token": "Код сопряжения",
+    "auth_tab_qr": "QR-код",
+    "auth_token_desc": "Введите код сопряжения из серверного приложения:",
+    "auth_qr_desc": "Отсканируйте этот QR-код в серверном приложении (Настройки -> Проверить по QR-коду):",
+    "auth_submit": "Подключить"
   },
   "nl": {
     "title": "Radio Afstandsbediening",
@@ -132,7 +164,15 @@
     "lang_auto_browser": "Auto (Browser)",
     "api_docs": "API Documentatie",
     "prompt_pairing_code": "Voer de koppelingscode in:",
-    "web_stream_toggle": "Luister op internet"
+    "web_stream_toggle": "Luister op internet",
+    "qr_pairing_title": "Koppeling met QR-code",
+    "qr_pairing_desc": "Scan deze QR-code met de serverapp ter verificatie:",
+    "auth_title": "Authenticatie vereist",
+    "auth_tab_token": "Koppelingscode",
+    "auth_tab_qr": "QR-code",
+    "auth_token_desc": "Voer de koppelingscode van de serverapp in:",
+    "auth_qr_desc": "Scan deze QR-code met de serverapp (Instellingen -> Verifiëren met QR-code):",
+    "auth_submit": "Verbinden"
   },
   "pl": {
     "title": "Pilot Radio",
@@ -159,7 +199,15 @@
     "lang_auto_browser": "Auto (Przeglądarkα)",
     "api_docs": "Dokumentacja API",
     "prompt_pairing_code": "Wprowadź kod parowania:",
-    "web_stream_toggle": "Słuchaj w internecie"
+    "web_stream_toggle": "Słuchaj w internecie",
+    "qr_pairing_title": "Parowanie kodem QR",
+    "qr_pairing_desc": "Zeskanuj ten kod QR w aplikacji serwera, aby zweryfikować:",
+    "auth_title": "Wymagane uwierzytelnienie",
+    "auth_tab_token": "Kod parowania",
+    "auth_tab_qr": "Kod QR",
+    "auth_token_desc": "Wprowadź kod parowania z aplikacji serwera:",
+    "auth_qr_desc": "Zeskanuj ten kod QR w aplikacji serwera (Ustawienia -> Zweryfikuj kodem QR):",
+    "auth_submit": "Połącz"
   },
   "ja": {
     "title": "ラジオ リモコン",
@@ -186,7 +234,15 @@
     "lang_auto_browser": "自動 (ブラウザ)",
     "api_docs": "API ドキュメント",
     "prompt_pairing_code": "ペアリングコードを入力してください：",
-    "web_stream_toggle": "ウェブで聴く"
+    "web_stream_toggle": "ウェブで聴く",
+    "qr_pairing_title": "QRコードペアリング",
+    "qr_pairing_desc": "このQRコードをサーバーアプリでスキャンして認証してください：",
+    "auth_title": "認証が必要です",
+    "auth_tab_token": "ペアリングコード",
+    "auth_tab_qr": "QRコード",
+    "auth_token_desc": "サーバーアプリのペアリングコードを入力してください：",
+    "auth_qr_desc": "このQRコードをサーバーアプリでスキャンしてください（設定 -> QRコードで検証）：",
+    "auth_submit": "接続"
   },
   "uk": {
     "title": "Пульт Радіо",
@@ -213,7 +269,15 @@
     "lang_auto_browser": "Авто (Браузер)",
     "api_docs": "Документація API",
     "prompt_pairing_code": "Введіть код сполучення:",
-    "web_stream_toggle": "Слухати в Інтернеті"
+    "web_stream_toggle": "Слухати в Інтернеті",
+    "qr_pairing_title": "Сполучення за QR-кодом",
+    "qr_pairing_desc": "Відскануйте цей QR-код у застосунку сервера для підтвердження:",
+    "auth_title": "Потрібна автентифікація",
+    "auth_tab_token": "Код сполучення",
+    "auth_tab_qr": "QR-код",
+    "auth_token_desc": "Введіть код сполучення із застосунку сервера:",
+    "auth_qr_desc": "Відскануйте цей QR-код у застосунку сервера (Налаштування -> Підтвердити QR-кодом):",
+    "auth_submit": "Підключити"
   },
   "el": {
     "title": "Ραδιοφωνικό Χειριστήριο",
@@ -240,7 +304,15 @@
     "lang_auto_browser": "Αυτόματο (Browser)",
     "api_docs": "Τεκμηρίωση API",
     "prompt_pairing_code": "Εισαγάγετε τον κωδικό σύζευξης:",
-    "web_stream_toggle": "Ακούστε στο Web"
+    "web_stream_toggle": "Ακούστε στο Web",
+    "qr_pairing_title": "Σύζευξη με QR Code",
+    "qr_pairing_desc": "Σαρώστε αυτό το QR Code με την εφαρμογή διακομιστή για επαλήθευση:",
+    "auth_title": "Απαιτείται έλεγχος ταυτότητας",
+    "auth_tab_token": "Κωδικός σύζευξης",
+    "auth_tab_qr": "QR Code",
+    "auth_token_desc": "Εισαγάγετε τον κωδικό σύζευξης από την εφαρμογή διακομιστή:",
+    "auth_qr_desc": "Σαρώστε αυτό το QR Code με την εφαρμογή διακομιστή (Ρυθμίσεις -> Επαλήθευση με QR Code):",
+    "auth_submit": "Σύνδεση"
   },
   "da": {
     "title": "Radio Fjernbetjening",
@@ -267,6 +339,14 @@
     "lang_auto_browser": "Auto (Browser)",
     "api_docs": "API Dokumentation",
     "prompt_pairing_code": "Indtast parringskode:",
-    "web_stream_toggle": "Lyt på webben"
+    "web_stream_toggle": "Lyt på webben",
+    "qr_pairing_title": "Parring med QR-kode",
+    "qr_pairing_desc": "Scan denne QR-kode med serverappen for at verificere:",
+    "auth_title": "Godkendelse påkrævet",
+    "auth_tab_token": "Parringskode",
+    "auth_tab_qr": "QR-kode",
+    "auth_token_desc": "Indtast parringskoden fra serverappen:",
+    "auth_qr_desc": "Scan denne QR-kode med serverappen (Indstillinger -> Bekræft med QR-kode):",
+    "auth_submit": "Forbind"
   }
 }

@@ -17,7 +17,9 @@ const API = {
         let response = await fetch(url, options);
 
         if (response.status === 401) {
-            const code = prompt(UI.t('prompt_pairing_code') || "Please enter the pairing code:");
+            this.authToken = '';
+            localStorage.removeItem('radio-remote-token');
+            const code = await UI.showAuthModal();
             if (code) {
                 this.authToken = code;
                 localStorage.setItem('radio-remote-token', this.authToken);
@@ -27,6 +29,8 @@ const API = {
                 if (response.status === 401) {
                     this.authToken = '';
                     localStorage.removeItem('radio-remote-token');
+                } else {
+                    this.initUpdateSocket();
                 }
             } else {
                 this.authToken = '';

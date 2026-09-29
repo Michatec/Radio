@@ -23,6 +23,8 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.snackbar.Snackbar
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import com.michatec.radio.BuildConfig
 import com.michatec.radio.Keys
 import com.michatec.radio.NotificationSys
@@ -40,9 +42,13 @@ import com.michatec.radio.helpers.LanguageHelper
 import com.michatec.radio.helpers.MarqueeSwitchPreference
 import com.michatec.radio.helpers.NetworkHelper
 import com.michatec.radio.helpers.PreferencesHelper
+import com.michatec.radio.remote.PairingManager
+import com.michatec.radio.remote.RemoteConstants
+import com.michatec.radio.ui.QrCaptureActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -59,6 +65,39 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     // Check if the device running the app is an Android TV instance
     private val isAndroidTV: Boolean by lazy {
         context?.packageManager?.hasSystemFeature(PackageManager.FEATURE_LEANBACK) == true
+    }
+
+    @UnstableApi
+    private val qrScanLauncher = registerForActivityResult(ScanContract()) { result ->
+        if (result.contents != null) {
+            val scanned = result.contents
+            val secret = PreferencesHelper.loadRemoteControlSecretToken()
+
+            var matched = false
+
+            if (scanned.startsWith(RemoteConstants.Pairing.QR_PREFIX)) {
+                val parts = scanned.split(":", limit = 3)
+                val code = if (parts.size == 3) parts[2] else parts.getOrNull(1)
+                Log.i(TAG, "Scanned pairing QR code with ${code?.length ?: 0} characters")
+                matched = PairingManager.approveClient(code)
+            } else {
+                matched = constantTimeEquals(scanned, secret)
+            }
+
+            if (matched) {
+                Log.i(TAG, "Pairing code verification succeeded")
+                Snackbar.make(requireView(), R.string.toastmessage_verification_success, Snackbar.LENGTH_LONG).show()
+            } else {
+                Log.w(TAG, "Pairing code verification failed")
+                Snackbar.make(requireView(), R.string.toastmessage_verification_failed, Snackbar.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    /* Compares two secrets without leaking their content through timing */
+    private fun constantTimeEquals(a: String?, b: String): Boolean {
+        if (a == null) return false
+        return MessageDigest.isEqual(a.toByteArray(Charsets.UTF_8), b.toByteArray(Charsets.UTF_8))
     }
 
     private fun isPermissionGranted(context: Context, permission: String): Boolean {
@@ -128,6 +167,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 val enabled = PreferencesHelper.loadRemoteControlEnabled()
                 findPreference<Preference>(Keys.PREF_REMOTE_CONTROL_AUTH_ENABLED)?.isVisible = enabled
                 findPreference<Preference>(Keys.PREF_REMOTE_CONTROL_SECRET_TOKEN)?.isVisible = enabled && PreferencesHelper.loadRemoteControlAuthEnabled()
+                findPreference<Preference>(Keys.PREF_REMOTE_CONTROL_VERIFY_QR)?.isVisible = !isAndroidTV && enabled && PreferencesHelper.loadRemoteControlAuthEnabled()
                 if (enabled) {
                     val intent = Intent(activity, PlayerService::class.java).apply {
                         action = Keys.ACTION_START
@@ -136,7 +176,12 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 }
             }
             Keys.PREF_REMOTE_CONTROL_AUTH_ENABLED -> {
-                findPreference<Preference>(Keys.PREF_REMOTE_CONTROL_SECRET_TOKEN)?.isVisible = PreferencesHelper.loadRemoteControlEnabled() && PreferencesHelper.loadRemoteControlAuthEnabled()
+                val authEnabled = PreferencesHelper.loadRemoteControlAuthEnabled()
+                if (!authEnabled) {
+                    PairingManager.clear()
+                }
+                findPreference<Preference>(Keys.PREF_REMOTE_CONTROL_SECRET_TOKEN)?.isVisible = PreferencesHelper.loadRemoteControlEnabled() && authEnabled
+                findPreference<Preference>(Keys.PREF_REMOTE_CONTROL_VERIFY_QR)?.isVisible = !isAndroidTV && PreferencesHelper.loadRemoteControlEnabled() && authEnabled
             }
             Keys.PREF_EDIT_STATIONS -> {
                 val enabled = PreferencesHelper.loadEditStationsEnabled(activity as Context)
@@ -316,7 +361,29 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             // regenerate secret
             val newSecret = PreferencesHelper.generateSecretToken()
             PreferencesHelper.saveRemoteControlSecretToken(newSecret)
+            PairingManager.clear()
             Snackbar.make(requireView(), R.string.toastmessage_secret_regenerated, Snackbar.LENGTH_LONG).show()
+            return@setOnPreferenceClickListener true
+        }
+
+        // set up "Remote Control Verify QR" preference
+        val preferenceRemoteControlVerifyQr = Preference(context)
+        preferenceRemoteControlVerifyQr.title = getString(R.string.pref_remote_control_verify_qr_title)
+        preferenceRemoteControlVerifyQr.setIcon(R.drawable.ic_camera_24dp)
+        preferenceRemoteControlVerifyQr.summary = getString(R.string.pref_remote_control_verify_qr_summary)
+        preferenceRemoteControlVerifyQr.key = Keys.PREF_REMOTE_CONTROL_VERIFY_QR
+        preferenceRemoteControlVerifyQr.isVisible = !isAndroidTV && PreferencesHelper.loadRemoteControlEnabled() && PreferencesHelper.loadRemoteControlAuthEnabled()
+        preferenceRemoteControlVerifyQr.setOnPreferenceClickListener {
+            val options = ScanOptions().apply {
+                setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+                setPrompt(getString(R.string.pref_remote_control_verify_qr_title))
+                setCameraId(0)
+                setBeepEnabled(true)
+                setBarcodeImageEnabled(true)
+                setCaptureActivity(QrCaptureActivity::class.java)
+                setOrientationLocked(false)
+            }
+            qrScanLauncher.launch(options)
             return@setOnPreferenceClickListener true
         }
 
@@ -612,14 +679,15 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         preferenceCategoryGeneral.addPreference(preferenceCustomTheme)
         preferenceCategoryGeneral.addPreference(preferenceShaderEffect)
 
-        if (!isAndroidTV && isPermissionGranted(activity as Context, Manifest.permission.POST_NOTIFICATIONS)) {
-            preferenceCategoryGeneral.addPreference(preferenceTestNotification)
-        }
-
         screen.addPreference(preferenceCategoryRemoteControl)
         preferenceCategoryRemoteControl.addPreference(preferenceRemoteControl)
         preferenceCategoryRemoteControl.addPreference(preferenceRemoteControlAuth)
         preferenceCategoryRemoteControl.addPreference(preferenceRemoteControlSecret)
+
+        if (!isAndroidTV && isPermissionGranted(activity as Context, Manifest.permission.POST_NOTIFICATIONS)) {
+            preferenceCategoryGeneral.addPreference(preferenceTestNotification)
+            preferenceCategoryRemoteControl.addPreference(preferenceRemoteControlVerifyQr)
+        }
 
         screen.addPreference(preferenceCategoryAudioEffects)
         preferenceCategoryAudioEffects.addPreference(preferenceBassBoost)

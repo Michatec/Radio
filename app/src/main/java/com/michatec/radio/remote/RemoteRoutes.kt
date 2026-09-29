@@ -1,10 +1,16 @@
 package com.michatec.radio.remote
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Color
 import com.google.gson.Gson
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.EncodeHintType
+import com.google.zxing.qrcode.QRCodeWriter
 import com.michatec.radio.BuildConfig
 import com.michatec.radio.helpers.CollectionHelper
 import com.michatec.radio.helpers.FileHelper
+import com.michatec.radio.helpers.PreferencesHelper
 import com.michatec.radio.remote.RemoteConstants.Routes
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -21,7 +27,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 import java.io.File
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.set
 
 class RemoteRoutes(
     private val context: Context,
@@ -45,6 +54,42 @@ class RemoteRoutes(
         // API
         get(Routes.API_CONFIG) {
             call.respond(ConfigResponse(BuildConfig.VERSION_NAME))
+        }
+
+        post(Routes.API_PAIR_START) {
+            val clientId = call.request.queryParameters["clientId"]
+            val clientKey = call.request.headers[RemoteConstants.Auth.HEADER_PAIR_KEY]
+            val code = PairingManager.startSession(clientId, clientKey)
+            if (code == null) {
+                call.respond(HttpStatusCode.BadRequest, ErrorResponse("Invalid pairing request"))
+            } else {
+                call.respond(PairStartResponse(code, RemoteConstants.Pairing.SESSION_TTL_SECONDS))
+            }
+        }
+
+        get(Routes.API_QR) {
+            val clientId = call.parameters["clientId"]
+            val clientKey = call.request.headers[RemoteConstants.Auth.HEADER_PAIR_KEY]
+            val code = PairingManager.getSessionCode(clientId, clientKey)
+            if (code == null) {
+                call.respond(HttpStatusCode.NotFound, ErrorResponse("No pairing session"))
+                return@get
+            }
+            val qrData = "radio-pair:$clientId:$code"
+            val qrBytes = generateQRCodeBytes(qrData)
+            call.respondBytes(qrBytes, ContentType.Image.PNG)
+        }
+
+        get(Routes.API_PAIR_STATUS) {
+            val clientId = call.request.queryParameters["clientId"]
+            val clientKey = call.request.headers[RemoteConstants.Auth.HEADER_PAIR_KEY]
+            val authEnabled = PreferencesHelper.loadRemoteControlAuthEnabled()
+            val token = if (authEnabled) PairingManager.consumeToken(clientId, clientKey) else null
+            if (token != null) {
+                call.respond(mapOf("paired" to true, "token" to token))
+            } else {
+                call.respond(mapOf("paired" to false))
+            }
         }
 
         get(Routes.API_STATUS) {
@@ -159,5 +204,20 @@ class RemoteRoutes(
             onAction("prev", null)
             call.respond(GenericResponse())
         }
+    }
+
+    private fun generateQRCodeBytes(text: String, width: Int = 300, height: Int = 300): ByteArray {
+        val hints = hashMapOf<EncodeHintType, Any>()
+        hints[EncodeHintType.MARGIN] = 1
+        val bitMatrix = QRCodeWriter().encode(text, BarcodeFormat.QR_CODE, width, height, hints)
+        val bmp = createBitmap(width, height, Bitmap.Config.RGB_565)
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                bmp[x, y] = if (bitMatrix[x, y]) Color.BLACK else Color.WHITE
+            }
+        }
+        val stream = ByteArrayOutputStream()
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        return stream.toByteArray()
     }
 }

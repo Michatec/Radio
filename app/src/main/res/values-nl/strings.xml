@@ -212,8 +212,12 @@
     <string name="pref_remote_control_auth_summary">Vereist een koppelingscode voor toegang op afstand.</string>
     <string name="pref_remote_control_secret_title">Koppelingscode</string>
     <string name="pref_remote_control_secret_summary">Gebruik deze code voor de webinterface en API.</string>
+    <string name="pref_remote_control_verify_qr_title">Verifiëren met QR-code</string>
+    <string name="pref_remote_control_verify_qr_summary">Scan met de camera de QR-code die op de webinterface van de client wordt getoond.</string>
     <string name="pref_remote_control_secret_regenerate">Koppelingscode opnieuw genereren</string>
     <string name="toastmessage_secret_regenerated">Koppelingscode opnieuw gegenereerd.</string>
+    <string name="toastmessage_verification_success">Succesvol geverifieerd via QR-code!</string>
+    <string name="toastmessage_verification_failed">Ongeldige QR-code of koppelingscode.</string>
     <string name="error_webserver">De webserver voor de afstandsbediening is gecrasht of gestopt.</string>
     <string name="search_hint">Zenders zoeken�</string>
     <string name="search_filter_favorites">Alleen favorieten</string>

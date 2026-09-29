@@ -64,6 +64,38 @@
                         </ul>
                     </div>
 
+                    <div class="auth-box glass">
+                        <h3>Pairing via QR Code</h3>
+                        <p>Instead of typing the pairing code manually, the client can display a QR code that you confirm by scanning it with the server app. This is the recommended flow for desktop browsers and touch devices.</p>
+                        <ol>
+                            <li>The client generates a random <code>clientId</code> and a random <code>pairKey</code> (32 bytes) and keeps both to itself.</li>
+                            <li>The client calls <code>POST /api/pair/start?clientId=YOUR_CLIENT_ID</code> with the header <code>X-Pair-Key: YOUR_PAIR_KEY</code> to open a short lived pairing session.</li>
+                            <li>The client calls <code>GET /api/qr?clientId=YOUR_CLIENT_ID</code> with the same header to obtain a PNG QR code containing <code>radio-pair:PAIRING_CODE</code>. The pairing code is a one time value of the session &ndash; it is <strong>not</strong> the secret of your server.</li>
+                            <li>Open <strong>Settings &rarr; Remote Control &rarr; Verify with QR Code</strong> in the Radio app and scan the displayed code. The app approves that single session.</li>
+                            <li>The client polls <code>GET /api/pair/status?clientId=YOUR_CLIENT_ID</code> with the same header until it returns <code>paired: true</code>, then stores the returned token and sends it as <code>X-Remote-Key</code> on all further requests.</li>
+                        </ol>
+                        <p>The pairing endpoints are exempt from the pairing code check, so they can be called before a client is approved. A session is only readable with its <code>X-Pair-Key</code>, expires after 15 minutes and is dropped as soon as the token was handed out, so knowing a <code>clientId</code> alone is not enough. <strong>Use a strong, unique pairing code and keep the server on a trusted network</strong> &ndash; the server is served over plain HTTP, so anything sent to it can be read by others on the network.</p>
+                        <div class="code-example">Example Usage (JavaScript):</div>
+                        <pre>
+const clientId = crypto.randomUUID();
+const pairKey = 'random 32 byte hex string';
+const pairHeaders = { 'X-Pair-Key': pairKey };
+
+await fetch('/api/pair/start?clientId=' + encodeURIComponent(clientId), { method: 'POST', headers: pairHeaders });
+const qr = await fetch('/api/qr?clientId=' + encodeURIComponent(clientId), { headers: pairHeaders });
+document.getElementById('qr').src = URL.createObjectURL(await qr.blob());
+
+const poll = setInterval(async () =&gt; {
+    const res = await fetch('/api/pair/status?clientId=' + encodeURIComponent(clientId), { headers: pairHeaders });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.paired &amp;&amp; data.token) {
+        clearInterval(poll);
+        localStorage.setItem('radio-token', data.token);
+    }
+}, 2000);                </pre>
+                    </div>
+
                     <h2>API Reference</h2>
 
                     <div class="endpoint">
@@ -87,7 +119,7 @@
                         <div class="code-example">Example Usage (JavaScript):</div>
                         <pre>
 const token = '123456'; // From app settings
-const socket = new WebSocket('ws://' + location.host + '/api/updates?token=' + token);
+const socket = new WebSocket('ws://' + location.host + '/api/updates?token=' + encodeURIComponent(token));
 socket.onmessage = (event) => {
   const status = JSON.parse(event.data);
   console.log('Update received:', status);
@@ -201,6 +233,28 @@ socket.onmessage = (event) => {
                 </div>
                 <div class="settings-footer">
                     <button id="showApiDocsBtn" class="link-btn" data-t="api_docs">API Documentation</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="authModal" class="auth-modal hidden">
+            <div class="auth-modal-content glass">
+                <h2 data-t="auth_title">Authentication Required</h2>
+                <div class="auth-tabs">
+                    <button id="tabTokenBtn" class="auth-tab-btn active" data-t="auth_tab_token">Pairing Code</button>
+                    <button id="tabQrBtn" class="auth-tab-btn" data-t="auth_tab_qr">QR Code</button>
+                </div>
+
+                <div id="authPanelToken" class="auth-panel">
+                    <p data-t="auth_token_desc">Enter the pairing code from the server app:</p>
+                    <label for="authCodeInput"></label><input type="password" id="authCodeInput" placeholder="Pairing Code" class="auth-input">
+                    <button id="authSubmitBtn" class="auth-submit-btn" data-t="auth_submit">Connect</button>
+                </div>
+
+                <div id="authPanelQr" class="auth-panel hidden">
+                    <p data-t="auth_qr_desc">Scan this QR code with the server app (Settings -> Verify with QR Code):</p>
+                    <img alt="Pairing QR Code" class="auth-qr-img">
+                    <p id="authQrCode" class="auth-qr-code"></p>
                 </div>
             </div>
         </div>

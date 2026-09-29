@@ -212,8 +212,12 @@
     <string name="pref_remote_control_auth_summary">Вимагати код сполучення для віддаленого достуπου.</string>
     <string name="pref_remote_control_secret_title">Код сполучення</string>
     <string name="pref_remote_control_secret_summary">Використовуйте цей код для веб-інтерфейсу та API.</string>
+    <string name="pref_remote_control_verify_qr_title">Підтвердити QR-кодом</string>
+    <string name="pref_remote_control_verify_qr_summary">Відскануйте камерою QR-код, показаний у веб-інтерфейсі клієнта.</string>
     <string name="pref_remote_control_secret_regenerate">Перегенерувати код сполучення</string>
     <string name="toastmessage_secret_regenerated">Код сполучення перегенеровано.</string>
+    <string name="toastmessage_verification_success">Успішно підтверджено за QR-кодом!</string>
+    <string name="toastmessage_verification_failed">Недійсний QR-код або код сполучення.</string>
     <string name="error_webserver">Веб-сервер дистанційного керування аварійно зупинився/зупинено.</string>
     <string name="search_hint">Пошук станцій…</string>
     <string name="search_filter_favorites">Тільки улюблені</string>

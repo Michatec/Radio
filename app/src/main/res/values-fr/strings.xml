@@ -210,7 +210,11 @@
     <string name="pref_remote_control_auth_summary">Nécessite un code de couplage pour l\'accès à distance.</string>
     <string name="pref_remote_control_secret_title">Code de couplage</string>
     <string name="pref_remote_control_secret_summary">Utilisez ce code pour l\'interface web et l\'API.</string>
+    <string name="pref_remote_control_verify_qr_title">Vérifier avec un QR Code</string>
+    <string name="pref_remote_control_verify_qr_summary">Scannez avec l\'appareil photo le QR Code affiché sur l\'interface web du client.</string>
     <string name="pref_remote_control_secret_regenerate">Régénérer le code de couplage</string>
+    <string name="toastmessage_verification_success">Vérification par QR Code réussie !</string>
+    <string name="toastmessage_verification_failed">QR Code ou code de couplage invalide.</string>
     <string name="toastmessage_secret_regenerated">Code de couplage régénéré.</string>
     <string name="error_webserver">Serveur de télécommande Web planté/arrêté.</string>
 

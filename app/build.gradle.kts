@@ -73,6 +73,8 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.gson)
     implementation(libs.play.services.cast.framework)
+    implementation(libs.zxing.core)
+    implementation(libs.zxing.embedded)
 
     // AndroidX Stuff //
     implementation(libs.core.ktx)

@@ -211,8 +211,12 @@
     <string name="pref_remote_control_auth_summary">Wymagaj kodu parowania dla zdalnego dostępu.</string>
     <string name="pref_remote_control_secret_title">Kod parowania</string>
     <string name="pref_remote_control_secret_summary">Użyj tego kodu dla interfejsu WWW i API.</string>
+    <string name="pref_remote_control_verify_qr_title">Zweryfikuj kodem QR</string>
+    <string name="pref_remote_control_verify_qr_summary">Zeskanuj aparatem kod QR wyświetlany w interfejsie WWW klienta.</string>
     <string name="pref_remote_control_secret_regenerate">Wygeneruj ponownie kod parowania</string>
     <string name="toastmessage_secret_regenerated">Kod parowania został wygenerowany ponownie.</string>
+    <string name="toastmessage_verification_success">Pomyślnie zweryfikowano kodem QR!</string>
+    <string name="toastmessage_verification_failed">Nieprawidłowy kod QR lub kod parowania.</string>
     <string name="error_webserver">Serwer zdalnego sterowania uległ awarii/zatrzymaniu.</string>
     <string name="search_hint">Szukaj stacji…</string>
     <string name="search_filter_favorites">Tylko ulubione</string>

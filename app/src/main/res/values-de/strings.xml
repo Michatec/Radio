@@ -213,8 +213,12 @@
     <string name="pref_remote_control_auth_summary">Erfordert einen Pairing-Code für den Fernzugriff.</string>
     <string name="pref_remote_control_secret_title">Pairing-Code</string>
     <string name="pref_remote_control_secret_summary">Verwenden Sie diesen Code für das Web-Interface und die API.</string>
+    <string name="pref_remote_control_verify_qr_title">Mit QR-Code verifizieren</string>
+    <string name="pref_remote_control_verify_qr_summary">Scanne den auf dem Client-Webinterface angezeigten QR-Code mit der Kamera.</string>
     <string name="pref_remote_control_secret_regenerate">Pairing-Code neu generieren</string>
     <string name="toastmessage_secret_regenerated">Pairing-Code neu generiert.</string>
+    <string name="toastmessage_verification_success">Erfolgreich per QR-Code verifiziert!</string>
+    <string name="toastmessage_verification_failed">Ungültiger QR-Code oder Pairing-Code.</string>
     <string name="error_webserver">Web-Fernbedienungsserver abgestürzt/gestoppt.</string>
     <string name="search_hint">Sender suchen…</string>
     <string name="search_filter_favorites">Nur Favoriten</string>

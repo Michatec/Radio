@@ -212,8 +212,12 @@
     <string name="pref_remote_control_auth_summary">Требовать код сопряжения для удаленного доступа.</string>
     <string name="pref_remote_control_secret_title">Код сопряжения</string>
     <string name="pref_remote_control_secret_summary">Используйте этот код для веб-интерфейса и API.</string>
+    <string name="pref_remote_control_verify_qr_title">Подтвердить по QR-коду</string>
+    <string name="pref_remote_control_verify_qr_summary">Отсканируйте камерой QR-код, отображаемый в веб-интерфейсе клиента.</string>
     <string name="pref_remote_control_secret_regenerate">Перегенерировать код сопряжения</string>
     <string name="toastmessage_secret_regenerated">Код сопряжения перегенерирован.</string>
+    <string name="toastmessage_verification_success">Успешно подтверждено по QR-коду!</string>
+    <string name="toastmessage_verification_failed">Неверный QR-код или код сопряжения.</string>
     <string name="error_webserver">Веб-сервер удалённого управления упал/остановлен.</string>
     <string name="search_hint">Поиск станций…</string>
     <string name="search_filter_favorites">Только избранное</string>

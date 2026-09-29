@@ -247,8 +247,12 @@
     <string name="pref_remote_control_auth_summary">Require a pairing code for remote access.</string>
     <string name="pref_remote_control_secret_title">Pairing Code</string>
     <string name="pref_remote_control_secret_summary">Use this code for the web interface and API.</string>
+    <string name="pref_remote_control_verify_qr_title">Verify with QR Code</string>
+    <string name="pref_remote_control_verify_qr_summary">Scan the QR code displayed on the client web interface using the camera.</string>
     <string name="pref_remote_control_secret_regenerate">Regenerate Pairing Code</string>
     <string name="toastmessage_secret_regenerated">Pairing code regenerated.</string>
+    <string name="toastmessage_verification_success">Successfully verified via QR Code!</string>
+    <string name="toastmessage_verification_failed">Invalid QR Code or pairing code.</string>
     <string name="error_webserver">Web Remote server crashed / stopped.</string>
     <string name="search_hint">Search stations…</string>
     <string name="search_filter_favorites">Only favorites</string>

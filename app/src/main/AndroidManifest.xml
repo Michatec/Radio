@@ -7,6 +7,9 @@
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" 
@@ -17,6 +20,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"
         tools:ignore="LeanbackUsesWifi" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <attribution
         android:tag="MediaPlayback"
@@ -58,6 +62,13 @@
             android:exported="false"
             android:theme="@style/CustomCastExpandedControllerStyle"
             android:launchMode="singleTask" />
+
+        <!-- QR code scanner -->
+        <activity
+            android:name=".ui.QrCaptureActivity"
+            android:exported="false"
+            android:stateNotNeeded="true"
+            android:theme="@style/zxing_CaptureTheme" />
 
         <!-- Main activity for radio station playback on phone and TV -->
         <activity
