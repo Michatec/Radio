@@ -23,6 +23,7 @@ import kotlinx.coroutines.sync.withLock
 import java.net.BindException
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
+import com.michatec.radio.core.Collection
 
 class RemoteControlServer(private val context: Context) {
 
@@ -38,7 +39,7 @@ class RemoteControlServer(private val context: Context) {
     private val statusUpdates = _statusUpdates.asSharedFlow()
 
     var onPlayStation: ((String) -> Unit)? = null
-    var onGetCollection: (() -> com.michatec.radio.core.Collection)? = null
+    var onGetCollection: (() -> Collection)? = null
     var onPause: (() -> Unit)? = null
     var onResume: (() -> Unit)? = null
     var onNext: (() -> Unit)? = null
