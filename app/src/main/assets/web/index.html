@@ -66,15 +66,15 @@
 
                     <div class="auth-box glass">
                         <h3>Pairing via QR Code</h3>
-                        <p>Instead of typing the pairing code manually, the client can display a QR code that you confirm by scanning it with the server app. This is the recommended flow for desktop browsers and touch devices.</p>
+                        <p>Instead of typing the pairing code manually, the client can display a QR code that you confirm by scanning it with the Radio app. This is the recommended flow for desktop browsers and touch devices.</p>
                         <ol>
                             <li>The client generates a random <code>clientId</code> and a random <code>pairKey</code> (32 bytes) and keeps both to itself.</li>
-                            <li>The client calls <code>POST /api/pair/start?clientId=YOUR_CLIENT_ID</code> with the header <code>X-Pair-Key: YOUR_PAIR_KEY</code> to open a short lived pairing session.</li>
-                            <li>The client calls <code>GET /api/qr?clientId=YOUR_CLIENT_ID</code> with the same header to obtain a PNG QR code containing <code>radio-pair:PAIRING_CODE</code>. The pairing code is a one time value of the session &ndash; it is <strong>not</strong> the secret of your server.</li>
+                            <li>The client calls <code>POST /api/pair/start?clientId=YOUR_CLIENT_ID</code> with the header <code>X-Pair-Key: YOUR_PAIR_KEY</code> to open a short-lived pairing session.</li>
+                            <li>The client calls <code>GET /api/qr?clientId=YOUR_CLIENT_ID</code> with the same header to obtain a PNG QR code containing <code>radio-pair:PAIRING_CODE</code>. The pairing code is a one time value of the session &ndash; it is <strong>not</strong> the secret of your Radio app.</li>
                             <li>Open <strong>Settings &rarr; Remote Control &rarr; Verify with QR Code</strong> in the Radio app and scan the displayed code. The app approves that single session.</li>
                             <li>The client polls <code>GET /api/pair/status?clientId=YOUR_CLIENT_ID</code> with the same header until it returns <code>paired: true</code>, then stores the returned token and sends it as <code>X-Remote-Key</code> on all further requests.</li>
                         </ol>
-                        <p>The pairing endpoints are exempt from the pairing code check, so they can be called before a client is approved. A session is only readable with its <code>X-Pair-Key</code>, expires after 15 minutes and is dropped as soon as the token was handed out, so knowing a <code>clientId</code> alone is not enough. <strong>Use a strong, unique pairing code and keep the server on a trusted network</strong> &ndash; the server is served over plain HTTP, so anything sent to it can be read by others on the network.</p>
+                        <p>The pairing endpoints are exempt from the pairing code check, so they can be called before a client is approved. A session is only readable with its <code>X-Pair-Key</code>, expires after 15 minutes and is dropped as soon as the token was handed out, so knowing a <code>clientId</code> alone is not enough.</p>
                         <div class="code-example">Example Usage (JavaScript):</div>
                         <pre>
 const clientId = crypto.randomUUID();

@@ -679,15 +679,15 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         preferenceCategoryGeneral.addPreference(preferenceCustomTheme)
         preferenceCategoryGeneral.addPreference(preferenceShaderEffect)
 
+        if (!isAndroidTV && isPermissionGranted(activity as Context, Manifest.permission.POST_NOTIFICATIONS)) {
+            preferenceCategoryGeneral.addPreference(preferenceTestNotification)
+        }
+
         screen.addPreference(preferenceCategoryRemoteControl)
         preferenceCategoryRemoteControl.addPreference(preferenceRemoteControl)
         preferenceCategoryRemoteControl.addPreference(preferenceRemoteControlAuth)
         preferenceCategoryRemoteControl.addPreference(preferenceRemoteControlSecret)
-
-        if (!isAndroidTV && isPermissionGranted(activity as Context, Manifest.permission.POST_NOTIFICATIONS)) {
-            preferenceCategoryGeneral.addPreference(preferenceTestNotification)
-            preferenceCategoryRemoteControl.addPreference(preferenceRemoteControlVerifyQr)
-        }
+        preferenceCategoryRemoteControl.addPreference(preferenceRemoteControlVerifyQr)
 
         screen.addPreference(preferenceCategoryAudioEffects)
         preferenceCategoryAudioEffects.addPreference(preferenceBassBoost)
