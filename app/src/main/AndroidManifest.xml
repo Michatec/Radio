@@ -41,6 +41,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
+        android:hardwareAccelerated="true"
         tools:targetApi="33">
 
         <!-- ANDROID AUTO SUPPORT -->
