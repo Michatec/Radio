@@ -259,6 +259,16 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             return@setOnPreferenceClickListener true
         }
 
+        // set up "Plugins" preference
+        val preferencePlugins = Preference(activity as Context)
+        preferencePlugins.title = getString(R.string.pref_plugins_title)
+        preferencePlugins.setIcon(R.drawable.ic_library_24dp)
+        preferencePlugins.summary = getString(R.string.pref_plugins_summary)
+        preferencePlugins.setOnPreferenceClickListener {
+            findNavController().navigate(R.id.action_settings_to_plugins)
+            return@setOnPreferenceClickListener true
+        }
+
 
         // set up "M3U Export" preference
         val preferenceM3uExport = Preference(activity as Context)
@@ -700,6 +710,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         screen.addPreference(preferenceCategoryMaintenance)
         preferenceCategoryMaintenance.addPreference(preferenceUpdateStationImages)
         preferenceCategoryMaintenance.addPreference(preferenceUpdateCollection)
+        preferenceCategoryMaintenance.addPreference(preferencePlugins)
 
         screen.addPreference(preferenceCategoryImportExport)
         preferenceCategoryImportExport.addPreference(preferenceM3uExport)

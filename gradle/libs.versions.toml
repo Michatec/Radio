@@ -4,6 +4,7 @@ agp = "9.4.1"
 coreKtx = "1.19.1"
 freedroidwarn = "V1.14"
 gson = "2.14.0"
+junit = "4.13.2"
 kotlin = "2.4.21"
 leanback = "1.2.0"
 ktor = "3.6.0"
@@ -21,13 +22,16 @@ composeBom = "2026.09.00"
 aboutLibraries = "15.3.0"
 zxingCore = "3.5.4"
 zxingEmbedded = "4.3.0"
+luaj = "3.0.1"
 
 [libraries]
 activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 freedroidwarn = { group = "com.github.woheller69", name = "FreeDroidWarn", version.ref = "freedroidwarn" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+junit = { module = "junit:junit", version.ref = "junit" }
 leanback = { group = "androidx.leanback", name = "leanback", version.ref = "leanback" }
+luaj-jse = { group = "org.luaj", name = "luaj-jse", version.ref = "luaj" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 media = { group = "androidx.media", name = "media", version.ref = "media" }

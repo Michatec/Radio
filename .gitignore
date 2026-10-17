@@ -7,6 +7,7 @@
 /.kotlin
 /app/.cxx/
 /.idea/*
+/.artifacts
 !/.idea/icon.png
 !/.idea/runConfigurations.xml
 !/.idea/vcs.xml

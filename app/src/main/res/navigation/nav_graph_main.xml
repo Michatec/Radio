@@ -41,6 +41,9 @@
         <action
             android:id="@+id/action_settings_to_about"
             app:destination="@id/about_destination" />
+        <action
+            android:id="@+id/action_settings_to_plugins"
+            app:destination="@id/plugins_destination" />
     </fragment>
 
     <!-- EQUALIZER -->
@@ -80,4 +83,10 @@
         android:id="@+id/about_destination"
         android:name="com.michatec.radio.fragments.AboutFragment"
         android:label="@string/about_title" />
+
+    <!-- PLUGINS -->
+    <fragment
+        android:id="@+id/plugins_destination"
+        android:name="com.michatec.radio.fragments.PluginsFragment"
+        android:label="@string/pref_plugins_title" />
 </navigation>

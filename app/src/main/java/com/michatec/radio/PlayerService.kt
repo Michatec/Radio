@@ -3,6 +3,7 @@ package com.michatec.radio
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import android.content.*
+import android.media.AudioManager
 import android.media.audiofx.AudioEffect
 import android.os.Build
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media3.cast.CastPlayer
 import androidx.media3.common.*
@@ -33,6 +35,9 @@ import com.google.common.util.concurrent.SettableFuture
 import com.michatec.radio.core.Collection
 import com.michatec.radio.core.Station
 import com.michatec.radio.helpers.*
+import com.michatec.radio.plugins.PluginApi
+import com.michatec.radio.plugins.PluginManager
+import org.luaj.vm2.LuaValue
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
 import java.util.*
@@ -62,6 +67,7 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
     private var playbackRestartCounter: Int = 0
     private var playLastStation: Boolean = false
     private var manuallyCancelledSleepTimer = false
+    private var lastDispatchedStationChangedMediaId: String? = null
     
     private val remoteControlServer: RemoteControlServer by lazy { 
         RemoteControlServer(this).apply {
@@ -139,6 +145,50 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
         PreferencesHelper.registerPreferenceChangeListener(this)
         // apply initial audio effects
         applyAudioEffects()
+        PluginManager.getInstance(applicationContext).customEventDispatcher = object : PluginApi.PluginEventDispatcher {
+            override fun registerEventListener(eventName: String, callback: LuaValue) {}
+            override fun unregisterEventListener(eventName: String) {}
+
+            override fun notifyUser(title: String, message: String, type: String) {
+                if (type == "toast" || type == "snackbar") {
+                    Handler(Looper.getMainLooper()).post {
+                        Toast.makeText(this@PlayerService, "$title: $message", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    NotificationSys.showNotification(this@PlayerService, title, message)
+                }
+            }
+
+            override fun getCurrentStationInfo(): Map<String, Any> {
+                val mediaItem = if (this@PlayerService::player.isInitialized) player.currentMediaItem else null
+                val uuid = mediaItem?.mediaId ?: PreferencesHelper.loadLastPlayedStationUuid()
+                val station = CollectionHelper.getStation(collection, uuid)
+                return mapOf(
+                    "uuid" to (station.uuid.ifEmpty { "unknown" }),
+                    "name" to (station.name.ifEmpty { "Unknown" }),
+                    "uri" to (station.getStreamUri())
+                )
+            }
+
+            override fun isPlaying(): Boolean {
+                return if (this@PlayerService::player.isInitialized) player.isPlaying else false
+            }
+
+            override fun getVolume(): Int {
+                val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
+                val current = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+                val max = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+                return if (max > 0) (current * 100) / max else 80
+            }
+
+            override fun setVolume(volume: Int) {
+                val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
+                val max = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+                val target = (volume * max) / 100
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, target, 0)
+            }
+        }
+        PluginManager.getInstance(applicationContext).loadAllEnabledPlugins()
     }
 
 
@@ -161,6 +211,7 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
         
         // Reset playing state in preferences
         PreferencesHelper.saveIsPlaying(false)
+        PluginManager.getInstance(applicationContext).unloadAllPlugins()
         super.onDestroy()
     }
 
@@ -490,6 +541,31 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
         player.play()
     }
 
+    private fun dispatchStationChanged(mediaItem: MediaItem?) {
+        if (mediaItem == null) {
+            lastDispatchedStationChangedMediaId = null
+            return
+        }
+
+        val stationId = mediaItem.mediaId
+        if (stationId.isBlank() || stationId == lastDispatchedStationChangedMediaId) return
+
+        lastDispatchedStationChangedMediaId = stationId
+        val station = collection.stations.firstOrNull { it.uuid == stationId }
+        PluginManager.getInstance(applicationContext).dispatchEvent(
+            "station_changed",
+            mapOf(
+                "uuid" to stationId,
+                "name" to (station?.name ?: mediaItem.mediaMetadata.title?.toString().orEmpty()),
+                "uri" to (
+                    station?.getStreamUri()
+                        ?: mediaItem.requestMetadata.mediaUri?.toString()
+                        ?: mediaItem.localConfiguration?.uri?.toString().orEmpty()
+                    )
+            )
+        )
+    }
+
 
     /*
      * Custom MediaSession Callback that handles player commands
@@ -690,6 +766,11 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
      * Player.Listener: Called when one or more player states changed.
      */
     private var playerListener: Player.Listener = object : Player.Listener {
+
+        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+            super.onMediaItemTransition(mediaItem, reason)
+            dispatchStationChanged(mediaItem)
+        }
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             super.onIsPlayingChanged(isPlaying)

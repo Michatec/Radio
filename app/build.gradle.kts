@@ -23,6 +23,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
 
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
+
     buildFeatures {
         buildConfig = true
         viewBinding = true
@@ -91,6 +95,7 @@ dependencies {
     implementation(libs.navigation.ui.ktx)
     implementation(libs.work.runtime.ktx)
     implementation(libs.leanback)
+    implementation(libs.luaj.jse)
 
     implementation(libs.freedroidwarn)
 
@@ -112,4 +117,7 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.aboutLibraries.compose)
     implementation(libs.compose.material.icons.extended)
+
+    // Tests //
+    testImplementation(libs.junit)
 }
