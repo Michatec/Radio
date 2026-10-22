@@ -9,7 +9,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.net.toFile
 import androidx.core.net.toUri
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import com.michatec.radio.Keys
@@ -621,16 +620,18 @@ object CollectionHelper {
     /* Sends a broadcast containing the collection as parcel */
     fun sendCollectionBroadcast(context: Context, modificationDate: Date) {
         Log.v(TAG, "Broadcasting that collection has changed.")
-        val collectionChangedIntent = Intent()
-        collectionChangedIntent.action = Keys.ACTION_COLLECTION_CHANGED
-        collectionChangedIntent.setPackage(context.packageName)
-        collectionChangedIntent.putExtra(
-            Keys.EXTRA_COLLECTION_MODIFICATION_DATE,
-            modificationDate.time
-        )
-        // Send local broadcast
-        LocalBroadcastManager.getInstance(context).sendBroadcast(collectionChangedIntent)
+        // Emit app event bus event
+        AppEventBus.emit(AppEvent.CollectionChanged(modificationDate.time))
+
         // Send global broadcast for widgets
+        val collectionChangedIntent = Intent().apply {
+            action = Keys.ACTION_COLLECTION_CHANGED
+            setPackage(context.packageName)
+            putExtra(
+                Keys.EXTRA_COLLECTION_MODIFICATION_DATE,
+                modificationDate.time
+            )
+        }
         context.sendBroadcast(collectionChangedIntent)
     }
 

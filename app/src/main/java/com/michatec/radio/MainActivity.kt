@@ -7,31 +7,35 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
-import android.util.TypedValue
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.util.TypedValue
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.navigateUp
-import android.content.*
 import com.google.android.material.snackbar.Snackbar
 import com.michatec.radio.databinding.ActivityMainBinding
+import com.michatec.radio.helpers.AppEvent
+import com.michatec.radio.helpers.AppEventBus
 import com.michatec.radio.helpers.AppThemeHelper
 import com.michatec.radio.helpers.FileHelper
 import com.michatec.radio.helpers.LanguageHelper
 import com.michatec.radio.helpers.PreferencesHelper
 import com.michatec.radio.helpers.ThemeHelper
+import kotlinx.coroutines.launch
 import org.woheller69.freeDroidWarn.FreeDroidWarn
 import java.util.Locale
 
@@ -105,6 +109,9 @@ class MainActivity : AppCompatActivity() {
         // set up views
         applyCustomTheme()
 
+        // observe application events
+        observeAppEvents()
+
         // create .nomedia file - if not yet existing
         FileHelper.createNomediaFile(getExternalFilesDir(null))
 
@@ -136,23 +143,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        // register remote server receivers
-        val filter = IntentFilter().apply {
-            addAction(Keys.ACTION_REMOTE_SERVER_ERROR)
-            addAction(Keys.ACTION_REMOTE_AUTH_FAILED)
+    private fun observeAppEvents() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                AppEventBus.events.collect { event ->
+                    val message = when (event) {
+                        is AppEvent.RemoteServerError -> getString(R.string.error_webserver)
+                        is AppEvent.RemoteAuthFailed -> getString(R.string.snackbar_remote_auth_failed, event.ip)
+                        else -> return@collect
+                    }
+                    val snackbar = Snackbar.make(
+                        binding.mainRoot,
+                        message,
+                        Snackbar.LENGTH_LONG
+                    )
+                    findViewById<View>(R.id.bottom_sheet)?.let {
+                        snackbar.anchorView = it
+                    }
+                    snackbar.show()
+                }
+            }
         }
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-            remoteServerReceiver,
-            filter
-        )
-    }
-
-    override fun onStop() {
-        super.onStop()
-        // unregister remote server receiver
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(remoteServerReceiver)
     }
 
     /* Hides the loading/splash overlay */
@@ -243,35 +254,5 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-
-    /*
-     * Receiver for remote server events
-     */
-    private val remoteServerReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val message = when (intent.action) {
-                Keys.ACTION_REMOTE_SERVER_ERROR -> getString(R.string.error_webserver)
-                Keys.ACTION_REMOTE_AUTH_FAILED -> {
-                    val ip = intent.getStringExtra("REMOTE_IP") ?: "unknown"
-                    getString(R.string.snackbar_remote_auth_failed, ip)
-                }
-                else -> return
-            }
-            
-            val snackbar = Snackbar.make(
-                binding.mainRoot,
-                message,
-                Snackbar.LENGTH_LONG
-            )
-            this@MainActivity.findViewById<View>(R.id.bottom_sheet)?.let {
-                snackbar.anchorView = it
-            }
-            snackbar.show()
-        }
-    }
-    /*
-     * End of declaration
-     */
 
 }

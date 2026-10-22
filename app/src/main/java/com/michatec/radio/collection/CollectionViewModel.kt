@@ -1,20 +1,16 @@
 package com.michatec.radio.collection
 
 import android.app.Application
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.michatec.radio.Keys
 import com.michatec.radio.core.Collection
+import com.michatec.radio.helpers.AppEvent
+import com.michatec.radio.helpers.AppEventBus
 import com.michatec.radio.helpers.FileHelper
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Date
 
 
 /*
@@ -29,42 +25,21 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
     val collectionLiveData: MutableLiveData<Collection> = MutableLiveData<Collection>()
     val collectionSizeLiveData: MutableLiveData<Int> = MutableLiveData<Int>()
     private var modificationDateViewModel: Date = Date()
-    private var collectionChangedReceiver: BroadcastReceiver
 
 
     /* Init constructor */
     init {
         // load collection
         loadCollection()
-        // create and register collection changed receiver
-        collectionChangedReceiver = createCollectionChangedReceiver()
-        LocalBroadcastManager.getInstance(application).registerReceiver(
-            collectionChangedReceiver,
-            IntentFilter(Keys.ACTION_COLLECTION_CHANGED)
-        )
-    }
-
-
-    /* Overrides onCleared */
-    override fun onCleared() {
-        super.onCleared()
-        LocalBroadcastManager.getInstance(getApplication())
-            .unregisterReceiver(collectionChangedReceiver)
-    }
-
-
-    /* Creates the collectionChangedReceiver - handles Keys.ACTION_COLLECTION_CHANGED */
-    private fun createCollectionChangedReceiver(): BroadcastReceiver {
-        return object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                if (intent.hasExtra(Keys.EXTRA_COLLECTION_MODIFICATION_DATE)) {
-                    val date =
-                        Date(intent.getLongExtra(Keys.EXTRA_COLLECTION_MODIFICATION_DATE, 0L))
-                    // check if reload is necessary
+        // observe collection changed events
+        viewModelScope.launch {
+            AppEventBus.events.collect { event ->
+                if (event is AppEvent.CollectionChanged) {
+                    val date = Date(event.modificationDateMillis)
                     if (date.after(modificationDateViewModel)) {
                         Log.v(
                             TAG,
-                            "CollectionViewModel - reload collection after broadcast received."
+                            "CollectionViewModel - reload collection after event received."
                         )
                         loadCollection()
                     }

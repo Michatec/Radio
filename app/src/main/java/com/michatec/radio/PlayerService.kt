@@ -10,7 +10,6 @@ import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media3.cast.CastPlayer
 import androidx.media3.common.*
 import androidx.media3.common.util.UnstableApi
@@ -91,16 +90,12 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
             
             onError = { error ->
                 Log.e(TAG, "RemoteControlServer error: $error")
-                val intent = Intent(Keys.ACTION_REMOTE_SERVER_ERROR)
-                LocalBroadcastManager.getInstance(this@PlayerService).sendBroadcast(intent)
+                AppEventBus.emit(AppEvent.RemoteServerError)
             }
 
             onAuthFailed = { ip ->
                 Log.w(TAG, "RemoteControlServer: Multiple failed auth attempts from $ip")
-                val intent = Intent(Keys.ACTION_REMOTE_AUTH_FAILED).apply {
-                    putExtra("REMOTE_IP", ip)
-                }
-                LocalBroadcastManager.getInstance(this@PlayerService).sendBroadcast(intent)
+                AppEventBus.emit(AppEvent.RemoteAuthFailed(ip))
             }
         }
     }
@@ -108,17 +103,28 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
     // Native Audio Processor instance
     private val nativeAudioProcessor = NativeAudioProcessor()
 
+    // Coroutine scope for service
+    private val serviceJob = SupervisorJob()
+    private val serviceScope = CoroutineScope(Main + serviceJob)
+
 
     /* Overrides onCreate from Service */
     override fun onCreate() {
         super.onCreate()
         // load collection
         collection = FileHelper.readCollection(this)
-        // create and register collection changed receiver
-        LocalBroadcastManager.getInstance(application).registerReceiver(
-            collectionChangedReceiver,
-            IntentFilter(Keys.ACTION_COLLECTION_CHANGED)
-        )
+        // observe collection changed events
+        serviceScope.launch {
+            AppEventBus.events.collect { event ->
+                if (event is AppEvent.CollectionChanged) {
+                    val date = Date(event.modificationDateMillis)
+                    if (date.after(collection.modificationDate)) {
+                        Log.v(TAG, "PlayerService - reload collection after event received.")
+                        loadCollection(this@PlayerService)
+                    }
+                }
+            }
+        }
         // initialize player and session
         initializePlayer()
         initializeSession()
@@ -144,6 +150,7 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
 
     /* Overrides onDestroy from Service */
     override fun onDestroy() {
+        serviceJob.cancel()
         // unregister preference change listener
         PreferencesHelper.unregisterPreferenceChangeListener(this)
         
@@ -788,23 +795,6 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
 
         override fun getMinimumLoadableRetryCount(dataType: Int): Int {
             return Int.MAX_VALUE
-        }
-    }
-
-
-    /*
-     * Custom receiver that handles Keys.ACTION_COLLECTION_CHANGED
-     */
-    private val collectionChangedReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.hasExtra(Keys.EXTRA_COLLECTION_MODIFICATION_DATE)) {
-                val date = Date(intent.getLongExtra(Keys.EXTRA_COLLECTION_MODIFICATION_DATE, 0L))
-
-                if (date.after(collection.modificationDate)) {
-                    Log.v(TAG, "PlayerService - reload collection after broadcast received.")
-                    loadCollection(context)
-                }
-            }
         }
     }
 
