@@ -96,8 +96,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     /* Compares two secrets without leaking their content through timing */
     private fun constantTimeEquals(a: String?, b: String): Boolean {
-        if (a == null) return false
-        return MessageDigest.isEqual(a.toByteArray(Charsets.UTF_8), b.toByteArray(Charsets.UTF_8))
+        return a != null && MessageDigest.isEqual(a.toByteArray(Charsets.UTF_8), b.toByteArray(Charsets.UTF_8))
     }
 
     private fun isPermissionGranted(context: Context, permission: String): Boolean {
@@ -322,11 +321,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         preferenceEnableEditingStreamUri.summaryOn = getString(R.string.pref_edit_station_stream_summary_enabled)
         preferenceEnableEditingStreamUri.summaryOff = getString(R.string.pref_edit_station_stream_summary_disabled)
         preferenceEnableEditingStreamUri.setDefaultValue(PreferencesHelper.loadEditStreamUrisEnabled(context))
-        preferenceEnableEditingStreamUri.isEnabled = if (PreferencesHelper.loadEditStationsEnabled(context)) {
-            true
-        } else {
-            PreferencesHelper.loadEditStreamUrisEnabled(context)
-        }
+        preferenceEnableEditingStreamUri.isEnabled = PreferencesHelper.loadEditStationsEnabled(context) || PreferencesHelper.loadEditStreamUrisEnabled(context)
 
         // set up "Remote Control" preference
         val preferenceRemoteControl = MarqueeSwitchPreference(context)
