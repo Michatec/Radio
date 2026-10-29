@@ -224,9 +224,34 @@
     <string name="search_hint">Αναζήτηση σταθμών…</string>
     <string name="search_filter_favorites">Μόνο αγαπημένα</string>
     <string name="search_no_results">Δεν βρέθηκαν σταθμοί.</string>
+    <string name="qr_not_supported_on_tv">Η επαλήθευση με QR code δεν υποστηρίζεται στο Android TV. Χρησιμοποιήστε τον κωδικό σύζευξης.</string>
 
     <!-- About Screen -->
     <string name="about_title">Σχετικά</string>
     <string name="about_version">Έκδοση %1$s</string>
     <string name="about_description">Απλή σύγχρονη εφαρμογή ραδιοφώνου.</string>
+
+    <!-- Shizuku -->
+    <string name="shizuku_title">Ενσωμάτωση Shizuku</string>
+    <string name="shizuku_summary">Βελτιστοποίηση αναπαραγωγής στο παρασκήνιο και δικαιωμάτων συστήματος με το Shizuku ADB.</string>
+    <string name="shizuku_status_title">Κατάσταση Shizuku</string>
+    <string name="shizuku_not_connected">Η υπηρεσία Shizuku δεν είναι συνδεδεμένη.</string>
+    <string name="shizuku_connected_permission_granted">Συνδέθηκε η υπηρεσία Shizuku &amp; δόθηκε άδεια.</string>
+    <string name="shizuku_connected_permission_required">Το Shizuku συνδέθηκε, απαιτείται άδεια.</string>
+    <string name="shizuku_start_first_toast">Εκκινήστε πρώτα την υπηρεσία Shizuku.</string>
+    <string name="shizuku_permission_granted_btn">Δόθηκε άδεια</string>
+    <string name="shizuku_grant_permission_btn">Παραχώρηση άδειας Shizuku</string>
+    <string name="shizuku_app_not_found">Η εφαρμογή Shizuku δεν βρέθηκε.</string>
+    <string name="shizuku_open_app_btn">Άνοιγμα εφαρμογής Shizuku</string>
+    <string name="shizuku_optimizations_title">Βελτιστοποιήσεις αναπαραγωγής ραδιοφώνου</string>
+    <string name="shizuku_optimizations_desc">Το Shizuku επιτρέπει την παραχώρηση προνομίων συστήματος ώστε η λειτουργία Doze του Android να μην διακόπτει την αναπαραγωγή ραδιοφώνου στο παρασκήνιο.</string>
+    <string name="shizuku_unrestricted_playback_title">Ανεμπόδιστη αναπαραγωγή στο παρασκήνιο</string>
+    <string name="shizuku_status_whitelisted">Κατάσταση: Στη λευκή λίστα Doze</string>
+    <string name="shizuku_status_standard_killed">Κατάσταση: Τυπική (Ενδέχεται να τερματιστεί)</string>
+    <string name="shizuku_command_error">Σφάλμα: %1$s</string>
+    <string name="shizuku_command_failed">Η εντολή απέτυχε</string>
+    <string name="shizuku_enable_optimizations_btn">Ενεργοποίηση βελτιστοποιήσεων παρασκηνίου</string>
+    <string name="shizuku_disable_optimizations_btn">Απενεργοποίηση βελτιστοποιήσεων παρασκηνίου</string>
+    <string name="shizuku_optimizations_enabled_toast">Οι βελτιστοποιήσεις παρασκηνίου ενεργοποιήθηκαν!</string>
+    <string name="shizuku_optimizations_disabled_toast">Οι βελτιστοποιήσεις παρασκηνίου απενεργοποιήθηκαν.</string>
 </resources>

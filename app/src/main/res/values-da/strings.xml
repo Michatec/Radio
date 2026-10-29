@@ -221,9 +221,34 @@
     <string name="search_filter_favorites">Kun favoritter</string>
     <string name="search_no_results">Ingen stationer fundet.</string>
     <string name="descr_player_search_button">Søg stationer</string>
+    <string name="qr_not_supported_on_tv">QR-kodebekræftelse understøttes ikke på Android TV. Brug venligst parringskoden.</string>
 
     <!-- About Screen -->
     <string name="about_title">Om</string>
     <string name="about_version">Version %1$s</string>
     <string name="about_description">Enkel moderne radio-app.</string>
+
+    <!-- Shizuku -->
+    <string name="shizuku_title">Shizuku Integration</string>
+    <string name="shizuku_summary">Optimer baggrundsafspilning og systemtilladelser med Shizuku ADB.</string>
+    <string name="shizuku_status_title">Shizuku-status</string>
+    <string name="shizuku_not_connected">Shizuku-tjenesten er ikke forbundet.</string>
+    <string name="shizuku_connected_permission_granted">Shizuku-tjeneste forbundet og tilladelse givet.</string>
+    <string name="shizuku_connected_permission_required">Shizuku forbundet, tilladelse kræves.</string>
+    <string name="shizuku_start_first_toast">Start venligst Shizuku-tjenesten først.</string>
+    <string name="shizuku_permission_granted_btn">Tilladelse givet</string>
+    <string name="shizuku_grant_permission_btn">Giv Shizuku-tilladelse</string>
+    <string name="shizuku_app_not_found">Shizuku-appen blev ikke fundet.</string>
+    <string name="shizuku_open_app_btn">Åbn Shizuku-appen</string>
+    <string name="shizuku_optimizations_title">Optimering af radioafspilning</string>
+    <string name="shizuku_optimizations_desc">Shizuku gør det muligt at tildele systemprivilegier, så Android Doze-tilstand og batterisparefunktioner ikke stopper radioafspilning i baggrunden.</string>
+    <string name="shizuku_unrestricted_playback_title">Ubegrænset baggrundsafspilning</string>
+    <string name="shizuku_status_whitelisted">Status: Whitelisted fra Doze</string>
+    <string name="shizuku_status_standard_killed">Status: Standard (Kan blive stoppet)</string>
+    <string name="shizuku_command_error">Fejl: %1$s</string>
+    <string name="shizuku_command_failed">Kommando mislykkedes</string>
+    <string name="shizuku_enable_optimizations_btn">Aktiver baggrundsoptimeringer</string>
+    <string name="shizuku_disable_optimizations_btn">Deaktiver baggrundsoptimeringer</string>
+    <string name="shizuku_optimizations_enabled_toast">Baggrundsoptimeringer aktiveret!</string>
+    <string name="shizuku_optimizations_disabled_toast">Baggrundsoptimeringer deaktiveret.</string>
 </resources>

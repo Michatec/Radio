@@ -35,6 +35,7 @@ import com.michatec.radio.helpers.FileHelper
 import com.michatec.radio.helpers.LanguageHelper
 import com.michatec.radio.helpers.PreferencesHelper
 import com.michatec.radio.helpers.ThemeHelper
+import com.michatec.radio.integrations.Shizuku
 import kotlinx.coroutines.launch
 import org.woheller69.freeDroidWarn.FreeDroidWarn
 import java.util.Locale
@@ -47,6 +48,7 @@ class MainActivity : AppCompatActivity() {
     /* Main class variables */
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var shizuku: Shizuku
 
     // Check if the device running the app is an Android TV instance
     private val isAndroidTV: Boolean by lazy {
@@ -102,6 +104,7 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        shizuku = Shizuku()
 
         // Free Android
         FreeDroidWarn.showWarningOnUpgrade(this, BuildConfig.VERSION_CODE)
@@ -232,6 +235,9 @@ class MainActivity : AppCompatActivity() {
     /* Overrides onDestroy from AppCompatActivity */
     override fun onDestroy() {
         super.onDestroy()
+        if (::shizuku.isInitialized) {
+            shizuku.unregisterListeners()
+        }
         // unregister listener for changes in shared preferences
         PreferencesHelper.unregisterPreferenceChangeListener(sharedPreferenceChangeListener)
     }

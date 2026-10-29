@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.gson)
     implementation(libs.play.services.cast.framework)
+    implementation(libs.ui.graphics)
     implementation(libs.zxing.core)
     implementation(libs.zxing.embedded)
 
@@ -112,4 +113,8 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.aboutLibraries.compose)
     implementation(libs.compose.material.icons.extended)
+
+    // Shizuku //
+    implementation(libs.shizuku.api)
+    implementation(libs.shizuku.provider)
 }

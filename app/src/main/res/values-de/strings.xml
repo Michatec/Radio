@@ -223,9 +223,34 @@
     <string name="search_hint">Sender suchen…</string>
     <string name="search_filter_favorites">Nur Favoriten</string>
     <string name="search_no_results">Keine Sender gefunden.</string>
+    <string name="qr_not_supported_on_tv">Die QR-Code-Verifizierung wird auf Android TV nicht unterstützt. Bitte nutze den Pairing-Code.</string>
 
     <!-- About Screen -->
     <string name="about_title">Über</string>
     <string name="about_version">Version %1$s</string>
     <string name="about_description">Einfache moderne Radio-App.</string>
+
+    <!-- Shizuku -->
+    <string name="shizuku_title">Shizuku Integration</string>
+    <string name="shizuku_summary">Hintergrund-Wiedergabe und Systemberechtigungen mit Shizuku ADB optimieren.</string>
+    <string name="shizuku_status_title">Shizuku-Status</string>
+    <string name="shizuku_not_connected">Shizuku-Dienst ist nicht verbunden.</string>
+    <string name="shizuku_connected_permission_granted">Shizuku-Dienst verbunden &amp; Berechtigung erteilt.</string>
+    <string name="shizuku_connected_permission_required">Shizuku verbunden, Berechtigung erforderlich.</string>
+    <string name="shizuku_start_first_toast">Bitte starte zuerst den Shizuku-Dienst.</string>
+    <string name="shizuku_permission_granted_btn">Berechtigung erteilt</string>
+    <string name="shizuku_grant_permission_btn">Shizuku-Berechtigung erteilen</string>
+    <string name="shizuku_app_not_found">Shizuku-App nicht gefunden.</string>
+    <string name="shizuku_open_app_btn">Shizuku-App öffnen</string>
+    <string name="shizuku_optimizations_title">Radio-Wiedergabe-Optimierungen</string>
+    <string name="shizuku_optimizations_desc">Shizuku ermöglicht das Erteilen von Systemprivilegien, um zu verhindern, dass der Android Doze Mode und Energiesparmodi die Radio-Hintergrundwiedergabe stoppen.</string>
+    <string name="shizuku_unrestricted_playback_title">Uneingeschränkte Hintergrundwiedergabe</string>
+    <string name="shizuku_status_whitelisted">Status: Auf Doze-Positivliste</string>
+    <string name="shizuku_status_standard_killed">Status: Standard (Kann beendet werden)</string>
+    <string name="shizuku_command_error">Fehler: %1$s</string>
+    <string name="shizuku_command_failed">Befehl fehlgeschlagen</string>
+    <string name="shizuku_enable_optimizations_btn">Hintergrund-Optimierungen aktivieren</string>
+    <string name="shizuku_disable_optimizations_btn">Hintergrund-Optimierungen deaktivieren</string>
+    <string name="shizuku_optimizations_enabled_toast">Hintergrund-Optimierungen aktiviert!</string>
+    <string name="shizuku_optimizations_disabled_toast">Hintergrund-Optimierungen deaktiviert.</string>
 </resources>

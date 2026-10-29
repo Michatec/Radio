@@ -228,4 +228,27 @@
     <string name="about_title">О приложении</string>
     <string name="about_version">Версия %1$s</string>
     <string name="about_description">Простой современный радиоплеер.</string>
+    <string name="shizuku_title">Интеграция Shizuku</string>
+    <string name="shizuku_summary">Оптимизация фонового воспроизведения и системных разрешений с помощью Shizuku ADB.</string>
+    <string name="shizuku_status_title">Статус Shizuku</string>
+    <string name="shizuku_not_connected">Служба Shizuku не подключена.</string>
+    <string name="shizuku_connected_permission_granted">Служба Shizuku подключена &amp; разрешение предоставлено.</string>
+    <string name="shizuku_connected_permission_required">Shizuku подключен, требуется разрешение.</string>
+    <string name="shizuku_start_first_toast">Сначала запустите службу Shizuku.</string>
+    <string name="shizuku_permission_granted_btn">Разрешение предоставлено</string>
+    <string name="shizuku_grant_permission_btn">Предоставить разрешение Shizuku</string>
+    <string name="shizuku_app_not_found">Приложение Shizuku не найдено.</string>
+    <string name="shizuku_open_app_btn">Открыть приложение Shizuku</string>
+    <string name="shizuku_optimizations_title">Оптимизация радиовоспроизведения</string>
+    <string name="shizuku_optimizations_desc">Shizuku позволяет предоставить системные привилегии, чтобы режим Doze и энергосбережение Android не прерывали радио в фоновом режиме.</string>
+    <string name="shizuku_unrestricted_playback_title">Неограниченное фоновое воспроизведение</string>
+    <string name="shizuku_status_whitelisted">Статус: В белом списке Doze</string>
+    <string name="shizuku_status_standard_killed">Статус: Стандартный (Может быть остановлен)</string>
+    <string name="shizuku_command_error">Ошибка: %1$s</string>
+    <string name="shizuku_command_failed">Команда не выполнена</string>
+    <string name="qr_not_supported_on_tv">Подтверждение по QR-коду не поддерживается на Android TV. Используйте код сопряжения.</string>
+    <string name="shizuku_enable_optimizations_btn">Включить фоновые оптимизации</string>
+    <string name="shizuku_disable_optimizations_btn">Отключить фоновые оптимизации</string>
+    <string name="shizuku_optimizations_enabled_toast">Фоновые оптимизации включены!</string>
+    <string name="shizuku_optimizations_disabled_toast">Фоновые оптимизации отключены.</string>
 </resources>

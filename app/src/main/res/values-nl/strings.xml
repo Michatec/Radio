@@ -223,9 +223,34 @@
     <string name="search_filter_favorites">Alleen favorieten</string>
     <string name="search_no_results">Geen zenders gevonden.</string>
     <string name="descr_player_search_button">Zenders zoeken</string>
+    <string name="qr_not_supported_on_tv">QR-codeverificatie wordt niet ondersteund op Android TV. Gebruik de koppelingscode.</string>
 
     <!-- About Screen -->
     <string name="about_title">Over</string>
     <string name="about_version">Versie %1$s</string>
     <string name="about_description">Eenvoudige moderne radio-app.</string>
+
+    <!-- Shizuku -->
+    <string name="shizuku_title">Shizuku Integratie</string>
+    <string name="shizuku_summary">Achtergrondweergave en systeemmachtigingen optimaliseren met Shizuku ADB.</string>
+    <string name="shizuku_status_title">Shizuku Status</string>
+    <string name="shizuku_not_connected">Shizuku-dienst is niet verbonden.</string>
+    <string name="shizuku_connected_permission_granted">Shizuku-dienst verbonden &amp; toestemming verleend.</string>
+    <string name="shizuku_connected_permission_required">Shizuku verbonden, toestemming vereist.</string>
+    <string name="shizuku_start_first_toast">Start eerst de Shizuku-dienst.</string>
+    <string name="shizuku_permission_granted_btn">Toestemming verleend</string>
+    <string name="shizuku_grant_permission_btn">Shizuku-toestemming verlenen</string>
+    <string name="shizuku_app_not_found">Shizuku-app niet gevonden.</string>
+    <string name="shizuku_open_app_btn">Shizuku-app openen</string>
+    <string name="shizuku_optimizations_title">Radioweergave optimalisaties</string>
+    <string name="shizuku_optimizations_desc">Shizuku maakt het mogelijk om systeemprivileges te verlenen zodat de Doze-modus van Android radioweergave op de achtergrond niet onderbreekt.</string>
+    <string name="shizuku_unrestricted_playback_title">Onbeperkte achtergrondweergave</string>
+    <string name="shizuku_status_whitelisted">Status: Op Doze-whitelist</string>
+    <string name="shizuku_status_standard_killed">Status: Standaard (Kan worden gestopt)</string>
+    <string name="shizuku_command_error">Fout: %1$s</string>
+    <string name="shizuku_command_failed">Commando mislukt</string>
+    <string name="shizuku_enable_optimizations_btn">Achtergrondoptimalisaties inschakelen</string>
+    <string name="shizuku_disable_optimizations_btn">Achtergrondoptimalisaties uitschakelen</string>
+    <string name="shizuku_optimizations_enabled_toast">Achtergrondoptimalisaties ingeschakeld!</string>
+    <string name="shizuku_optimizations_disabled_toast">Achtergrondoptimalisaties uitgeschakeld.</string>
 </resources>

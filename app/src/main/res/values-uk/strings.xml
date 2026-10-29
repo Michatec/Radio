@@ -228,4 +228,27 @@
     <string name="about_title">Про застосунок</string>
     <string name="about_version">Версія %1$s</string>
     <string name="about_description">Простий сучасний радіоплеєр.</string>
+    <string name="shizuku_title">Інтеграція Shizuku</string>
+    <string name="shizuku_summary">Оптимізація фонового відтворення та системних дозволів за допомогою Shizuku ADB.</string>
+    <string name="shizuku_status_title">Статус Shizuku</string>
+    <string name="shizuku_not_connected">Служба Shizuku не підключена.</string>
+    <string name="shizuku_connected_permission_granted">Служба Shizuku підключена &amp; дозвіл надано.</string>
+    <string name="shizuku_connected_permission_required">Shizuku увімкнути, потрібен дозвіл.</string>
+    <string name="shizuku_start_first_toast">Спочатку запустіть службу Shizuku.</string>
+    <string name="shizuku_permission_granted_btn">Дозвіл надано</string>
+    <string name="shizuku_grant_permission_btn">Надати дозвіл Shizuku</string>
+    <string name="shizuku_app_not_found">Застосунок Shizuku не знайдено.</string>
+    <string name="shizuku_open_app_btn">Відкрити застосунок Shizuku</string>
+    <string name="shizuku_optimizations_title">Оптимізація відтворення радіо</string>
+    <string name="shizuku_optimizations_desc">Shizuku дозволяє надати системні привілеї, щоб режим Doze та економія заряду Android не зупиняли радіо у фоновому режимі.</string>
+    <string name="shizuku_unrestricted_playback_title">Необмежене фонове відтворення</string>
+    <string name="shizuku_status_whitelisted">Статус: У білому списку Doze</string>
+    <string name="shizuku_status_standard_killed">Статус: Стандартний (Може бути зупинено)</string>
+    <string name="shizuku_command_error">Помилка: %1$s</string>
+    <string name="shizuku_command_failed">Команда не виконана</string>
+    <string name="qr_not_supported_on_tv">Підтвердження за QR-кодом не підтримується на Android TV. Використовуйте код сполучення.</string>
+    <string name="shizuku_enable_optimizations_btn">Увімкнути фонові оптимізації</string>
+    <string name="shizuku_disable_optimizations_btn">Вимкнути фонові оптимізації</string>
+    <string name="shizuku_optimizations_enabled_toast">Фонові оптимізації увімкнено!</string>
+    <string name="shizuku_optimizations_disabled_toast">Фонові оптимізації вимкнено.</string>
 </resources>

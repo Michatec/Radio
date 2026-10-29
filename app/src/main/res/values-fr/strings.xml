@@ -222,9 +222,34 @@
     <string name="search_hint">Rechercher des stations…</string>
     <string name="search_filter_favorites">Favoris uniquement</string>
     <string name="search_no_results">Aucune station trouvée.</string>
+    <string name="qr_not_supported_on_tv">La vérification par QR code n\'est pas prise en charge sur Android TV. Veuillez utiliser le code de couplage.</string>
 
     <!-- About Screen -->
     <string name="about_title">À propos</string>
     <string name="about_version">Version %1$s</string>
     <string name="about_description">Application radio simple et moderne.</string>
+
+    <!-- Shizuku -->
+    <string name="shizuku_title">Intégration Shizuku</string>
+    <string name="shizuku_summary">Optimiser la lecture en arrière-plan et les autorisations système avec Shizuku ADB.</string>
+    <string name="shizuku_status_title">Statut Shizuku</string>
+    <string name="shizuku_not_connected">Le service Shizuku n\'est pas connecté.</string>
+    <string name="shizuku_connected_permission_granted">Service Shizuku connecté &amp; autorisation accordée.</string>
+    <string name="shizuku_connected_permission_required">Shizuku connecté, autorisation requise.</string>
+    <string name="shizuku_start_first_toast">Veuillez d\'abord démarrer le service Shizuku.</string>
+    <string name="shizuku_permission_granted_btn">Autorisation accordée</string>
+    <string name="shizuku_grant_permission_btn">Accorder l\'autorisation Shizuku</string>
+    <string name="shizuku_app_not_found">Application Shizuku introuvable.</string>
+    <string name="shizuku_open_app_btn">Ouvrir l\'application Shizuku</string>
+    <string name="shizuku_optimizations_title">Optimisations de lecture radio</string>
+    <string name="shizuku_optimizations_desc">Shizuku permet d\'accorder des privilèges système pour empêcher le mode Doze d\'Android et les économiseurs de batterie de couper la lecture radio en arrière-plan.</string>
+    <string name="shizuku_unrestricted_playback_title">Lecture en arrière-plan sans restriction</string>
+    <string name="shizuku_status_whitelisted">Statut : Sur liste blanche Doze</string>
+    <string name="shizuku_status_standard_killed">Statut : Standard (Peut être interrompu)</string>
+    <string name="shizuku_command_error">Erreur : %1$s</string>
+    <string name="shizuku_command_failed">Commande échouée</string>
+    <string name="shizuku_enable_optimizations_btn">Activer les optimisations en arrière-plan</string>
+    <string name="shizuku_disable_optimizations_btn">Désactiver les optimisations en arrière-plan</string>
+    <string name="shizuku_optimizations_enabled_toast">Optimisations en arrière-plan activées !</string>
+    <string name="shizuku_optimizations_disabled_toast">Optimisations en arrière-plan désactivées.</string>
 </resources>

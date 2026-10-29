@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -42,6 +43,7 @@ import com.michatec.radio.helpers.LanguageHelper
 import com.michatec.radio.helpers.MarqueeSwitchPreference
 import com.michatec.radio.helpers.NetworkHelper
 import com.michatec.radio.helpers.PreferencesHelper
+import com.michatec.radio.integrations.Shizuku
 import com.michatec.radio.remote.PairingManager
 import com.michatec.radio.remote.RemoteConstants
 import com.michatec.radio.ui.QrCaptureActivity
@@ -208,6 +210,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
         val context = preferenceManager.context
         val screen = preferenceManager.createPreferenceScreen(context)
+        val shizuku = Shizuku()
 
         // Load current preset once
         val currentPreset = PreferencesHelper.loadSelectedPreset()
@@ -367,8 +370,12 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         preferenceRemoteControlVerifyQr.setIcon(R.drawable.ic_camera_24dp)
         preferenceRemoteControlVerifyQr.summary = getString(R.string.pref_remote_control_verify_qr_summary)
         preferenceRemoteControlVerifyQr.key = Keys.PREF_REMOTE_CONTROL_VERIFY_QR
-        preferenceRemoteControlVerifyQr.isVisible = !isAndroidTV && PreferencesHelper.loadRemoteControlEnabled() && PreferencesHelper.loadRemoteControlAuthEnabled()
+        preferenceRemoteControlVerifyQr.isVisible = PreferencesHelper.loadRemoteControlEnabled() && PreferencesHelper.loadRemoteControlAuthEnabled()
         preferenceRemoteControlVerifyQr.setOnPreferenceClickListener {
+            if (isAndroidTV) {
+                Toast.makeText(context, getString(R.string.qr_not_supported_on_tv), Toast.LENGTH_LONG).show()
+                return@setOnPreferenceClickListener true
+            }
             val options = ScanOptions().apply {
                 setDesiredBarcodeFormats(ScanOptions.QR_CODE)
                 setPrompt(getString(R.string.pref_remote_control_verify_qr_title))
@@ -639,6 +646,16 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             return@setOnPreferenceClickListener true
         }
 
+        // set up "Shizuku" preference
+        val preferenceShizukuApp = Preference(context)
+        preferenceShizukuApp.title = getString(R.string.shizuku_title)
+        preferenceShizukuApp.setIcon(R.drawable.ic_shizuku_24dp)
+        preferenceShizukuApp.summary = getString(R.string.shizuku_summary)
+        preferenceShizukuApp.setOnPreferenceClickListener {
+            findNavController().navigate(R.id.action_settings_to_shizuku)
+            return@setOnPreferenceClickListener true
+        }
+
         // set preference categories
         val preferenceCategoryGeneral = PreferenceCategory(activity as Context)
         preferenceCategoryGeneral.title = getString(R.string.pref_general_title)
@@ -673,6 +690,10 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         preferenceCategoryGeneral.addPreference(preferenceCustomThemeEnabled)
         preferenceCategoryGeneral.addPreference(preferenceCustomTheme)
         preferenceCategoryGeneral.addPreference(preferenceShaderEffect)
+
+        if (shizuku.isInstalled(context)) {
+            preferenceCategoryGeneral.addPreference(preferenceShizukuApp)
+        }
 
         if (!isAndroidTV && isPermissionGranted(activity as Context, Manifest.permission.POST_NOTIFICATIONS)) {
             preferenceCategoryGeneral.addPreference(preferenceTestNotification)

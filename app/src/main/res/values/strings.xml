@@ -257,9 +257,34 @@
     <string name="search_hint">Search stations…</string>
     <string name="search_filter_favorites">Only favorites</string>
     <string name="search_no_results">No stations found.</string>
+    <string name="qr_not_supported_on_tv">QR code verification is not supported on Android TV. Please use the pairing code.</string>
 
     <!-- About Screen -->
     <string name="about_title">About</string>
     <string name="about_version">Version %1$s</string>
     <string name="about_description">Simple modern Radio app</string>
+
+    <!-- Shizuku -->
+    <string name="shizuku_title">Shizuku Integration</string>
+    <string name="shizuku_summary">Optimize background playback and system permissions with Shizuku ADB.</string>
+    <string name="shizuku_status_title">Shizuku Status</string>
+    <string name="shizuku_not_connected">Shizuku service is not connected.</string>
+    <string name="shizuku_connected_permission_granted">Shizuku service connected &amp; permission granted.</string>
+    <string name="shizuku_connected_permission_required">Shizuku connected, permission required.</string>
+    <string name="shizuku_start_first_toast">Please start the Shizuku service first.</string>
+    <string name="shizuku_permission_granted_btn">Permission Granted</string>
+    <string name="shizuku_grant_permission_btn">Grant Shizuku Permission</string>
+    <string name="shizuku_app_not_found">Shizuku app not found.</string>
+    <string name="shizuku_open_app_btn">Open Shizuku App</string>
+    <string name="shizuku_optimizations_title">Radio Playback Optimizations</string>
+    <string name="shizuku_optimizations_desc">Shizuku allows granting system privileges to prevent Android Doze Mode and battery savers from killing background radio playback during long sessions.</string>
+    <string name="shizuku_unrestricted_playback_title">Unrestricted Background Playback</string>
+    <string name="shizuku_status_whitelisted">Status: Whitelisted from Doze</string>
+    <string name="shizuku_status_standard_killed">Status: Standard (Maybe killed)</string>
+    <string name="shizuku_command_error">Error: %1$s</string>
+    <string name="shizuku_command_failed">Command failed</string>
+    <string name="shizuku_enable_optimizations_btn">Enable Background Optimizations</string>
+    <string name="shizuku_disable_optimizations_btn">Disable Background Optimizations</string>
+    <string name="shizuku_optimizations_enabled_toast">Background optimizations enabled!</string>
+    <string name="shizuku_optimizations_disabled_toast">Background optimizations disabled.</string>
 </resources>

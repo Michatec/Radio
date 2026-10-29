@@ -222,9 +222,34 @@
     <string name="search_filter_favorites">お気に入りのみ</string>
     <string name="search_no_results">局が見つかりません。</string>
     <string name="descr_player_search_button">局を検索</string>
+    <string name="qr_not_supported_on_tv">Android TV では QR コード認証はサポートされていません。ペアリングコードを使用してください。</string>
 
     <!-- About Screen -->
     <string name="about_title">このアプリについて</string>
     <string name="about_version">バージョン %1$s</string>
     <string name="about_description">シンプルでモダンなラジオアプリ。</string>
+
+    <!-- Shizuku -->
+    <string name="shizuku_title">Shizuku 統合</string>
+    <string name="shizuku_summary">Shizuku ADBを使用してバックグラウンド再生とシステム権限を最適化します。</string>
+    <string name="shizuku_status_title">Shizuku のステータス</string>
+    <string name="shizuku_not_connected">Shizuku サービスが接続されていません。</string>
+    <string name="shizuku_connected_permission_granted">Shizuku サービスが接続され、権限が付与されました。</string>
+    <string name="shizuku_connected_permission_required">Shizuku が接続されました。権限が必要です。</string>
+    <string name="shizuku_start_first_toast">最初に Shizuku サービスを開始してください。</string>
+    <string name="shizuku_permission_granted_btn">権限が付与されました</string>
+    <string name="shizuku_grant_permission_btn">Shizuku 権限を許可</string>
+    <string name="shizuku_app_not_found">Shizuku アプリが見つかりません。</string>
+    <string name="shizuku_open_app_btn">Shizuku アプリを開く</string>
+    <string name="shizuku_optimizations_title">ラジオ再生の最適化</string>
+    <string name="shizuku_optimizations_desc">Shizukuを使用すると、AndroidのDozeモードや省電力機能がバックグラウンドでのラジオ再生を停止するのを防ぐことができます。</string>
+    <string name="shizuku_unrestricted_playback_title">無制限のバックグラウンド再生</string>
+    <string name="shizuku_status_whitelisted">ステータス: Doze ホワイトリスト登録済み</string>
+    <string name="shizuku_status_standard_killed">ステータス: 標準 (停止される可能性があります)</string>
+    <string name="shizuku_command_error">エラー: %1$s</string>
+    <string name="shizuku_command_failed">コマンドが失敗しました</string>
+    <string name="shizuku_enable_optimizations_btn">バックグラウンド最適化を有効化</string>
+    <string name="shizuku_disable_optimizations_btn">バックグラウンド最適化を無効化</string>
+    <string name="shizuku_optimizations_enabled_toast">バックグラウンド最適化が有効になりました！</string>
+    <string name="shizuku_optimizations_disabled_toast">バックグラウンド最適化が無効になりました。</string>
 </resources>

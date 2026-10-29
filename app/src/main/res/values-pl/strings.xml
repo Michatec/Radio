@@ -222,9 +222,34 @@
     <string name="search_filter_favorites">Tylko ulubione</string>
     <string name="search_no_results">Nie znaleziono stacji.</string>
     <string name="descr_player_search_button">Szukaj stacji</string>
+    <string name="qr_not_supported_on_tv">Weryfikacja kodem QR nie jest obsługiwana na Android TV. Użyj kodu parowania.</string>
 
     <!-- About Screen -->
     <string name="about_title">O aplikacji</string>
     <string name="about_version">Wersja %1$s</string>
     <string name="about_description">Prosta nowoczesna aplikacja radiowa.</string>
+
+    <!-- Shizuku -->
+    <string name="shizuku_title">Integracja Shizuku</string>
+    <string name="shizuku_summary">Optymalizuj odtwarzanie w tle i uprawnienia systemowe za pomocą Shizuku ADB.</string>
+    <string name="shizuku_status_title">Stan Shizuku</string>
+    <string name="shizuku_not_connected">Usługa Shizuku nie jest połączona.</string>
+    <string name="shizuku_connected_permission_granted">Usługa Shizuku połączona i uprawnienie przyznane.</string>
+    <string name="shizuku_connected_permission_required">Shizuku połączone, wymagana zgoda.</string>
+    <string name="shizuku_start_first_toast">Uruchom najpierw usługę Shizuku.</string>
+    <string name="shizuku_permission_granted_btn">Uprawnienie przyznane</string>
+    <string name="shizuku_grant_permission_btn">Przyznaj uprawnienie Shizuku</string>
+    <string name="shizuku_app_not_found">Nie znaleziono aplikacji Shizuku.</string>
+    <string name="shizuku_open_app_btn">Otwórz aplikację Shizuku</string>
+    <string name="shizuku_optimizations_title">Optymalizacje odtwarzania radia</string>
+    <string name="shizuku_optimizations_desc">Shizuku pozwala na przyznanie uprawnień systemowych, aby zapobiec wyłączaniu odtwarzania radia w tle przez tryb Doze.</string>
+    <string name="shizuku_unrestricted_playback_title">Odtwarzanie w tle bez ograniczeń</string>
+    <string name="shizuku_status_whitelisted">Stan: Na białej liście Doze</string>
+    <string name="shizuku_status_standard_killed">Stan: Standardowy (Może zostać zamknięty)</string>
+    <string name="shizuku_command_error">Błąd: %1$s</string>
+    <string name="shizuku_command_failed">Polecenie nie powiodło się</string>
+    <string name="shizuku_enable_optimizations_btn">Włącz optymalizacje w tle</string>
+    <string name="shizuku_disable_optimizations_btn">Wyłącz optymalizacje w tle</string>
+    <string name="shizuku_optimizations_enabled_toast">Włączono optymalizacje w tle!</string>
+    <string name="shizuku_optimizations_disabled_toast">Wyłączono optymalizacje w tle.</string>
 </resources>

@@ -41,6 +41,9 @@
         <action
             android:id="@+id/action_settings_to_about"
             app:destination="@id/about_destination" />
+        <action
+            android:id="@+id/action_settings_to_shizuku"
+            app:destination="@id/shizuku_destination" />
     </fragment>
 
     <!-- EQUALIZER -->
@@ -80,4 +83,10 @@
         android:id="@+id/about_destination"
         android:name="com.michatec.radio.fragments.AboutFragment"
         android:label="@string/about_title" />
+
+    <fragment
+        android:id="@+id/shizuku_destination"
+        android:name="com.michatec.radio.fragments.ShizukuFragment"
+        android:label="@string/shizuku_title" />
+
 </navigation>
