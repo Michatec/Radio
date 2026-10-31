@@ -420,6 +420,12 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
             return
         }
 
+        val currentMediaItem = player.currentMediaItem
+        val stationName = currentMediaItem?.let { CollectionHelper.getStation(collection, it.mediaId).name } ?: ""
+        if (metadataString == stationName) {
+            return
+        }
+
         // remove duplicates
         if (metadataHistory.contains(metadataString)) {
             metadataHistory.removeAll { it == metadataString }
@@ -434,7 +440,6 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
         PreferencesHelper.saveMetadataHistory(metadataHistory)
 
         if (metadata.isNotEmpty()) {
-            val currentMediaItem = player.currentMediaItem
             if (currentMediaItem != null && currentMediaItem.mediaMetadata.title?.toString() != metadataString) {
                 val stationName = CollectionHelper.getStation(collection, currentMediaItem.mediaId).name.ifEmpty {
                     currentMediaItem.mediaMetadata.artist?.toString() ?: ""
