@@ -432,6 +432,22 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
         }
         // save history
         PreferencesHelper.saveMetadataHistory(metadataHistory)
+
+        if (metadata.isNotEmpty()) {
+            val currentMediaItem = player.currentMediaItem
+            if (currentMediaItem != null && currentMediaItem.mediaMetadata.title?.toString() != metadataString) {
+                val stationName = currentMediaItem.mediaMetadata.title?.toString() ?: ""
+                val newMediaMetadata = currentMediaItem.mediaMetadata.buildUpon()
+                    .setTitle(metadataString)
+                    .setArtist(stationName)
+                    .setDisplayTitle(metadataString)
+                    .build()
+                val updatedMediaItem = currentMediaItem.buildUpon()
+                    .setMediaMetadata(newMediaMetadata)
+                    .build()
+                player.replaceMediaItem(player.currentMediaItemIndex, updatedMediaItem)
+            }
+        }
     }
 
 
