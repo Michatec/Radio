@@ -436,7 +436,9 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
         if (metadata.isNotEmpty()) {
             val currentMediaItem = player.currentMediaItem
             if (currentMediaItem != null && currentMediaItem.mediaMetadata.title?.toString() != metadataString) {
-                val stationName = currentMediaItem.mediaMetadata.title?.toString() ?: ""
+                val stationName = CollectionHelper.getStation(collection, currentMediaItem.mediaId).name.ifEmpty {
+                    currentMediaItem.mediaMetadata.artist?.toString() ?: ""
+                }
                 val newMediaMetadata = currentMediaItem.mediaMetadata.buildUpon()
                     .setTitle(metadataString)
                     .setArtist(stationName)
