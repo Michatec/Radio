@@ -67,6 +67,28 @@ You can help out the radio-browser.info community by [adding the missing station
 ----------------------------------------
 
 <details>
+<summary>🧩 Developer API (AIDL)</summary>
+<br>
+
+Starting with version 15.2, Radio exposes an AIDL-based API (`com.michatec.radio.api.IRadioApi`) that allows external Android apps to control playback and access station data via IPC.
+
+**Service details:**
+- **Package:** `com.michatec.radio`
+- **Service:** `com.michatec.radio.api.RadioApiService`
+- **AIDL Interface:** `com.michatec.radio.api.IRadioApi`
+
+**Available features:**
+- Play, pause, stop and check playback state
+- Get current station name and track metadata
+- Switch stations by UUID via `playStationByUuid()`
+- Retrieve saved and favorite stations as JSON
+
+For setup instructions, binding examples (Kotlin) and the full method reference, see [API_DOC.md](API_DOC.md).
+</details>
+
+----------------------------------------
+
+<details>
 <summary>🔊 Supported formats</summary>
 <br>
 
