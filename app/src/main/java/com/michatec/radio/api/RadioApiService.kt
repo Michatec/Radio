@@ -86,16 +86,19 @@ class RadioApiService : Service() {
 
         @OptIn(UnstableApi::class)
         override fun playStationByUuid(uuid: String) {
-            PreferencesHelper.saveCurrentStationId(uuid)
-
-            val controller = playbackController
-
-            if (controller != null) {
-                controller.playStationByUuid(uuid)
-            } else {
-                startPlayerService(
-                    "com.michatec.radio.action.PLAY_STATION"
-                )
+            val collection = FileHelper.readCollection(applicationContext)
+            if (uuid.isNotEmpty() &&
+                CollectionHelper.getStationPosition(collection, uuid) != -1
+            ) {
+                PreferencesHelper.saveCurrentStationId(uuid)
+                val controller = playbackController
+                if (controller != null) {
+                    controller.playStationByUuid(uuid)
+                } else {
+                    startPlayerService(
+                        "com.michatec.radio.action.PLAY_STATION"
+                    )
+                }
             }
         }
 
