@@ -150,68 +150,50 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
 
         RadioApiService.playbackController = object : RadioApiService.PlaybackController {
             override fun play() {
-                runBlocking(Main) {
-                    if (player.playbackState == Player.STATE_IDLE || player.currentMediaItem == null) {
-                        val mediaId = PreferencesHelper.loadLastPlayedStationUuid()
-                        if (mediaId.isNotEmpty()) {
-                            playStation(mediaId)
-                        } else if (collection.stations.isNotEmpty()) {
-                            playStation(collection.stations[0])
-                        }
-                    } else {
-                        player.play()
+                if (player.playbackState == Player.STATE_IDLE || player.currentMediaItem == null) {
+                    val mediaId = PreferencesHelper.loadLastPlayedStationUuid()
+                    if (mediaId.isNotEmpty()) {
+                        playStation(mediaId)
+                    } else if (collection.stations.isNotEmpty()) {
+                        playStation(collection.stations[0])
                     }
+                } else {
+                    player.play()
                 }
             }
 
             override fun pause() {
-                runBlocking(Main) {
-                    player.pause()
-                }
+                player.pause()
             }
 
             override fun stop() {
-                runBlocking(Main) {
-                    player.stop()
-                }
+                player.stop()
             }
 
             override fun isPlaying(): Boolean {
-                return runBlocking(Main) {
-                    player.isPlaying
-                }
+                return player.isPlaying
             }
 
             override fun getCurrentStationName(): String {
-                return runBlocking(Main) {
-                    val mediaId = player.currentMediaItem?.mediaId ?: return@runBlocking ""
-                    CollectionHelper.getItem(this@PlayerService, collection, mediaId).mediaMetadata.title?.toString() ?: ""
-                }
+                val mediaId = player.currentMediaItem?.mediaId ?: return ""
+                return CollectionHelper.getItem(this@PlayerService, collection, mediaId).mediaMetadata.title?.toString() ?: ""
             }
 
             override fun getCurrentMetadata(): String {
-                return runBlocking(Main) {
-                    player.currentMediaItem?.mediaMetadata?.title?.toString() ?: ""
-                }
+                return player.currentMediaItem?.mediaMetadata?.title?.toString() ?: ""
             }
 
             override fun playStationByUuid(uuid: String) {
-                runBlocking(Main) {
-                    this@PlayerService.playStation(uuid)
-                }
+                this@PlayerService.playStation(uuid)
             }
 
             override fun getSavedStationsJson(): String {
-                return runBlocking(Main) {
-                    Gson().toJson(collection.stations)
-                }
+                return Gson().toJson(collection.stations)
             }
 
             override fun getFavoriteStationsJson(): String {
-                return runBlocking(Main) {
-                    val favorites = collection.stations.filter { it.starred }
-                    Gson().toJson(favorites)
-                }
+                val favorites = collection.stations.filter { it.starred }
+                return Gson().toJson(favorites)
             }
         }
     }
