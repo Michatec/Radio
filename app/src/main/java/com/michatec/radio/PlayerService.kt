@@ -191,7 +191,7 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
 
             override fun getCurrentMetadata(): String {
                 return runBlocking(Main) {
-                    player.currentMediaItem?.mediaMetadata?.artist?.toString() ?: ""
+                    player.currentMediaItem?.mediaMetadata?.title?.toString() ?: ""
                 }
             }
 

@@ -97,8 +97,7 @@ class RemoteControlServer(private val context: Context) {
             }
 
             withContext(Dispatchers.Main) {
-                val metadataHistory = PreferencesHelper.loadMetadataHistory()
-                val currentTrack = if (metadataHistory.isNotEmpty()) metadataHistory.last() else ""
+                val currentTrack = p.currentMediaItem?.mediaMetadata?.title?.toString() ?: ""
                 val mediaId = p.currentMediaItem?.mediaId ?: PreferencesHelper.loadLastPlayedStationUuid()
                 val station = CollectionHelper.getStation(collection, mediaId)
 
