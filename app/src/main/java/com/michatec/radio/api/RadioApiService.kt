@@ -2,7 +2,9 @@ package com.michatec.radio.api
 
 import android.app.Service
 import android.content.Intent
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import androidx.annotation.OptIn
 import androidx.media3.common.util.UnstableApi
 import com.google.gson.Gson
@@ -40,6 +42,11 @@ class RadioApiService : Service() {
                     action = "com.michatec.radio.action.START_PLAYER_SERVICE"
                 }
                 applicationContext.startService(intent)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    if (playbackController != null) {
+                        playbackController?.play()
+                    }
+                }, 500)
             }
         }
 
@@ -92,9 +99,13 @@ class RadioApiService : Service() {
                 PreferencesHelper.saveCurrentStationId(uuid)
                 val intent = Intent(applicationContext, PlayerService::class.java).apply {
                     action = "com.michatec.radio.action.START_PLAYER_SERVICE"
-                    putExtra(Keys.EXTRA_STATION_UUID, uuid)
                 }
                 applicationContext.startService(intent)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    if (playbackController != null) {
+                        playbackController?.playStationByUuid(uuid)
+                    }
+                }, 500)
             }
         }
 
