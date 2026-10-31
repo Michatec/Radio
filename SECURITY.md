@@ -39,8 +39,13 @@ Radio streams audio over the internet and connects to the [radio-browser.info](h
 Radio requests only the permissions necessary for core functionality:
 - `INTERNET` — stream radio and fetch station metadata
 - `ACCESS_NETWORK_STATE` — detect connectivity changes
+- `FOREGROUND_SERVICE` — run foreground services
 - `FOREGROUND_SERVICE_MEDIA_PLAYBACK` — maintain playback when app is backgrounded
 - `WAKE_LOCK` — prevent device from sleeping during playback
+- `POST_NOTIFICATIONS` — display notifications and media controls on Android 13+
+- `CHANGE_WIFI_MULTICAST_STATE` — enable multicast Wi-Fi communication for local network device discovery and Chromecast
+- `CAMERA` — scan QR codes for remote-control device pairing and authentication
+- `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` — request exemption from battery optimization to support reliable background playback
 
 ### Third-Party Dependencies
 Radio uses several third-party libraries. Security issues in dependencies are monitored via Renovate bot for updates. Key dependencies include:
