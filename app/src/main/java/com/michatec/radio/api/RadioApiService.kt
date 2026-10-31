@@ -7,6 +7,7 @@ import androidx.annotation.OptIn
 import androidx.media3.common.util.UnstableApi
 import com.google.gson.Gson
 import com.michatec.radio.PlayerService
+import com.michatec.radio.Keys
 import com.michatec.radio.helpers.PreferencesHelper
 import com.michatec.radio.helpers.CollectionHelper
 import com.michatec.radio.helpers.FileHelper
@@ -37,6 +38,7 @@ class RadioApiService : Service() {
             } else {
                 val intent = Intent(applicationContext, PlayerService::class.java).apply {
                     action = "com.michatec.radio.action.START_PLAYER_SERVICE"
+                    putExtra(Keys.EXTRA_PLAY_COMMAND, Keys.PLAY_COMMAND_PLAY)
                 }
                 applicationContext.startService(intent)
             }
@@ -91,6 +93,8 @@ class RadioApiService : Service() {
                 PreferencesHelper.saveCurrentStationId(uuid)
                 val intent = Intent(applicationContext, PlayerService::class.java).apply {
                     action = "com.michatec.radio.action.START_PLAYER_SERVICE"
+                    putExtra(Keys.EXTRA_PLAY_COMMAND, Keys.PLAY_COMMAND_PLAY_STATION)
+                    putExtra(Keys.EXTRA_STATION_UUID, uuid)
                 }
                 applicationContext.startService(intent)
             }
