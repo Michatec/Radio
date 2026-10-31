@@ -49,6 +49,12 @@ android {
         }
     }
 
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
+
     ndkVersion = "29.0.14206865"
 
     externalNativeBuild {
