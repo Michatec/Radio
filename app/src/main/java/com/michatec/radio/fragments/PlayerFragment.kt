@@ -36,6 +36,7 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
@@ -884,6 +885,11 @@ class PlayerFragment : Fragment(),
             playerState.stationUuid = mediaItem?.mediaId ?: String()
             // update station specific views
             updatePlayerViews()
+        }
+
+        override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
+            super.onMediaMetadataChanged(mediaMetadata)
+            layout.updateMetadata(controller?.mediaMetadata?.title)
         }
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {

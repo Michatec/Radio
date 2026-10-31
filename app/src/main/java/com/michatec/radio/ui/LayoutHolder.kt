@@ -291,6 +291,21 @@ class LayoutHolder(binding: FragmentPlayerBinding) {
         }
     }
 
+    /* Updates the metadata view with the current media metadata artist */
+    fun updateMetadata(metadata: CharSequence?) {
+        if (metadata.isNullOrBlank()) return
+        if (!metadataHistory.contains(metadata.toString())) {
+            metadataHistory.add(metadata.toString())
+            if (metadataHistory.size > Keys.DEFAULT_SIZE_OF_METADATA_HISTORY) {
+                metadataHistory.removeAt(0)
+            }
+            PreferencesHelper.saveMetadataHistory(metadataHistory)
+            metadataHistoryPosition = metadataHistory.size - 1
+        }
+        metadataView?.text = metadata
+        sheetMetadataHistoryView?.text = metadata
+    }
+
 
     /* Updates sleep timer views */
     fun updateSleepTimer(context: Context, timeRemaining: Long = 0L) {
