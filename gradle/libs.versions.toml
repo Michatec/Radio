@@ -4,6 +4,7 @@ agp = "9.5.0"
 coreKtx = "1.19.1"
 freedroidwarn = "V1.14"
 gson = "2.15.0"
+junit = "4.13.2"
 kotlin = "2.4.21"
 leanback = "1.2.0"
 ktor = "3.6.1"
@@ -11,6 +12,7 @@ material = "1.14.0"
 material3 = "1.4.0"
 media = "1.8.0"
 media3 = "1.11.1"
+mockitoCore = "5.24.0"
 navigation = "2.10.2"
 paletteKtx = "1.1.0"
 preferenceKtx = "1.2.1"
@@ -28,6 +30,7 @@ activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 freedroidwarn = { group = "com.github.woheller69", name = "FreeDroidWarn", version.ref = "freedroidwarn" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+junit = { module = "junit:junit", version.ref = "junit" }
 leanback = { group = "androidx.leanback", name = "leanback", version.ref = "leanback" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
@@ -37,6 +40,7 @@ media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", versi
 media3-exoplayer-hls = { group = "androidx.media3", name = "media3-exoplayer-hls", version.ref = "media3" }
 media3-session = { group = "androidx.media3", name = "media3-session", version.ref = "media3" }
 media3-cast = { group = "androidx.media3", name = "media3-cast", version.ref = "media3" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
 navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
 palette-ktx = { group = "androidx.palette", name = "palette-ktx", version.ref = "paletteKtx" }

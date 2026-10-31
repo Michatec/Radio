@@ -210,7 +210,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
         val context = preferenceManager.context
         val screen = preferenceManager.createPreferenceScreen(context)
-        val shizuku = Shizuku()
+        val shizuku = Shizuku(context)
 
         // Load current preset once
         val currentPreset = PreferencesHelper.loadSelectedPreset()
@@ -691,7 +691,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         preferenceCategoryGeneral.addPreference(preferenceCustomTheme)
         preferenceCategoryGeneral.addPreference(preferenceShaderEffect)
 
-        if (shizuku.isInstalled(context)) {
+        if (shizuku.isInstalled()) {
             preferenceCategoryGeneral.addPreference(preferenceShizukuApp)
         }
 

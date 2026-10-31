@@ -27,6 +27,7 @@ android {
         buildConfig = true
         viewBinding = true
         compose = true
+        aidl = true
     }
 
     buildTypes {
@@ -117,4 +118,8 @@ dependencies {
     // Shizuku //
     implementation(libs.shizuku.api)
     implementation(libs.shizuku.provider)
+
+    // Test implementations //
+    testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
 }

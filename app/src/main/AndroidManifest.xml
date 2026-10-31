@@ -163,6 +163,12 @@
             </intent-filter>
         </service>
 
+        <service
+            android:name=".api.RadioApiService"
+            android:enabled="true"
+            android:exported="true"
+            tools:ignore="ExportedService" />
+
         <receiver
             android:name=".helpers.DownloadFinishedReceiver"
             android:exported="true">

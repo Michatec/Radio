@@ -29,6 +29,8 @@ import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
+import com.google.gson.Gson
+import com.michatec.radio.api.RadioApiService
 import com.michatec.radio.core.Collection
 import com.michatec.radio.core.Station
 import com.michatec.radio.helpers.*
@@ -145,6 +147,41 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
         PreferencesHelper.registerPreferenceChangeListener(this)
         // apply initial audio effects
         applyAudioEffects()
+
+        RadioApiService.playbackController = object : RadioApiService.PlaybackController {
+            override fun play() {
+                if (player.playbackState == Player.STATE_IDLE || player.currentMediaItem == null) {
+                    val mediaId = PreferencesHelper.loadLastPlayedStationUuid()
+                    if (mediaId.isNotEmpty()) {
+                        playStation(mediaId)
+                    } else if (collection.stations.isNotEmpty()) {
+                        playStation(collection.stations[0])
+                    }
+                } else {
+                    player.play()
+                }
+            }
+            override fun pause() { player.pause() }
+            override fun stop() { player.stop() }
+            override fun isPlaying(): Boolean { return player.isPlaying }
+            override fun getCurrentStationName(): String {
+                val mediaId = player.currentMediaItem?.mediaId ?: return ""
+                return CollectionHelper.getItem(this@PlayerService, collection, mediaId).mediaMetadata.title?.toString() ?: ""
+            }
+            override fun getCurrentMetadata(): String {
+                return player.currentMediaItem?.mediaMetadata?.artist?.toString() ?: ""
+            }
+            override fun playStationByUuid(uuid: String) {
+                this@PlayerService.playStation(uuid)
+            }
+            override fun getSavedStationsJson(): String {
+                return Gson().toJson(collection.stations)
+            }
+            override fun getFavoriteStationsJson(): String {
+                val favorites = collection.stations.filter { it.starred }
+                return Gson().toJson(favorites)
+            }
+        }
     }
 
 
@@ -168,6 +205,7 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
         
         // Reset playing state in preferences
         PreferencesHelper.saveIsPlaying(false)
+        RadioApiService.playbackController = null
         super.onDestroy()
     }
 

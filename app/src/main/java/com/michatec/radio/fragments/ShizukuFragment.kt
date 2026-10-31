@@ -36,7 +36,11 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -47,13 +51,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import com.michatec.radio.R
+import com.michatec.radio.integrations.RadioPowerManager
 import com.michatec.radio.integrations.Shizuku
 import com.michatec.radio.ui.theme.RadioTheme
 import rikka.shizuku.Shizuku as ShizukuApi
 
 class ShizukuFragment : Fragment() {
 
-    private val shizuku = Shizuku()
+    private lateinit var shizuku: Shizuku
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        shizuku = Shizuku(requireContext())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,11 +86,6 @@ class ShizukuFragment : Fragment() {
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        shizuku.unregisterListeners()
     }
 
     @Composable
@@ -127,6 +132,8 @@ class ShizukuFragment : Fragment() {
     private fun ShizukuSettingsSection(shizuku: Shizuku) {
         val context = LocalContext.current
         val scrollState = rememberScrollState()
+        val powerManager = remember { RadioPowerManager(context, shizuku) }
+        val coroutineScope = rememberCoroutineScope()
 
         val isAndroidTV = remember {
             context.packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
@@ -146,13 +153,13 @@ class ShizukuFragment : Fragment() {
             mutableStateOf(shizuku.hasPermission())
         }
         var isBatteryOptimized by remember {
-            mutableStateOf(shizuku.isIgnoringBatteryOptimizations(context))
+            mutableStateOf(powerManager.isOptimized())
         }
 
         fun refreshStatus(ctx: Context) {
             binderReady = shizuku.isBinderAlive()
             hasPermission = shizuku.hasPermission()
-            isBatteryOptimized = shizuku.isIgnoringBatteryOptimizations(ctx)
+            isBatteryOptimized = RadioPowerManager(ctx, shizuku).isOptimized()
         }
 
         DisposableEffect(Unit) {
@@ -229,7 +236,7 @@ class ShizukuFragment : Fragment() {
 
                 OutlinedButton(
                     onClick = {
-                        if (shizuku.isInstalled(context)) {
+                        if (shizuku.isInstalled()) {
                             val intent = context.packageManager
                                 .getLaunchIntentForPackage(Shizuku.SHIZUKU_PACKAGE)
                             if (intent != null) {
@@ -287,13 +294,17 @@ class ShizukuFragment : Fragment() {
                 if (!isBatteryOptimized) {
                     Button(
                         onClick = {
-                            val res = shizuku.optimizeBackgroundPlayback(context)
-                            refreshStatus(context)
-                            if (res.success) {
-                                Toast.makeText(context, msgOptimizationsEnabled, Toast.LENGTH_SHORT).show()
-                            } else {
-                                val err = (res.stderr.ifEmpty { msgCommandFailed }).take(60)
-                                Toast.makeText(context, String.format(msgCommandErrorFormat, err), Toast.LENGTH_LONG).show()
+                            coroutineScope.launch(Dispatchers.IO) {
+                                val res = powerManager.enableOptimization()
+                                withContext(Dispatchers.Main) {
+                                    refreshStatus(context)
+                                    if (res.success) {
+                                        Toast.makeText(context, msgOptimizationsEnabled, Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        val err = (res.errorMessage ?: msgCommandFailed).take(60)
+                                        Toast.makeText(context, String.format(msgCommandErrorFormat, err), Toast.LENGTH_LONG).show()
+                                    }
+                                }
                             }
                         },
                         enabled = hasPermission,
@@ -307,13 +318,17 @@ class ShizukuFragment : Fragment() {
                 } else {
                     OutlinedButton(
                         onClick = {
-                            val res = shizuku.removeBackgroundPlaybackOptimization(context)
-                            refreshStatus(context)
-                            if (res.success) {
-                                Toast.makeText(context, msgOptimizationsDisabled, Toast.LENGTH_SHORT).show()
-                            } else {
-                                val err = (res.stderr.ifEmpty { msgCommandFailed }).take(60)
-                                Toast.makeText(context, String.format(msgCommandErrorFormat, err), Toast.LENGTH_LONG).show()
+                            coroutineScope.launch(Dispatchers.IO) {
+                                val res = powerManager.disableOptimization()
+                                withContext(Dispatchers.Main) {
+                                    refreshStatus(context)
+                                    if (res.success) {
+                                        Toast.makeText(context, msgOptimizationsDisabled, Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        val err = (res.errorMessage ?: msgCommandFailed).take(60)
+                                        Toast.makeText(context, String.format(msgCommandErrorFormat, err), Toast.LENGTH_LONG).show()
+                                    }
+                                }
                             }
                         },
                         enabled = hasPermission,
