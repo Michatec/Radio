@@ -149,42 +149,119 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
         applyAudioEffects()
 
         RadioApiService.playbackController = object : RadioApiService.PlaybackController {
+            private val mainHandler = Handler(Looper.getMainLooper())
+
             override fun play() {
-                if (player.playbackState == Player.STATE_IDLE || player.currentMediaItem == null) {
-                    val mediaId = PreferencesHelper.loadLastPlayedStationUuid()
-                    if (mediaId.isNotEmpty()) {
-                        playStation(mediaId)
-                    } else if (collection.stations.isNotEmpty()) {
-                        playStation(collection.stations[0])
+                mainHandler.post {
+                    if (!::player.isInitialized) return@post
+                    if (player.playbackState == Player.STATE_IDLE || player.currentMediaItem == null) {
+                        val mediaId = PreferencesHelper.loadLastPlayedStationUuid()
+                        if (mediaId.isNotEmpty()) {
+                            playStation(mediaId)
+                        } else if (collection.stations.isNotEmpty()) {
+                            playStation(collection.stations[0])
+                        }
+                    } else {
+                        player.play()
                     }
-                } else {
-                    player.play()
                 }
             }
 
             override fun pause() {
-                player.pause()
+                mainHandler.post {
+                    if (!::player.isInitialized) return@post
+                    player.pause()
+                }
             }
 
             override fun stop() {
-                player.stop()
+                mainHandler.post {
+                    if (!::player.isInitialized) return@post
+                    player.stop()
+                }
             }
 
             override fun isPlaying(): Boolean {
-                return player.isPlaying
+                if (!::player.isInitialized) {
+                    return PreferencesHelper.loadPlayerState().isPlaying
+                }
+                return if (Looper.myLooper() == Looper.getMainLooper()) {
+                    player.isPlaying
+                } else {
+                    val latch = java.util.concurrent.CountDownLatch(1)
+                    var result = false
+                    mainHandler.post {
+                        result = if (::player.isInitialized) player.isPlaying else PreferencesHelper.loadPlayerState().isPlaying
+                        latch.countDown()
+                    }
+                    try {
+                        latch.await(100, java.util.concurrent.TimeUnit.MILLISECONDS)
+                    } catch (_: Exception) {
+                    }
+                    result
+                }
             }
 
             override fun getCurrentStationName(): String {
-                val mediaId = player.currentMediaItem?.mediaId ?: return ""
-                return CollectionHelper.getItem(this@PlayerService, collection, mediaId).mediaMetadata.title?.toString() ?: ""
+                if (!::player.isInitialized) {
+                    return try {
+                        val currentUuid = PreferencesHelper.loadPlayerState().stationUuid
+                        CollectionHelper.getStation(collection, currentUuid).name
+                    } catch (_: Exception) {
+                        ""
+                    }
+                }
+                return if (Looper.myLooper() == Looper.getMainLooper()) {
+                    val mediaId = player.currentMediaItem?.mediaId ?: return ""
+                    CollectionHelper.getItem(this@PlayerService, collection, mediaId).mediaMetadata.title?.toString() ?: ""
+                } else {
+                    val latch = java.util.concurrent.CountDownLatch(1)
+                    var result = ""
+                    mainHandler.post {
+                        val mediaId = if (::player.isInitialized) player.currentMediaItem?.mediaId else null
+                        result = if (mediaId != null) {
+                            CollectionHelper.getItem(this@PlayerService, collection, mediaId).mediaMetadata.title?.toString() ?: ""
+                        } else {
+                            try {
+                                val currentUuid = PreferencesHelper.loadPlayerState().stationUuid
+                                CollectionHelper.getStation(collection, currentUuid).name
+                            } catch (_: Exception) {
+                                ""
+                            }
+                        }
+                        latch.countDown()
+                    }
+                    try {
+                        latch.await(100, java.util.concurrent.TimeUnit.MILLISECONDS)
+                    } catch (_: Exception) {
+                    }
+                    result
+                }
             }
 
             override fun getCurrentMetadata(): String {
-                return player.currentMediaItem?.mediaMetadata?.title?.toString() ?: ""
+                if (!::player.isInitialized) return ""
+                return if (Looper.myLooper() == Looper.getMainLooper()) {
+                    player.currentMediaItem?.mediaMetadata?.title?.toString() ?: ""
+                } else {
+                    val latch = java.util.concurrent.CountDownLatch(1)
+                    var result = ""
+                    mainHandler.post {
+                        result = if (::player.isInitialized) player.currentMediaItem?.mediaMetadata?.title?.toString() ?: "" else ""
+                        latch.countDown()
+                    }
+                    try {
+                        latch.await(100, java.util.concurrent.TimeUnit.MILLISECONDS)
+                    } catch (_: Exception) {
+                    }
+                    result
+                }
             }
 
             override fun playStationByUuid(uuid: String) {
-                this@PlayerService.playStation(uuid)
+                mainHandler.post {
+                    this@PlayerService.playStation(uuid)
+                }
             }
 
             override fun getSavedStationsJson(): String {
