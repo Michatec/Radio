@@ -38,7 +38,6 @@ class RadioApiService : Service() {
             } else {
                 val intent = Intent(applicationContext, PlayerService::class.java).apply {
                     action = "com.michatec.radio.action.START_PLAYER_SERVICE"
-                    putExtra(Keys.EXTRA_PLAY_COMMAND, Keys.PLAY_COMMAND_PLAY)
                 }
                 applicationContext.startService(intent)
             }
@@ -93,7 +92,6 @@ class RadioApiService : Service() {
                 PreferencesHelper.saveCurrentStationId(uuid)
                 val intent = Intent(applicationContext, PlayerService::class.java).apply {
                     action = "com.michatec.radio.action.START_PLAYER_SERVICE"
-                    putExtra(Keys.EXTRA_PLAY_COMMAND, Keys.PLAY_COMMAND_PLAY_STATION)
                     putExtra(Keys.EXTRA_STATION_UUID, uuid)
                 }
                 applicationContext.startService(intent)

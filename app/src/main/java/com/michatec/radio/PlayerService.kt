@@ -245,18 +245,6 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
     /* Overrides onStartCommand from Service */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        val playCommand = intent?.getStringExtra(Keys.EXTRA_PLAY_COMMAND)
-        when (playCommand) {
-            Keys.PLAY_COMMAND_PLAY -> {
-                RadioApiService.playbackController?.play()
-            }
-            Keys.PLAY_COMMAND_PLAY_STATION -> {
-                val uuid = intent.getStringExtra(Keys.EXTRA_STATION_UUID)
-                if (!uuid.isNullOrEmpty()) {
-                    RadioApiService.playbackController?.playStationByUuid(uuid)
-                }
-            }
-        }
         return START_STICKY
     }
 
