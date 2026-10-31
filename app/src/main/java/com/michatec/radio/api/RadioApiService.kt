@@ -32,14 +32,14 @@ class RadioApiService : Service() {
     private val binder = object : IRadioApi.Stub() {
         @OptIn(UnstableApi::class)
         override fun play() {
-            if (playbackController != null) {
-                playbackController?.play()
+            val controller = playbackController
+
+            if (controller != null) {
+                controller.play()
             } else {
-                val intent = Intent(applicationContext, PlayerService::class.java).apply {
-                    action = "com.michatec.radio.action.START_PLAYER_SERVICE"
-                }
-                applicationContext.startService(intent)
-                playbackController?.play()
+                startPlayerService(
+                    "com.michatec.radio.action.PLAY"
+                )
             }
         }
 
@@ -86,15 +86,16 @@ class RadioApiService : Service() {
 
         @OptIn(UnstableApi::class)
         override fun playStationByUuid(uuid: String) {
-            if (playbackController != null) {
-                playbackController?.playStationByUuid(uuid)
+            PreferencesHelper.saveCurrentStationId(uuid)
+
+            val controller = playbackController
+
+            if (controller != null) {
+                controller.playStationByUuid(uuid)
             } else {
-                PreferencesHelper.saveCurrentStationId(uuid)
-                val intent = Intent(applicationContext, PlayerService::class.java).apply {
-                    action = "com.michatec.radio.action.START_PLAYER_SERVICE"
-                }
-                applicationContext.startService(intent)
-                playbackController?.playStationByUuid(uuid)
+                startPlayerService(
+                    "com.michatec.radio.action.PLAY_STATION"
+                )
             }
         }
 
@@ -120,6 +121,18 @@ class RadioApiService : Service() {
                 }
             }
         }
+    }
+
+    @OptIn(UnstableApi::class)
+    private fun startPlayerService(action: String) {
+        val intent = Intent(
+            applicationContext,
+            PlayerService::class.java
+        ).apply {
+            this.action = action
+        }
+
+        applicationContext.startService(intent)
     }
 
     override fun onBind(intent: Intent?): IBinder {
