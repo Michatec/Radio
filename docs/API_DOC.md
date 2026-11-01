@@ -66,10 +66,10 @@ Choose the AIDL API if you want to:
 
 ## Version Compatibility
 
-| API      | Minimum Radio Version      |
-|:---------|:---------------------------|
-| REST API | See REST API documentation |
-| AIDL API | 15.2                       |
+| API      | Minimum Radio Version |
+|:---------|:----------------------|
+| REST API | 15.1                  |
+| AIDL API | 15.2                  |
 
 ---
 
