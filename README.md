@@ -70,7 +70,7 @@ You can help out the radio-browser.info community by [adding the missing station
 <summary>⚡ Shizuku Integration</summary>
 <br>
 
-Radio can use [Shizuku](https://shizuku.rikka.app/) to improve background playback reliability by adjusting system power management settings with elevated privileges.
+Starting with **version 15.2**, Radio supports [Shizuku](https://shizuku.rikka.app/), enabling advanced power management adjustments through elevated privileges to improve background playback reliability and reduce interruptions caused by Android's battery optimization mechanisms.
 
 **Features:**
 - **Doze whitelist** - Adds the app to the device idle whitelist so playback isn't restricted
