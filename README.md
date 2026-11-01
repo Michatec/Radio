@@ -67,10 +67,29 @@ You can help out the radio-browser.info community by [adding the missing station
 ----------------------------------------
 
 <details>
-<summary>🧩 Developer API (AIDL)</summary>
+<summary>🧩 Developer API (AIDL & Remote Control)</summary>
 <br>
 
-Starting with version 15.2, Radio exposes an AIDL-based API (`com.michatec.radio.api.IRadioApi`) that allows external Android apps to control playback and access station data via IPC.
+Radio provides two APIs for external applications and integrations: a REST-based Remote Control API and an Android AIDL API.
+
+### REST API – Remote Control
+
+The REST API allows external clients to remotely control playback and retrieve station information over HTTP and WebSockets.
+
+**Available features:**
+- Start, pause and resume playback
+- Switch to the next or previous station
+- Play stations by UUID
+- Retrieve playback status and station information
+- Access station images and stream URLs
+- Receive real-time updates via WebSockets
+- Secure client pairing via QR codes
+
+For authentication, pairing instructions, endpoint descriptions and usage examples, see [REST_API.md](docs/REST_API.md).
+
+### AIDL API – Android IPC
+
+Starting with version **15.2**, Radio exposes an AIDL-based API (`com.michatec.radio.api.IRadioApi`) that allows external Android applications to communicate directly with the Radio playback service via IPC.
 
 **Service details:**
 - **Package:** `com.michatec.radio`
@@ -79,11 +98,12 @@ Starting with version 15.2, Radio exposes an AIDL-based API (`com.michatec.radio
 
 **Available features:**
 - Play, pause, stop and check playback state
-- Get current station name and track metadata
-- Switch stations by UUID via `playStationByUuid()`
+- Retrieve the current station name and track metadata
+- Switch stations by UUID using `playStationByUuid()`
 - Retrieve saved and favorite stations as JSON
 
-For setup instructions, binding examples (Kotlin) and the full method reference, see [API_DOC.md](API_DOC.md).
+For setup instructions, Kotlin integration examples and the complete method reference, see [AIDL_API.md](docs/AIDL_API.md).
+
 </details>
 
 ----------------------------------------
@@ -135,6 +155,16 @@ When **Edit Stations** is enabled:
 </details>
 
 ----------------------------------------
+
+## 🧩 Developer Documentation
+
+For developers who want to integrate or control Radio using external applications, see the [Developer API Documentation](docs/API_DOC.md).
+
+The documentation covers:
+- REST API – Remote Control (HTTP / WebSocket)
+- AIDL API – Android IPC
+
+---------------------------------------
 
 ### ⭐ Star History
 
