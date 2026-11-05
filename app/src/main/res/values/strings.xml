@@ -287,4 +287,10 @@
     <string name="shizuku_disable_optimizations_btn">Disable Background Optimizations</string>
     <string name="shizuku_optimizations_enabled_toast">Background optimizations enabled!</string>
     <string name="shizuku_optimizations_disabled_toast">Background optimizations disabled.</string>
+
+    <!-- Station Health -->
+    <string name="toastmessage_checking_stream_health">Checking stream health for %1$s…</string>
+    <string name="health_status_online">Online (%1$d) - %2$dms</string>
+    <string name="health_status_offline">Offline (%1$s)</string>
+    <string name="toastmessage_health_result">Health [%1$s]: %2$s</string>
 </resources>

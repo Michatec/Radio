@@ -251,4 +251,10 @@
     <string name="shizuku_disable_optimizations_btn">Вимкнути фонові оптимізації</string>
     <string name="shizuku_optimizations_enabled_toast">Фонові оптимізації увімкнено!</string>
     <string name="shizuku_optimizations_disabled_toast">Фонові оптимізації вимкнено.</string>
+
+    <!-- Station Health -->
+    <string name="toastmessage_checking_stream_health">Перевірка стану потоку для %1$s…</string>
+    <string name="health_status_online">Онлайн (%1$d) - %2$dмс</string>
+    <string name="health_status_offline">Офлайн (%1$s)</string>
+    <string name="toastmessage_health_result">Статус [%1$s]: %2$s</string>
 </resources>

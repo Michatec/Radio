@@ -252,4 +252,10 @@
     <string name="shizuku_disable_optimizations_btn">Désactiver les optimisations en arrière-plan</string>
     <string name="shizuku_optimizations_enabled_toast">Optimisations en arrière-plan activées !</string>
     <string name="shizuku_optimizations_disabled_toast">Optimisations en arrière-plan désactivées.</string>
+
+    <!-- Station Health -->
+    <string name="toastmessage_checking_stream_health">Vérification de l\'état du flux pour %1$s…</string>
+    <string name="health_status_online">En ligne (%1$d) - %2$dms</string>
+    <string name="health_status_offline">Hors ligne (%1$s)</string>
+    <string name="toastmessage_health_result">État [%1$s] : %2$s</string>
 </resources>

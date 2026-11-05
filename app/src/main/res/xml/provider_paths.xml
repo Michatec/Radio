@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
-    <external-files-path
-        name="my_images"
-        path="Android/data/com.michatec.radio/files/Pictures" />
     <external-path
         name="external_files"
+        path="." />
+    <files-path
+        name="internal_files"
+        path="." />
+    <cache-path
+        name="cache_files"
         path="." />
 </paths>

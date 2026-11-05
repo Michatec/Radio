@@ -252,4 +252,10 @@
     <string name="shizuku_disable_optimizations_btn">Wyłącz optymalizacje w tle</string>
     <string name="shizuku_optimizations_enabled_toast">Włączono optymalizacje w tle!</string>
     <string name="shizuku_optimizations_disabled_toast">Wyłączono optymalizacje w tle.</string>
+
+    <!-- Station Health -->
+    <string name="toastmessage_checking_stream_health">Sprawdzanie stanu strumienia dla %1$s…</string>
+    <string name="health_status_online">Online (%1$d) - %2$dms</string>
+    <string name="health_status_offline">Offline (%1$s)</string>
+    <string name="toastmessage_health_result">Stan [%1$s]: %2$s</string>
 </resources>

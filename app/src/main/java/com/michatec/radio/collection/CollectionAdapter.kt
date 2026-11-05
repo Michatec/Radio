@@ -1,5 +1,7 @@
 package com.michatec.radio.collection
 
+import android.R.id.content
+import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.text.Editable
@@ -10,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.isGone
@@ -31,6 +34,7 @@ import com.michatec.radio.helpers.ImageHelper
 import com.michatec.radio.helpers.NetworkHelper
 import com.michatec.radio.helpers.PreferencesHelper
 import com.michatec.radio.helpers.ShortcutHelper
+import com.michatec.radio.extensions.java.StationHealthChecker
 import com.michatec.radio.helpers.UiHelper
 import com.michatec.radio.helpers.UpdateHelper
 import kotlinx.coroutines.CoroutineScope
@@ -467,6 +471,23 @@ class CollectionAdapter(
             if (reorderStationUuid.isNotEmpty()) return@setOnClickListener
             if (expandedStationPosition == stationViewHolder.bindingAdapterPosition) return@setOnClickListener
             collectionAdapterListener.onPlayButtonTapped(station.uuid)
+        }
+        binding.saveButton.setOnLongClickListener {
+            if (reorderStationUuid.isNotEmpty()) return@setOnLongClickListener true
+            val rootView = (context as? Activity)?.findViewById<View>(content) ?: binding.root
+            Snackbar.make(rootView, context.getString(R.string.toastmessage_checking_stream_health, station.name), Snackbar.LENGTH_LONG).show()
+            StationHealthChecker.checkStationHealth(station) { checkedStation, result ->
+                (context as? Activity)?.runOnUiThread {
+                    val statusText = if (result.online()) {
+                        context.getString(R.string.health_status_online, result.responseCode(), result.latencyMs())
+                    } else {
+                        context.getString(R.string.health_status_offline, result.errorMessage() ?: "unknown error")
+                    }
+                    val msg = context.getString(R.string.toastmessage_health_result, checkedStation.name, statusText)
+                    Snackbar.make(rootView, msg, Snackbar.LENGTH_LONG).show()
+                }
+            }
+            true
         }
         binding.playbackButton.setOnClickListener {
             collectionAdapterListener.onPlayButtonTapped(station.uuid)
