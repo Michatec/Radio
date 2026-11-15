@@ -280,33 +280,30 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
             }
 
             override fun getCurrentStationImage(): ByteArray {
-                val currentUuid = if (::player.isInitialized) {
-                    player.currentMediaItem?.mediaId ?: PreferencesHelper.loadPlayerState().stationUuid
-                } else {
-                    PreferencesHelper.loadPlayerState().stationUuid
+                val currentUuid = when {
+                    !::player.isInitialized -> PreferencesHelper.loadPlayerState().stationUuid
+                    Looper.myLooper() == Looper.getMainLooper() -> player.currentMediaItem?.mediaId
+                        ?: PreferencesHelper.loadPlayerState().stationUuid
+                    else -> runBlocking(Main) {
+                        player.currentMediaItem?.mediaId
+                            ?: PreferencesHelper.loadPlayerState().stationUuid
+                    }
                 }
                 return getStationImageByUuid(currentUuid)
             }
 
             override fun getStationImageByUuid(uuid: String): ByteArray {
                 if (uuid.isEmpty()) return byteArrayOf()
-                if (Looper.myLooper() == Looper.getMainLooper()) {
-                    val imageFile = FileHelper.getStationImageFile(this@PlayerService, uuid)
-                    if (imageFile.exists()) {
-                        return ImageHelper.getStationImageAsByteArray(this@PlayerService, Uri.fromFile(imageFile).toString())
-                    }
-                    return byteArrayOf()
-                }
                 val imageUri = runBlocking(Dispatchers.IO) {
                     val imageFile = FileHelper.getStationImageFile(this@PlayerService, uuid)
-                    if (imageFile.exists()) {
-                        Uri.fromFile(imageFile).toString()
-                    } else {
-                        val station = collection.stations.find { it.uuid == uuid }
-                        station?.remoteImageLocation ?: ""
-                    }
+                    if (imageFile.exists()) Uri.fromFile(imageFile).toString() else ""
                 }
-                return ImageHelper.getStationImageAsByteArray(this@PlayerService, imageUri)
+                if (imageUri.isEmpty()) return byteArrayOf()
+                return ImageHelper.getStationImageAsByteArray(
+                    this@PlayerService,
+                    imageUri,
+                    Keys.SIZE_STATION_IMAGE_API
+                )
             }
         }
     }

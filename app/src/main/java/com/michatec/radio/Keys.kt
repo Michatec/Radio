@@ -183,6 +183,7 @@ object Keys {
     // sizes (in dp)
     const val SIZE_STATION_IMAGE_CARD: Int = 72
     const val SIZE_STATION_IMAGE_MAXIMUM: Int = 640
+    const val SIZE_STATION_IMAGE_API: Int = 512
     const val BOTTOM_SHEET_PEEK_HEIGHT: Int = 72
 
     // default values

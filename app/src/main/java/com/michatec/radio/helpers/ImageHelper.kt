@@ -55,11 +55,25 @@ object ImageHelper {
     }
 
 
-    /* Get an unscaled version of the station image as a ByteArray */
-    fun getStationImageAsByteArray(context: Context, imageUriString: String = String()): ByteArray {
-        val coverBitmap: Bitmap = getStationImage(context, imageUriString)
+    /* Get the station image as a ByteArray, optionally scaled down to maxSize pixels */
+    fun getStationImageAsByteArray(
+        context: Context,
+        imageUriString: String = String(),
+        maxSize: Int = 0
+    ): ByteArray {
+        val coverBitmap: Bitmap = if (maxSize > 0 && imageUriString.isNotEmpty()) {
+            decodeSampledBitmapFromUri(context, imageUriString.toUri(), maxSize, maxSize)
+        } else {
+            getStationImage(context, imageUriString)
+        }
+
         val stream = ByteArrayOutputStream()
-        coverBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        if (maxSize > 0) {
+            coverBitmap.compress(Bitmap.CompressFormat.JPEG, 85, stream)
+        } else {
+            coverBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        }
+
         val coverByteArray: ByteArray = stream.toByteArray()
         coverBitmap.recycle()
         return coverByteArray
