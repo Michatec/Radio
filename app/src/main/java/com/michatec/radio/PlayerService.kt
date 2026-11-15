@@ -280,7 +280,7 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
             }
 
             override fun getCurrentStationImage(): ByteArray {
-                return runBlocking(Dispatchers.IO) {
+                return runBlocking(Main) {
                     val currentUuid = if (::player.isInitialized) {
                         player.currentMediaItem?.mediaId ?: PreferencesHelper.loadPlayerState().stationUuid
                     } else {
@@ -292,7 +292,7 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
 
             override fun getStationImageByUuid(uuid: String): ByteArray {
                 if (uuid.isEmpty()) return byteArrayOf()
-                val imageUri = runBlocking(Dispatchers.IO) {
+                val imageUri = runBlocking(Main) {
                     val imageFile = FileHelper.getStationImageFile(this@PlayerService, uuid)
                     if (imageFile.exists()) {
                         Uri.fromFile(imageFile).toString()
