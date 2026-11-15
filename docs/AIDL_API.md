@@ -67,6 +67,9 @@ In your client application's `src/main/AndroidManifest.xml`, declare the custom 
     <!-- Package visibility for Android 11+ (API 30+) -->
     <queries>
         <package android:name="com.michatec.radio" />
+        <intent>
+            <action android:name="com.michatec.radio.api.IRadioApi" />
+        </intent>
     </queries>
 
     <application...>

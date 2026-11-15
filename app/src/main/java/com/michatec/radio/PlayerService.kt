@@ -67,6 +67,7 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.Date
 
 
@@ -216,21 +217,12 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
                 if (!::player.isInitialized) {
                     return PreferencesHelper.loadPlayerState().isPlaying
                 }
-                return if (Looper.myLooper() == Looper.getMainLooper()) {
-                    player.isPlaying
-                } else {
-                    val latch = java.util.concurrent.CountDownLatch(1)
-                    var result = false
-                    mainHandler.post {
-                        result = if (::player.isInitialized) player.isPlaying else PreferencesHelper.loadPlayerState().isPlaying
-                        latch.countDown()
+                if (Looper.myLooper() != Looper.getMainLooper()) {
+                    return runBlocking(Main) {
+                        if (::player.isInitialized) player.isPlaying else PreferencesHelper.loadPlayerState().isPlaying
                     }
-                    try {
-                        latch.await(100, java.util.concurrent.TimeUnit.MILLISECONDS)
-                    } catch (_: Exception) {
-                    }
-                    result
                 }
+                return player.isPlaying
             }
 
             override fun getCurrentStationName(): String {
@@ -242,15 +234,10 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
                         ""
                     }
                 }
-                return if (Looper.myLooper() == Looper.getMainLooper()) {
-                    val mediaId = player.currentMediaItem?.mediaId ?: return ""
-                    CollectionHelper.getItem(this@PlayerService, collection, mediaId).mediaMetadata.title?.toString() ?: ""
-                } else {
-                    val latch = java.util.concurrent.CountDownLatch(1)
-                    var result = ""
-                    mainHandler.post {
+                if (Looper.myLooper() != Looper.getMainLooper()) {
+                    return runBlocking(Main) {
                         val mediaId = if (::player.isInitialized) player.currentMediaItem?.mediaId else null
-                        result = if (mediaId != null) {
+                        if (mediaId != null) {
                             CollectionHelper.getItem(this@PlayerService, collection, mediaId).mediaMetadata.title?.toString() ?: ""
                         } else {
                             try {
@@ -260,33 +247,20 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
                                 ""
                             }
                         }
-                        latch.countDown()
                     }
-                    try {
-                        latch.await(100, java.util.concurrent.TimeUnit.MILLISECONDS)
-                    } catch (_: Exception) {
-                    }
-                    result
                 }
+                val mediaId = player.currentMediaItem?.mediaId ?: return ""
+                return CollectionHelper.getItem(this@PlayerService, collection, mediaId).mediaMetadata.title?.toString() ?: ""
             }
 
             override fun getCurrentMetadata(): String {
                 if (!::player.isInitialized) return ""
-                return if (Looper.myLooper() == Looper.getMainLooper()) {
-                    player.currentMediaItem?.mediaMetadata?.title?.toString() ?: ""
-                } else {
-                    val latch = java.util.concurrent.CountDownLatch(1)
-                    var result = ""
-                    mainHandler.post {
-                        result = if (::player.isInitialized) player.currentMediaItem?.mediaMetadata?.title?.toString() ?: "" else ""
-                        latch.countDown()
+                if (Looper.myLooper() != Looper.getMainLooper()) {
+                    return runBlocking(Main) {
+                        if (::player.isInitialized) player.currentMediaItem?.mediaMetadata?.title?.toString() ?: "" else ""
                     }
-                    try {
-                        latch.await(100, java.util.concurrent.TimeUnit.MILLISECONDS)
-                    } catch (_: Exception) {
-                    }
-                    result
                 }
+                return player.currentMediaItem?.mediaMetadata?.title?.toString() ?: ""
             }
 
             override fun playStationByUuid(uuid: String) {
