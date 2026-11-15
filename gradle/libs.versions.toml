@@ -24,8 +24,14 @@ aboutLibraries = "15.3.0"
 zxingCore = "3.5.4"
 zxingEmbedded = "4.3.0"
 shizuku = "13.1.5"
+securityCrypto = "1.1.0"
+ksp = "2.3.12"
+appfunctions = "1.0.0-rc01"
 
 [libraries]
+appfunctions = { group = "androidx.appfunctions", name = "appfunctions", version.ref = "appfunctions" }
+appfunctions-compiler = { group = "androidx.appfunctions", name = "appfunctions-compiler", version.ref = "appfunctions" }
+security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
 activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 freedroidwarn = { group = "com.github.woheller69", name = "FreeDroidWarn", version.ref = "freedroidwarn" }
@@ -70,6 +76,7 @@ shizuku-api = { group = "dev.rikka.shizuku", name = "api", version.ref = "shizuk
 shizuku-provider = { group = "dev.rikka.shizuku", name = "provider", version.ref = "shizuku" }
 
 [plugins]
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

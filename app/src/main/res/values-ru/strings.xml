@@ -257,4 +257,33 @@
     <string name="health_status_online">Онлайн (%1$d) - %2$dмс</string>
     <string name="health_status_offline">Офлайн (%1$s)</string>
     <string name="toastmessage_health_result">Статус [%1$s]: %2$s</string>
+
+    <!-- Quick Settings Tile -->
+    <string name="tile_subtitle_tap_to_play">Нажмите для воспроизведения</string>
+
+    <!-- WebDAV Cloud Sync -->
+    <string name="pref_webdav_backup_title">Облачный бэкап WebDAV</string>
+    <string name="pref_webdav_backup_summary">Загрузить бэкап на WebDAV / Nextcloud</string>
+    <string name="pref_webdav_restore_title">Облачное восстановление WebDAV</string>
+    <string name="pref_webdav_restore_summary">Скачать бэкап с WebDAV / Nextcloud</string>
+    <string name="toastmessage_webdav_uploading">Загрузка бэкапа на WebDAV…</string>
+    <string name="toastmessage_webdav_backup_success">Бэкап WebDAV успешно создан!</string>
+    <string name="toastmessage_webdav_backup_failed">Сбой бэкапа WebDAV.</string>
+    <string name="toastmessage_webdav_downloading">Скачивание бэкапа с WebDAV…</string>
+    <string name="toastmessage_webdav_restore_success">Восстановление WebDAV успешно!</string>
+    <string name="toastmessage_webdav_restore_failed">Сбой восстановления WebDAV.</string>
+    <string name="dialog_webdav_title">Конфигурация WebDAV</string>
+    <string name="dialog_webdav_url_hint">URL WebDAV (напр. https://…/backup.zip)</string>
+    <string name="dialog_webdav_user_hint">Имя пользователя</string>
+    <string name="dialog_webdav_password_hint">Пароль</string>
+    <string name="dialog_webdav_save_button">Сохранить и продолжить</string>
+    <string name="pref_webdav_clear_title">Удалить учетные данные WebDAV</string>
+    <string name="pref_webdav_clear_summary">Удалить сохраненные URL WebDAV, имя пользователя и пароль</string>
+    <string name="dialog_webdav_clear_message">Вы уверены, что хотите удалить сохраненные учетные данные WebDAV?</string>
+    <string name="toastmessage_webdav_cleared">Учетные данные WebDAV удалены.</string>
+    <string name="dialog_webdav_test_button">Тест соединения</string>
+    <string name="dialog_webdav_show_password">Показать пароль</string>
+    <string name="toastmessage_webdav_connection_success">Соединение установлено!</string>
+    <string name="toastmessage_webdav_connection_auth_failed">Ошибка соединения: Не авторизован (401). Проверьте учетные данные.</string>
+    <string name="toastmessage_webdav_connection_failed">Ошибка соединения. Проверьте WebDAV URL.</string>
 </resources>

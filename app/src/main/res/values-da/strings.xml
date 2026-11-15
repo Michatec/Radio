@@ -257,4 +257,33 @@
     <string name="health_status_online">Online (%1$d) - %2$dms</string>
     <string name="health_status_offline">Offline (%1$s)</string>
     <string name="toastmessage_health_result">Tilstand [%1$s]: %2$s</string>
+
+    <!-- Quick Settings Tile -->
+    <string name="tile_subtitle_tap_to_play">Tryk for at afspille</string>
+
+    <!-- WebDAV Cloud Sync -->
+    <string name="pref_webdav_backup_title">WebDAV Cloud Backup</string>
+    <string name="pref_webdav_backup_summary">Upload sikkerhedskopi til WebDAV / Nextcloud</string>
+    <string name="pref_webdav_restore_title">WebDAV Cloud Gendannelse</string>
+    <string name="pref_webdav_restore_summary">Download sikkerhedskopi fra WebDAV / Nextcloud</string>
+    <string name="toastmessage_webdav_uploading">Uploader sikkerhedskopi til WebDAV…</string>
+    <string name="toastmessage_webdav_backup_success">WebDAV-sikkerhedskopiering gennemført!</string>
+    <string name="toastmessage_webdav_backup_failed">WebDAV-sikkerhedskopiering mislykkedes.</string>
+    <string name="toastmessage_webdav_downloading">Downloader sikkerhedskopi fra WebDAV…</string>
+    <string name="toastmessage_webdav_restore_success">WebDAV-gendannelse gennemført!</string>
+    <string name="toastmessage_webdav_restore_failed">WebDAV-gendannelse mislykkedes.</string>
+    <string name="dialog_webdav_title">WebDAV-konfiguration</string>
+    <string name="dialog_webdav_url_hint">WebDAV-URL (f.eks. https://…/backup.zip)</string>
+    <string name="dialog_webdav_user_hint">Brugernavn</string>
+    <string name="dialog_webdav_password_hint">Adgangskode</string>
+    <string name="dialog_webdav_save_button">Gem &amp; Fortsæt</string>
+    <string name="pref_webdav_clear_title">Slet WebDAV-legitimationsoplysninger</string>
+    <string name="pref_webdav_clear_summary">Fjern gemt WebDAV-URL, brugernavn og adgangskode</string>
+    <string name="dialog_webdav_clear_message">Er du sikker på, du vil slette dine gemte WebDAV-legitimationsoplysninger?</string>
+    <string name="toastmessage_webdav_cleared">WebDAV-legitimationsoplysninger slettet.</string>
+    <string name="dialog_webdav_test_button">Test forbindelse</string>
+    <string name="dialog_webdav_show_password">Vis adgangskode</string>
+    <string name="toastmessage_webdav_connection_success">Forbindelse oprettet!</string>
+    <string name="toastmessage_webdav_connection_auth_failed">Forbindelse mislykkedes: Ikke autoriseret (401). Tjek legitimationsoplysninger.</string>
+    <string name="toastmessage_webdav_connection_failed">Forbindelse mislykkedes. Tjek venligst WebDAV-URL\'en.</string>
 </resources>

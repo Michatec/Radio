@@ -23,6 +23,13 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
+    <!-- Custom permission for AIDL Remote API -->
+    <permission
+        android:name="com.michatec.radio.permission.CONTROL_RADIO_API"
+        android:protectionLevel="normal"
+        android:label="@string/app_name"
+        android:description="@string/app_name" />
+
     <attribution
         android:tag="MediaPlayback"
         android:label="@string/app_name" />
@@ -163,11 +170,16 @@
             </intent-filter>
         </service>
 
+        <!-- AIDL API SERVICE -->
         <service
             android:name=".api.RadioApiService"
             android:enabled="true"
             android:exported="true"
-            tools:ignore="ExportedService" />
+            android:permission="com.michatec.radio.permission.CONTROL_RADIO_API">
+            <intent-filter>
+                <action android:name="com.michatec.radio.api.RadioApiService" />
+            </intent-filter>
+        </service>
 
         <receiver
             android:name=".helpers.DownloadFinishedReceiver"
@@ -197,6 +209,39 @@
             android:name=".widget.FavoritesWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
+        <!-- QUICK SETTINGS TILE -->
+        <service
+            android:name=".integrations.RadioTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_qs_radio_tile"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <!-- APP FUNCTIONS -->
+        <property
+            android:name="android.app.appfunctions.app_metadata"
+            android:resource="@xml/app_metadata" />
+
+        <service
+            android:name=".integrations.RadioAppFunctionService"
+            android:exported="true"
+            android:permission="android.permission.BIND_APP_FUNCTION_SERVICE"
+            tools:targetApi="36">
+            <intent-filter>
+                <action android:name="android.app.appfunctions.AppFunctionService" />
+            </intent-filter>
+            <property
+                android:name="android.app.appfunctions.schema"
+                android:value="app_functions_schema.xsd" />
+            <property
+                android:name="android.app.appfunctions.v2"
+                android:value="radio_app_functions.xml" />
+        </service>
+        
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

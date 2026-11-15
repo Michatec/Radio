@@ -259,4 +259,33 @@
     <string name="health_status_online">Online (%1$d) - %2$dms</string>
     <string name="health_status_offline">Offline (%1$s)</string>
     <string name="toastmessage_health_result">Status [%1$s]: %2$s</string>
+
+    <!-- Quick Settings Tile -->
+    <string name="tile_subtitle_tap_to_play">Tippen zum Abspielen</string>
+
+    <!-- WebDAV Cloud Sync -->
+    <string name="pref_webdav_backup_title">WebDAV Cloud-Backup</string>
+    <string name="pref_webdav_backup_summary">Backup zu WebDAV / Nextcloud hochladen</string>
+    <string name="pref_webdav_restore_title">WebDAV Cloud-Wiederherstellung</string>
+    <string name="pref_webdav_restore_summary">Backup von WebDAV / Nextcloud herunterladen</string>
+    <string name="toastmessage_webdav_uploading">Lade Backup zu WebDAV hoch…</string>
+    <string name="toastmessage_webdav_backup_success">WebDAV-Backup erfolgreich!</string>
+    <string name="toastmessage_webdav_backup_failed">WebDAV-Backup fehlgeschlagen.</string>
+    <string name="toastmessage_webdav_downloading">Lade Backup von WebDAV herunter…</string>
+    <string name="toastmessage_webdav_restore_success">WebDAV-Wiederherstellung erfolgreich!</string>
+    <string name="toastmessage_webdav_restore_failed">WebDAV-Wiederherstellung fehlgeschlagen.</string>
+    <string name="dialog_webdav_title">WebDAV-Konfiguration</string>
+    <string name="dialog_webdav_url_hint">WebDAV-URL (z. B. https://…/backup.zip)</string>
+    <string name="dialog_webdav_user_hint">Benutzername</string>
+    <string name="dialog_webdav_password_hint">Passwort</string>
+    <string name="dialog_webdav_save_button">Speichern &amp; Fortfahren</string>
+    <string name="dialog_webdav_test_button">Verbindung testen</string>
+    <string name="dialog_webdav_show_password">Passwort anzeigen</string>
+    <string name="toastmessage_webdav_connection_success">Verbindung erfolgreich!</string>
+    <string name="toastmessage_webdav_connection_auth_failed">Verbindung fehlgeschlagen: Nicht autorisiert (401). Zugangsdaten prüfen.</string>
+    <string name="toastmessage_webdav_connection_failed">Verbindung fehlgeschlagen. Bitte WebDAV-URL prüfen.</string>
+    <string name="pref_webdav_clear_title">WebDAV-Zugangsdaten löschen</string>
+    <string name="pref_webdav_clear_summary">Gespeicherte WebDAV-URL, Benutzername und Passwort entfernen</string>
+    <string name="dialog_webdav_clear_message">Möchten Sie Ihre gespeicherten WebDAV-Zugangsdaten wirklich löschen?</string>
+    <string name="toastmessage_webdav_cleared">WebDAV-Zugangsdaten gelöscht.</string>
 </resources>

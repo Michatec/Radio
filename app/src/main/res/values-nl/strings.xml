@@ -259,4 +259,33 @@
     <string name="health_status_online">Online (%1$d) - %2$dms</string>
     <string name="health_status_offline">Offline (%1$s)</string>
     <string name="toastmessage_health_result">Status [%1$s]: %2$s</string>
+
+    <!-- Quick Settings Tile -->
+    <string name="tile_subtitle_tap_to_play">Tik om af te spelen</string>
+
+    <!-- WebDAV Cloud Sync -->
+    <string name="pref_webdav_backup_title">WebDAV Cloud-back-up</string>
+    <string name="pref_webdav_backup_summary">Back-up uploaden naar WebDAV / Nextcloud</string>
+    <string name="pref_webdav_restore_title">WebDAV Cloud-herstel</string>
+    <string name="pref_webdav_restore_summary">Back-up downloaden van WebDAV / Nextcloud</string>
+    <string name="toastmessage_webdav_uploading">Back-up uploaden naar WebDAV…</string>
+    <string name="toastmessage_webdav_backup_success">WebDAV-back-up geslaagd!</string>
+    <string name="toastmessage_webdav_backup_failed">WebDAV-back-up mislukt.</string>
+    <string name="toastmessage_webdav_downloading">Back-up downloaden van WebDAV…</string>
+    <string name="toastmessage_webdav_restore_success">WebDAV-herstel geslaagd!</string>
+    <string name="toastmessage_webdav_restore_failed">WebDAV-herstel mislukt.</string>
+    <string name="dialog_webdav_title">WebDAV-configuratie</string>
+    <string name="dialog_webdav_url_hint">WebDAV-URL (bijv. https://…/backup.zip)</string>
+    <string name="dialog_webdav_user_hint">Gebruikersnaam</string>
+    <string name="dialog_webdav_password_hint">Wachtwoord</string>
+    <string name="dialog_webdav_save_button">Opslaan &amp; Doorgaan</string>
+    <string name="pref_webdav_clear_title">WebDAV-inloggegevens wissen</string>
+    <string name="pref_webdav_clear_summary">Opgeslagen WebDAV-URL, gebruikersnaam en wachtwoord verwijderen</string>
+    <string name="dialog_webdav_clear_message">Weet je zeker dat je je opgeslagen WebDAV-inloggegevens wilt verwijderen?</string>
+    <string name="toastmessage_webdav_cleared">WebDAV-inloggegevens gewist.</string>
+    <string name="dialog_webdav_test_button">Verbinding testen</string>
+    <string name="dialog_webdav_show_password">Wachtwoord tonen</string>
+    <string name="toastmessage_webdav_connection_success">Verbinding geslaagd!</string>
+    <string name="toastmessage_webdav_connection_auth_failed">Verbinding mislukt: Niet geautoriseerd (401). Controleer inloggegevens.</string>
+    <string name="toastmessage_webdav_connection_failed">Verbinding mislukt. Controleer de WebDAV-URL.</string>
 </resources>

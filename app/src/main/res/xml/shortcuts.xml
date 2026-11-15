@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <capability android:name="actions.intent.PLAY_MEDIA_ON_APP">
+        <intent
+            android:action="android.media.action.MEDIA_PLAY_FROM_SEARCH"
+            android:targetClass="com.michatec.radio.MainActivity"
+            android:targetPackage="com.michatec.radio">
+            <parameter
+                android:name="query"
+                android:key="query" />
+        </intent>
+    </capability>
+
+    <capability android:name="actions.intent.PAUSE_MEDIA">
+        <intent
+            android:action="com.michatec.radio.action.PAUSE"
+            android:targetClass="com.michatec.radio.PlayerService"
+            android:targetPackage="com.michatec.radio" />
+    </capability>
+
+    <capability android:name="actions.intent.RESUME_MEDIA">
+        <intent
+            android:action="com.michatec.radio.action.PLAY"
+            android:targetClass="com.michatec.radio.PlayerService"
+            android:targetPackage="com.michatec.radio" />
+    </capability>
+
     <shortcut
         android:enabled="true"
         android:icon="@drawable/ic_shortcut_play_circle_24dp"

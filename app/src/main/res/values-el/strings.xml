@@ -260,4 +260,33 @@
     <string name="health_status_online">Online (%1$d) - %2$dms</string>
     <string name="health_status_offline">Offline (%1$s)</string>
     <string name="toastmessage_health_result">Κατάσταση [%1$s]: %2$s</string>
+
+    <!-- Quick Settings Tile -->
+    <string name="tile_subtitle_tap_to_play">Πατήστε για αναπαραγωγή</string>
+
+    <!-- WebDAV Cloud Sync -->
+    <string name="pref_webdav_backup_title">Αντίγραφο ασφαλείας WebDAV Cloud</string>
+    <string name="pref_webdav_backup_summary">Μεταφόρτωση αντιγράφου ασφαλείας σε WebDAV / Nextcloud</string>
+    <string name="pref_webdav_restore_title">Επαναφορά WebDAV Cloud</string>
+    <string name="pref_webdav_restore_summary">Λήψη αντιγράφου ασφαλείας από WebDAV / Nextcloud</string>
+    <string name="toastmessage_webdav_uploading">Μεταφόρτωση αντιγράφου ασφαλείας σε WebDAV…</string>
+    <string name="toastmessage_webdav_backup_success">Το αντίγραφο ασφαλείας WebDAV ολοκληρώθηκε!</string>
+    <string name="toastmessage_webdav_backup_failed">Το αντίγραφο ασφαλείας WebDAV απέτυχε.</string>
+    <string name="toastmessage_webdav_downloading">Λήψη αντιγράφου ασφαλείας από WebDAV…</string>
+    <string name="toastmessage_webdav_restore_success">Η επαναφορά WebDAV ολοκληρώθηκε!</string>
+    <string name="toastmessage_webdav_restore_failed">Η επαναφορά WebDAV απέτυχε.</string>
+    <string name="dialog_webdav_title">Διαμόρφωση WebDAV</string>
+    <string name="dialog_webdav_url_hint">URL WebDAV (π.χ. https://…/backup.zip)</string>
+    <string name="dialog_webdav_user_hint">Όνομα χρήστη</string>
+    <string name="dialog_webdav_password_hint">Κωδικός πρόσβασης</string>
+    <string name="dialog_webdav_save_button">Αποθήκευση &amp; Συνέχεια</string>
+    <string name="pref_webdav_clear_title">Διαγραφή διαπιστευτηρίων WebDAV</string>
+    <string name="pref_webdav_clear_summary">Κατάργηση αποθηκευμένου URL, ονόματος χρήστη και κωδικού πρόσβασης WebDAV</string>
+    <string name="dialog_webdav_clear_message">Είστε σίγουροι ότι θέλετε να διαγράψετε τα αποθηκευμένα διαπιστευτήρια WebDAV;</string>
+    <string name="toastmessage_webdav_cleared">Τα διαπιστευτήρια WebDAV διαγράφηκαν.</string>
+    <string name="dialog_webdav_test_button">Δοκιμή σύνδεσης</string>
+    <string name="dialog_webdav_show_password">Εμφάνιση κωδικού πρόσβασης</string>
+    <string name="toastmessage_webdav_connection_success">Επιτυχής σύνδεση!</string>
+    <string name="toastmessage_webdav_connection_auth_failed">Ατυχής σύνδεση: Μη εξουσιοδοτημένο (401). Ελέγξτε τα διαπιστευτήρια.</string>
+    <string name="toastmessage_webdav_connection_failed">Η σύνδεση απέτυχε. Ελέγξτε το URL του WebDAV.</string>
 </resources>

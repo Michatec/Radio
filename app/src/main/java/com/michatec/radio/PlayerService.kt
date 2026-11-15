@@ -1,9 +1,13 @@
 package com.michatec.radio
 
 import android.app.PendingIntent
+import android.app.SearchManager
 import android.app.TaskStackBuilder
-import android.content.*
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.media.audiofx.AudioEffect
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -11,7 +15,15 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.media3.cast.CastPlayer
-import androidx.media3.common.*
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
+import androidx.media3.common.DeviceInfo
+import androidx.media3.common.ForwardingPlayer
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
+import androidx.media3.common.Metadata
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.HttpDataSource
 import androidx.media3.exoplayer.DefaultLoadControl
@@ -24,7 +36,14 @@ import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.upstream.DefaultAllocator
 import androidx.media3.exoplayer.upstream.DefaultLoadErrorHandlingPolicy
 import androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy
-import androidx.media3.session.*
+import androidx.media3.session.CommandButton
+import androidx.media3.session.DefaultMediaNotificationProvider
+import androidx.media3.session.LibraryResult
+import androidx.media3.session.MediaLibraryService
+import androidx.media3.session.MediaSession
+import androidx.media3.session.SessionCommand
+import androidx.media3.session.SessionCommands
+import androidx.media3.session.SessionResult
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
@@ -33,10 +52,22 @@ import com.google.gson.Gson
 import com.michatec.radio.api.RadioApiService
 import com.michatec.radio.core.Collection
 import com.michatec.radio.core.Station
-import com.michatec.radio.helpers.*
-import kotlinx.coroutines.*
+import com.michatec.radio.helpers.AppEvent
+import com.michatec.radio.helpers.AppEventBus
+import com.michatec.radio.helpers.AudioHelper
+import com.michatec.radio.helpers.CollectionHelper
+import com.michatec.radio.helpers.FileHelper
+import com.michatec.radio.helpers.NativeAudioProcessor
+import com.michatec.radio.helpers.PreferencesHelper
+import com.michatec.radio.helpers.RemoteControlServer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Main
-import java.util.*
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import java.util.Date
 
 
 /*
@@ -272,6 +303,26 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
                 val favorites = collection.stations.filter { it.starred }
                 return Gson().toJson(favorites)
             }
+
+            override fun getStationImageUriByUuid(uuid: String): String {
+                if (uuid.isEmpty()) return ""
+                val imageFile = FileHelper.getStationImageFile(this@PlayerService, uuid)
+                return if (imageFile.exists()) {
+                    Uri.fromFile(imageFile).toString()
+                } else {
+                    val station = collection.stations.find { it.uuid == uuid }
+                    station?.remoteImageLocation ?: ""
+                }
+            }
+
+            override fun getCurrentStationImageUri(): String {
+                val currentUuid = if (::player.isInitialized) {
+                    player.currentMediaItem?.mediaId ?: PreferencesHelper.loadPlayerState().stationUuid
+                } else {
+                    PreferencesHelper.loadPlayerState().stationUuid
+                }
+                return getStationImageUriByUuid(currentUuid)
+            }
         }
     }
 
@@ -315,6 +366,22 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
 
                 if (uuid.isNotEmpty()) {
                     RadioApiService.playbackController?.playStationByUuid(uuid)
+                }
+            }
+
+            "android.media.action.MEDIA_PLAY_FROM_SEARCH" -> {
+                val query = intent.getStringExtra(SearchManager.QUERY)
+                    ?: intent.getStringExtra("query")
+                    ?: ""
+                if (query.isNotEmpty()) {
+                    val station = CollectionHelper.findStationByName(collection, query)
+                    if (station != null && station.isValid()) {
+                        playStation(station.uuid)
+                    } else {
+                        RadioApiService.playbackController?.play()
+                    }
+                } else {
+                    RadioApiService.playbackController?.play()
                 }
             }
         }
@@ -765,6 +832,38 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
         ): ListenableFuture<LibraryResult<MediaItem>> {
             val item: MediaItem = CollectionHelper.getItem(this@PlayerService, collection, mediaId)
             return Futures.immediateFuture(LibraryResult.ofItem(item, /* params = */ null))
+        }
+
+        override fun onSearch(
+            session: MediaLibrarySession,
+            browser: MediaSession.ControllerInfo,
+            query: String,
+            params: LibraryParams?
+        ): ListenableFuture<LibraryResult<Void>> {
+            if (query.isNotBlank()) {
+                val matchedStation = CollectionHelper.findStationByName(collection, query)
+                if (matchedStation != null && matchedStation.isValid()) {
+                    playStation(matchedStation.uuid)
+                }
+            }
+            return Futures.immediateFuture(LibraryResult.ofVoid())
+        }
+
+        override fun onGetSearchResult(
+            session: MediaLibrarySession,
+            browser: MediaSession.ControllerInfo,
+            query: String,
+            page: Int,
+            pageSize: Int,
+            params: LibraryParams?
+        ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+            val station = CollectionHelper.findStationByName(collection, query)
+            val items = if (station != null) {
+                ImmutableList.of(CollectionHelper.buildMediaItem(this@PlayerService, station))
+            } else {
+                ImmutableList.of()
+            }
+            return Futures.immediateFuture(LibraryResult.ofItemList(items, params))
         }
 
         override fun onCustomCommand(

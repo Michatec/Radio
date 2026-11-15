@@ -293,4 +293,37 @@
     <string name="health_status_online">Online (%1$d) - %2$dms</string>
     <string name="health_status_offline">Offline (%1$s)</string>
     <string name="toastmessage_health_result">Health [%1$s]: %2$s</string>
+
+    <!-- Quick Settings Tile -->
+    <string name="tile_subtitle_tap_to_play">Tap to play</string>
+
+    <!-- WebDAV Cloud Sync -->
+    <string name="pref_webdav_backup_title">WebDAV Cloud Backup</string>
+    <string name="pref_webdav_backup_summary">Upload backup to WebDAV / Nextcloud</string>
+    <string name="pref_webdav_restore_title">WebDAV Cloud Restore</string>
+    <string name="pref_webdav_restore_summary">Download backup from WebDAV / Nextcloud</string>
+    <string name="toastmessage_webdav_uploading">Uploading backup to WebDAV…</string>
+    <string name="toastmessage_webdav_backup_success">WebDAV backup successful!</string>
+    <string name="toastmessage_webdav_backup_failed">WebDAV backup failed.</string>
+    <string name="toastmessage_webdav_downloading">Downloading backup from WebDAV…</string>
+    <string name="toastmessage_webdav_restore_success">WebDAV restore successful!</string>
+    <string name="toastmessage_webdav_restore_failed">WebDAV restore failed.</string>
+    <string name="dialog_webdav_title">WebDAV Configuration</string>
+    <string name="dialog_webdav_url_hint">WebDAV URL (e.g. https://…/backup.zip)</string>
+    <string name="dialog_webdav_user_hint">Username</string>
+    <string name="dialog_webdav_password_hint">Password</string>
+    <string name="dialog_webdav_save_button">Save &amp; Continue</string>
+    <string name="dialog_webdav_test_button">Test Connection</string>
+    <string name="dialog_webdav_show_password">Show password</string>
+    <string name="toastmessage_webdav_connection_success">Connection successful!</string>
+    <string name="toastmessage_webdav_connection_auth_failed">Connection failed: Unauthorized (401). Check credentials.</string>
+    <string name="toastmessage_webdav_connection_failed">Connection failed. Please check the WebDAV URL.</string>
+    <string name="pref_webdav_clear_title">Clear WebDAV Credentials</string>
+    <string name="pref_webdav_clear_summary">Remove saved WebDAV URL, username, and password</string>
+    <string name="dialog_webdav_clear_message">Are you sure you want to delete your saved WebDAV credentials?</string>
+    <string name="toastmessage_webdav_cleared">WebDAV credentials cleared.</string>
+
+    <!-- AppFunctions -->
+    <string name="app_function_app_description" translatable="false">Simple App to listen Radio.</string>
+    <string name="app_function_app_display_description" translatable="false">Control radio playback and manage internet radio stations.</string>
 </resources>

@@ -258,4 +258,33 @@
     <string name="health_status_online">オンライン (%1$d) - %2$dms</string>
     <string name="health_status_offline">オフライン (%1$s)</string>
     <string name="toastmessage_health_result">状態 [%1$s]: %2$s</string>
+
+    <!-- Quick Settings Tile -->
+    <string name="tile_subtitle_tap_to_play">タップして再生</string>
+
+    <!-- WebDAV Cloud Sync -->
+    <string name="pref_webdav_backup_title">WebDAV クラウドバックアップ</string>
+    <string name="pref_webdav_backup_summary">バックアップを WebDAV / Nextcloud にアップロード</string>
+    <string name="pref_webdav_restore_title">WebDAV クラウド復元</string>
+    <string name="pref_webdav_restore_summary">バックアップを WebDAV / Nextcloud からダウンロード</string>
+    <string name="toastmessage_webdav_uploading">WebDAV にバックアップをアップロード中…</string>
+    <string name="toastmessage_webdav_backup_success">WebDAV バックアップが完了しました！</string>
+    <string name="toastmessage_webdav_backup_failed">WebDAV バックアップに失敗しました。</string>
+    <string name="toastmessage_webdav_downloading">WebDAV からバックアップをダウンロード中…</string>
+    <string name="toastmessage_webdav_restore_success">WebDAV 復元が完了しました！</string>
+    <string name="toastmessage_webdav_restore_failed">WebDAV 復元に失敗しました。</string>
+    <string name="dialog_webdav_title">WebDAV 設定</string>
+    <string name="dialog_webdav_url_hint">WebDAV URL (例: https://…/backup.zip)</string>
+    <string name="dialog_webdav_user_hint">ユーザー名</string>
+    <string name="dialog_webdav_password_hint">パスワード</string>
+    <string name="dialog_webdav_save_button">保存して続行</string>
+    <string name="pref_webdav_clear_title">WebDAV 認証情報の削除</string>
+    <string name="pref_webdav_clear_summary">保存された WebDAV URL、ユーザー名、パスワードを削除</string>
+    <string name="dialog_webdav_clear_message">保存された WebDAV 認証情報を削除してもよろしいですか？</string>
+    <string name="toastmessage_webdav_cleared">WebDAV 認証情報を削除しました。</string>
+    <string name="dialog_webdav_test_button">接続テスト</string>
+    <string name="dialog_webdav_show_password">パスワードを表示</string>
+    <string name="toastmessage_webdav_connection_success">接続成功！</string>
+    <string name="toastmessage_webdav_connection_auth_failed">接続に失敗しました: 認証エラー (401)。認証情報を確認してください。</string>
+    <string name="toastmessage_webdav_connection_failed">接続に失敗しました。WebDAV URLを確認してください。</string>
 </resources>

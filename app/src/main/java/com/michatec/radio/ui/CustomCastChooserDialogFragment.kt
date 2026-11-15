@@ -30,6 +30,8 @@ class CustomCastChooserDialogFragment : MediaRouteChooserDialogFragment() {
 
         selector = MediaRouteSelector.Builder()
             .addControlCategory(MediaControlIntent.CATEGORY_REMOTE_PLAYBACK)
+            .addControlCategory(MediaControlIntent.CATEGORY_LIVE_AUDIO)
+            .addControlCategory(com.google.android.gms.cast.CastMediaControlIntent.categoryForCast(com.google.android.gms.cast.CastMediaControlIntent.DEFAULT_MEDIA_RECEIVER_APPLICATION_ID))
             .build()
 
         val composeView = ComposeView(context).apply {

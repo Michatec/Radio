@@ -128,6 +128,7 @@ object Keys {
     const val DIALOG_REMOVE_STATION: Int = 2
     const val DIALOG_UPDATE_STATION_IMAGES: Int = 4
     const val DIALOG_RESTORE_COLLECTION: Int = 5
+    const val DIALOG_CLEAR_WEBDAV: Int = 6
 
     // dialog results
     const val DIALOG_EMPTY_PAYLOAD_STRING: String = ""
@@ -192,5 +193,10 @@ object Keys {
     const val STATE_THEME_FOLLOW_SYSTEM: String = "stateFollowSystem"
     const val STATE_THEME_LIGHT_MODE: String = "stateLightMode"
     const val STATE_THEME_DARK_MODE: String = "stateDarkMode"
+
+    // WebDAV preferences
+    const val PREF_WEBDAV_URL: String = "WEBDAV_URL"
+    const val PREF_WEBDAV_USER: String = "WEBDAV_USER"
+    const val PREF_WEBDAV_PASSWORD: String = "WEBDAV_PASSWORD"
 
 }

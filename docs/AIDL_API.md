@@ -1,6 +1,6 @@
 # Radio App - AIDL API Documentation
 
-This documentation describes the Android Interface Definition Language (AIDL) API provided by the Radio app. External applications can use this API to control audio playback, retrieve saved station lists, inspect current station metadata, and interact with the radio player service via Inter-Process Communication (IPC).
+This documentation describes the Android Interface Definition Language (AIDL) API provided by the Radio app. External applications can use this API to control audio playback, retrieve saved station lists, inspect current station metadata, fetch station cover images, and interact with the radio player service via Inter-Process Communication (IPC).
 
 ---
 
@@ -9,6 +9,7 @@ This documentation describes the Android Interface Definition Language (AIDL) AP
 - **Package Name:** `com.michatec.radio`
 - **Service Class:** `com.michatec.radio.api.RadioApiService`
 - **AIDL Interface:** `com.michatec.radio.api.IRadioApi`
+- **Required Permission:** `com.michatec.radio.permission.CONTROL_RADIO_API`
 
 ---
 
@@ -27,22 +28,26 @@ interface IRadioApi {
     void playStationByUuid(String uuid);
     String getSavedStationsJson();
     String getFavoriteStationsJson();
+    String getCurrentStationImageUri();
+    String getStationImageUriByUuid(String uuid);
 }
 ```
 
 ### Method Summary
 
-| Method                           | Return Type | Description                                                           |
-|:---------------------------------|:------------|:----------------------------------------------------------------------|
-| `play()`                         | `void`      | Resumes or starts audio playback.                                     |
-| `pause()`                        | `void`      | Pauses audio playback.                                                |
-| `stop()`                         | `void`      | Stops audio playback and releases player resources.                   |
-| `isPlaying()`                    | `boolean`   | Returns `true` if audio is currently playing, `false` otherwise.      |
-| `getCurrentStationName()`        | `String`    | Returns the display name of the currently active radio station.       |
-| `getCurrentMetadata()`           | `String`    | Returns current track metadata/artist info (if available).            |
-| `playStationByUuid(String uuid)` | `void`      | Switches to and plays the radio station matching the specified UUID.  |
-| `getSavedStationsJson()`         | `String`    | Returns a JSON array string containing all saved radio stations.      |
-| `getFavoriteStationsJson()`      | `String`    | Returns a JSON array string containing all starred/favorite stations. |
+| Method                              | Return Type | Description                                                           |
+|:------------------------------------|:------------|:----------------------------------------------------------------------|
+| `play()`                            | `void`      | Resumes or starts audio playback.                                     |
+| `pause()`                           | `void`      | Pauses audio playback.                                                |
+| `stop()`                            | `void`      | Stops audio playback and releases player resources.                   |
+| `isPlaying()`                       | `boolean`   | Returns `true` if audio is currently playing, `false` otherwise.      |
+| `getCurrentStationName()`           | `String`    | Returns the display name of the currently active radio station.       |
+| `getCurrentMetadata()`              | `String`    | Returns current track metadata/artist info (if available).            |
+| `playStationByUuid(String uuid)`    | `void`      | Switches to and plays the radio station matching the specified UUID.  |
+| `getSavedStationsJson()`            | `String`    | Returns a JSON array string containing all saved radio stations.      |
+| `getFavoriteStationsJson()`         | `String`    | Returns a JSON array string containing all starred/favorite stations. |
+| `getCurrentStationImageUri()`       | `String`    | Returns local `file://` URI or remote image URL of active station.    |
+| `getStationImageUriByUuid(String)`  | `String`    | Returns local `file://` URI or remote image URL for specified UUID.   |
 
 ---
 
@@ -50,7 +55,29 @@ interface IRadioApi {
 
 To control the Radio app from another Android application, follow these steps:
 
-### 1. Copy the AIDL File
+### 1. Declare Required Permission & Queries in `AndroidManifest.xml`
+In your client application's `src/main/AndroidManifest.xml`, declare the custom permission required to bind to `RadioApiService`. If targeting Android 11 (API 30) or higher, also include a `<queries>` declaration to ensure package visibility:
+
+```xml
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Permission required to access Radio API -->
+    <uses-permission android:name="com.michatec.radio.permission.CONTROL_RADIO_API" />
+
+    <!-- Package visibility for Android 11+ (API 30+) -->
+    <queries>
+        <package android:name="com.michatec.radio" />
+    </queries>
+
+    <application...>
+        ...
+    </application>
+</manifest>
+```
+
+---
+
+### 2. Copy the AIDL File
 Copy the `IRadioApi.aidl` file from the Radio app into your client app maintaining the exact package directory structure:
 ```
 your-client-app/src/main/aidl/com/michatec/radio/api/IRadioApi.aidl
@@ -59,7 +86,7 @@ your-client-app/src/main/aidl/com/michatec/radio/api/IRadioApi.aidl
 
 ---
 
-### 2. Connect to the Service (Kotlin Example)
+### 3. Connect to the Service (Kotlin Example)
 
 Implement a `ServiceConnection` in your client app to bind to `RadioApiService`:
 
@@ -153,6 +180,22 @@ class RadioRemoteController(private val context: Context) {
         }
     }
 
+    fun getCurrentStationImageUri(): String {
+        return try {
+            radioApi?.getCurrentStationImageUri() ?: ""
+        } catch (e: Exception) {
+            ""
+        }
+    }
+
+    fun getStationImageUriByUuid(uuid: String): String {
+        return try {
+            radioApi?.getStationImageUriByUuid(uuid) ?: ""
+        } catch (e: Exception) {
+            ""
+        }
+    }
+
     fun playStation(uuid: String) {
         try {
             radioApi?.playStationByUuid(uuid)
@@ -195,7 +238,7 @@ data class StationModel(
 
 ---
 
-### 3. Usage Example in an Activity or ViewModel
+### 4. Usage Example in an Activity or ViewModel
 
 ```kotlin
 class MyActivity : AppCompatActivity() {
@@ -213,12 +256,14 @@ class MyActivity : AppCompatActivity() {
             radioController.play()
         }
 
-        // Example: Fetch and log all saved stations
+        // Example: Fetch and log all saved stations & cover image
         findViewById<Button>(id.btnFetchStations).setOnClickListener {
             val savedStations = radioController.getSavedStations()
             val favoriteStations = radioController.getFavoriteStations()
+            val currentImageUri = radioController.getCurrentStationImageUri()
             Log.d("RadioApp", "Saved stations count: ${savedStations.size}")
             Log.d("RadioApp", "Favorites count: ${favoriteStations.size}")
+            Log.d("RadioApp", "Current Station Cover URI: $currentImageUri")
         }
     }
 

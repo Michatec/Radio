@@ -10,13 +10,21 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.text.InputType
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.view.View
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.fragment.findNavController
 import androidx.preference.EditTextPreference
@@ -36,6 +44,7 @@ import com.michatec.radio.dialogs.LanguageSelectionDialog
 import com.michatec.radio.dialogs.PresetSelectionDialog
 import com.michatec.radio.dialogs.ThemeSelectionDialog
 import com.michatec.radio.dialogs.YesNoDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.michatec.radio.helpers.AppThemeHelper
 import com.michatec.radio.helpers.BackupHelper
 import com.michatec.radio.helpers.FileHelper
@@ -43,6 +52,7 @@ import com.michatec.radio.helpers.LanguageHelper
 import com.michatec.radio.helpers.MarqueeSwitchPreference
 import com.michatec.radio.helpers.NetworkHelper
 import com.michatec.radio.helpers.PreferencesHelper
+import com.michatec.radio.helpers.WebDavSyncHelper
 import com.michatec.radio.integrations.Shizuku
 import com.michatec.radio.remote.PairingManager
 import com.michatec.radio.remote.RemoteConstants
@@ -63,6 +73,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     /* Define log tag */
     private val TAG: String = SettingsFragment::class.java.simpleName
+
+    private var preferenceWebDavClear: Preference? = null
 
     // Check if the device running the app is an Android TV instance
     private val isAndroidTV: Boolean by lazy {
@@ -303,6 +315,45 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         preferenceRestoreCollection.setOnPreferenceClickListener {
             openRestoreCollectionDialog()
             return@setOnPreferenceClickListener true
+        }
+
+        // WebDAV Cloud Backup Preference
+        val preferenceWebDavBackup = Preference(activity as Context).apply {
+            title = getString(R.string.pref_webdav_backup_title)
+            summary = getString(R.string.pref_webdav_backup_summary)
+            setIcon(R.drawable.ic_upload_24dp)
+            setOnPreferenceClickListener {
+                performWebDavBackup()
+                true
+            }
+        }
+
+        // WebDAV Cloud Restore Preference
+        val preferenceWebDavRestore = Preference(activity as Context).apply {
+            title = getString(R.string.pref_webdav_restore_title)
+            summary = getString(R.string.pref_webdav_restore_summary)
+            setIcon(R.drawable.ic_download_24dp)
+            setOnPreferenceClickListener {
+                performWebDavRestore()
+                true
+            }
+        }
+
+        // WebDAV Clear Credentials Preference
+        preferenceWebDavClear = Preference(activity as Context).apply {
+            title = getString(R.string.pref_webdav_clear_title)
+            summary = getString(R.string.pref_webdav_clear_summary)
+            setIcon(R.drawable.ic_cleard_24dp)
+            isVisible = PreferencesHelper.hasWebDavCredentials()
+            setOnPreferenceClickListener {
+                YesNoDialog(this@SettingsFragment).show(
+                    context = activity as Context,
+                    type = Keys.DIALOG_CLEAR_WEBDAV,
+                    messageString = getString(R.string.dialog_webdav_clear_message),
+                    yesButton = android.R.string.ok
+                )
+                true
+            }
         }
 
 
@@ -722,6 +773,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         preferenceCategoryImportExport.addPreference(preferencePlsExport)
         preferenceCategoryImportExport.addPreference(preferenceBackupCollection)
         preferenceCategoryImportExport.addPreference(preferenceRestoreCollection)
+        preferenceCategoryImportExport.addPreference(preferenceWebDavBackup)
+        preferenceCategoryImportExport.addPreference(preferenceWebDavRestore)
+        preferenceCategoryImportExport.addPreference(preferenceWebDavClear!!)
 
         screen.addPreference(preferenceCategoryAdvanced)
         preferenceCategoryAdvanced.addPreference(preferenceBufferSize)
@@ -787,6 +841,14 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 if (dialogResult) {
                     // user tapped update collection
                     updateCollection()
+                }
+            }
+
+            Keys.DIALOG_CLEAR_WEBDAV -> {
+                if (dialogResult) {
+                    PreferencesHelper.clearWebDavCredentials()
+                    preferenceWebDavClear?.isVisible = false
+                    Snackbar.make(requireView(), getString(R.string.toastmessage_webdav_cleared), Snackbar.LENGTH_LONG).show()
                 }
             }
         }
@@ -1005,5 +1067,128 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             Log.e(TAG, "Unable to save PLS.\n$exception")
             Snackbar.make(requireView(), R.string.toastmessage_install_file_helper, Snackbar.LENGTH_LONG).show()
         }
+    }
+
+    private fun performWebDavBackup() {
+        val url = PreferencesHelper.loadWebDavUrl()
+        if (url.isEmpty()) {
+            promptWebDavCredentials { serverUrl, user, pass ->
+                PreferencesHelper.saveWebDavUrl(serverUrl)
+                PreferencesHelper.saveWebDavUser(user)
+                PreferencesHelper.saveWebDavPassword(pass)
+                preferenceWebDavClear?.isVisible = PreferencesHelper.hasWebDavCredentials()
+                executeWebDavBackup(serverUrl, user, pass)
+            }
+        } else {
+            preferenceWebDavClear?.isVisible = PreferencesHelper.hasWebDavCredentials()
+            executeWebDavBackup(url, PreferencesHelper.loadWebDavUser(), PreferencesHelper.loadWebDavPassword())
+        }
+    }
+
+    private fun performWebDavRestore() {
+        val url = PreferencesHelper.loadWebDavUrl()
+        if (url.isEmpty()) {
+            promptWebDavCredentials { serverUrl, user, pass ->
+                PreferencesHelper.saveWebDavUrl(serverUrl)
+                PreferencesHelper.saveWebDavUser(user)
+                PreferencesHelper.saveWebDavPassword(pass)
+                preferenceWebDavClear?.isVisible = PreferencesHelper.hasWebDavCredentials()
+                executeWebDavRestore(serverUrl, user, pass)
+            }
+        } else {
+            preferenceWebDavClear?.isVisible = PreferencesHelper.hasWebDavCredentials()
+            executeWebDavRestore(url, PreferencesHelper.loadWebDavUser(), PreferencesHelper.loadWebDavPassword())
+        }
+    }
+
+    private fun executeWebDavBackup(url: String, user: String, pass: String) {
+        lifecycleScope.launch {
+            Snackbar.make(requireView(), getString(R.string.toastmessage_webdav_uploading), Snackbar.LENGTH_SHORT).show()
+            val success = WebDavSyncHelper.uploadBackup(requireContext(), url, user, pass)
+            val msg = if (success) getString(R.string.toastmessage_webdav_backup_success) else getString(R.string.toastmessage_webdav_backup_failed)
+            Snackbar.make(requireView(), msg, Snackbar.LENGTH_LONG).show()
+        }
+    }
+
+    private fun executeWebDavRestore(url: String, user: String, pass: String) {
+        lifecycleScope.launch {
+            Snackbar.make(requireView(), getString(R.string.toastmessage_webdav_downloading), Snackbar.LENGTH_SHORT).show()
+            val success = WebDavSyncHelper.downloadAndRestore(requireContext(), url, user, pass)
+            val msg = if (success) getString(R.string.toastmessage_webdav_restore_success) else getString(R.string.toastmessage_webdav_restore_failed)
+            Snackbar.make(requireView(), msg, Snackbar.LENGTH_LONG).show()
+        }
+    }
+
+    private fun promptWebDavCredentials(onSaved: (String, String, String) -> Unit) {
+        val context = requireContext()
+        val layout = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(50, 40, 50, 10)
+        }
+
+        val inputUrl = EditText(context).apply {
+            hint = getString(R.string.dialog_webdav_url_hint)
+            setText(PreferencesHelper.loadWebDavUrl())
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
+        }
+        val inputUser = EditText(context).apply {
+            hint = getString(R.string.dialog_webdav_user_hint)
+            setText(PreferencesHelper.loadWebDavUser())
+            inputType = InputType.TYPE_CLASS_TEXT
+        }
+        val inputPass = EditText(context).apply {
+            hint = getString(R.string.dialog_webdav_password_hint)
+            setText(PreferencesHelper.loadWebDavPassword())
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        }
+
+        val cbShowPass = CheckBox(context).apply {
+            text = getString(R.string.dialog_webdav_show_password)
+            setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    inputPass.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                } else {
+                    inputPass.transformationMethod = PasswordTransformationMethod.getInstance()
+                }
+                inputPass.setSelection(inputPass.text.length)
+            }
+        }
+
+        val btnTest = Button(context).apply {
+            text = getString(R.string.dialog_webdav_test_button)
+            setOnClickListener {
+                val url = inputUrl.text.toString().trim()
+                val user = inputUser.text.toString().trim()
+                val pass = inputPass.text.toString().trim()
+                if (url.isEmpty()) {
+                    Snackbar.make(requireView(), getString(R.string.dialog_webdav_url_hint), Snackbar.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                lifecycleScope.launch {
+                    val code = WebDavSyncHelper.testConnection(url, user, pass)
+                    val msg = when (code) {
+                        in 200..299 -> getString(R.string.toastmessage_webdav_connection_success)
+                        401 -> getString(R.string.toastmessage_webdav_connection_auth_failed)
+                        else -> getString(R.string.toastmessage_webdav_connection_failed)
+                    }
+                    Snackbar.make(requireView(), msg, Snackbar.LENGTH_LONG).show()
+                }
+            }
+        }
+
+        layout.addView(inputUrl)
+        layout.addView(inputUser)
+        layout.addView(inputPass)
+        layout.addView(cbShowPass)
+        layout.addView(btnTest)
+
+        MaterialAlertDialogBuilder(context)
+            .setTitle(getString(R.string.dialog_webdav_title))
+            .setView(layout)
+            .setPositiveButton(getString(R.string.dialog_webdav_save_button)) { _, _ ->
+                onSaved(inputUrl.text.toString().trim(), inputUser.text.toString().trim(), inputPass.text.toString().trim())
+            }
+            .setNegativeButton(R.string.dialog_generic_button_cancel, null)
+            .show()
     }
 }

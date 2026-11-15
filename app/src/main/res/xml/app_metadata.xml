@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AppFunctionAppMetadata
+    xmlns:appfn="http://schemas.android.com/apk/androidx.appfunctions"
+    appfn:instructions="Provides functions for controlling internet radio playback and managing radio stations.
+                        Operational Patterns:
+                        - Use searchStations to find radio stations when the user requests a station by name or genre.
+                        - Use playStation to start playback of a selected station.
+                        - Use getPlaybackState to determine the current playback status.
+                        - Use getCurrentStation to retrieve the currently playing station.
+                        - Use playNextStation and playPreviousStation to navigate between stations.
+                        - Use getSavedStations to retrieve the user's saved radio stations.
+                        - Use getFavoriteStations to retrieve favorite radio stations.
+                        - Use playStationByUuid when a valid station UUID is available.
+
+                        Constraints:
+                        - Only use station UUIDs returned by the app or obtained from its saved station data.
+                        - Do not claim playback started unless the function confirms success.
+                        - Do not invent station names, stream URLs, or playback states.
+                        - Respect the user's explicit playback commands."
+    appfn:displayDescription="@string/app_function_app_display_description" />
+
+

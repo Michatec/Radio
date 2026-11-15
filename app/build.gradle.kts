@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.aboutLibraries)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -118,6 +119,7 @@ dependencies {
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
+    implementation(libs.security.crypto)
     implementation(libs.aboutLibraries.compose)
     implementation(libs.compose.material.icons.extended)
 
@@ -125,7 +127,14 @@ dependencies {
     implementation(libs.shizuku.api)
     implementation(libs.shizuku.provider)
 
+    // AppFunctions //
+    implementation(libs.appfunctions)
+    ksp(libs.appfunctions.compiler)
+
     // Test implementations //
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
 }
+
+// AppFunctions ksp option
+ksp { arg("appfunctions:aggregateAppFunctions", "true") }

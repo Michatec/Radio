@@ -702,4 +702,23 @@ object CollectionHelper {
         return faviconAddress
     }
 
+    /* Finds a station by name (exact, substring, or word match) for voice search */
+    fun findStationByName(collection: Collection, query: String): Station? {
+        if (query.isBlank() || collection.stations.isEmpty()) return null
+        val cleanQuery = query.trim().lowercase()
+
+        collection.stations.find { it.name.trim().lowercase() == cleanQuery }?.let { return it }
+        collection.stations.find { it.name.lowercase().contains(cleanQuery) }?.let { return it }
+
+        val words = cleanQuery.split(" ").filter { it.length > 2 }
+        if (words.isNotEmpty()) {
+            collection.stations.find { station ->
+                val stationNameLower = station.name.lowercase()
+                words.any { word -> stationNameLower.contains(word) }
+            }?.let { return it }
+        }
+
+        return null
+    }
+
 }

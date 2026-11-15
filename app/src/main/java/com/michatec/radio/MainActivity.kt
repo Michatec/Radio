@@ -1,6 +1,7 @@
 package com.michatec.radio
 
 import android.Manifest
+import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -16,12 +17,14 @@ import android.util.TypedValue
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.media3.common.util.UnstableApi
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
@@ -141,6 +144,9 @@ class MainActivity : AppCompatActivity() {
         if (!isAndroidTV && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
+
+        // Handle voice search intents from Assistant
+        handleVoiceSearchIntent(intent)
     }
 
     private fun observeAppEvents() {
@@ -217,6 +223,23 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
+        handleVoiceSearchIntent(intent)
+    }
+
+    @OptIn(UnstableApi::class)
+    private fun handleVoiceSearchIntent(intent: Intent?) {
+        if (intent?.action == "android.media.action.MEDIA_PLAY_FROM_SEARCH") {
+            val query = intent.getStringExtra(SearchManager.QUERY)
+                ?: intent.getStringExtra("query")
+                ?: ""
+            if (query.isNotEmpty()) {
+                val serviceIntent = Intent(this, PlayerService::class.java).apply {
+                    action = "android.media.action.MEDIA_PLAY_FROM_SEARCH"
+                    putExtra(SearchManager.QUERY, query)
+                }
+                startService(serviceIntent)
+            }
+        }
     }
 
 

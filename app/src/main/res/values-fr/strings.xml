@@ -258,4 +258,33 @@
     <string name="health_status_online">En ligne (%1$d) - %2$dms</string>
     <string name="health_status_offline">Hors ligne (%1$s)</string>
     <string name="toastmessage_health_result">État [%1$s] : %2$s</string>
+
+    <!-- Quick Settings Tile -->
+    <string name="tile_subtitle_tap_to_play">Appuyer pour lire</string>
+
+    <!-- WebDAV Cloud Sync -->
+    <string name="pref_webdav_backup_title">Sauvegarde Cloud WebDAV</string>
+    <string name="pref_webdav_backup_summary">Envoyer la sauvegarde sur WebDAV / Nextcloud</string>
+    <string name="pref_webdav_restore_title">Restauration Cloud WebDAV</string>
+    <string name="pref_webdav_restore_summary">Télécharger la sauvegarde depuis WebDAV / Nextcloud</string>
+    <string name="toastmessage_webdav_uploading">Envoi de la sauvegarde vers WebDAV…</string>
+    <string name="toastmessage_webdav_backup_success">Sauvegarde WebDAV réussie !</string>
+    <string name="toastmessage_webdav_backup_failed">Échec de la sauvegarde WebDAV.</string>
+    <string name="toastmessage_webdav_downloading">Téléchargement de la sauvegarde depuis WebDAV…</string>
+    <string name="toastmessage_webdav_restore_success">Restauration WebDAV réussie !</string>
+    <string name="toastmessage_webdav_restore_failed">Échec de la restauration WebDAV.</string>
+    <string name="dialog_webdav_title">Configuration WebDAV</string>
+    <string name="dialog_webdav_url_hint">URL WebDAV (ex. https://…/backup.zip)</string>
+    <string name="dialog_webdav_user_hint">Nom d\'utilisateur</string>
+    <string name="dialog_webdav_password_hint">Mot de passe</string>
+    <string name="dialog_webdav_save_button">Enregistrer &amp; Continuer</string>
+    <string name="pref_webdav_clear_title">Effacer les identifiants WebDAV</string>
+    <string name="pref_webdav_clear_summary">Supprimer l\'URL, le nom d\'utilisateur et le mot de passe WebDAV enregistrés</string>
+    <string name="dialog_webdav_clear_message">Voulez-vous vraiment supprimer vos identifiants WebDAV enregistrés ?</string>
+    <string name="toastmessage_webdav_cleared">Identifiants WebDAV effacés.</string>
+    <string name="dialog_webdav_test_button">Tester la connexion</string>
+    <string name="dialog_webdav_show_password">Afficher le mot de passe</string>
+    <string name="toastmessage_webdav_connection_success">Connexion réussie !</string>
+    <string name="toastmessage_webdav_connection_auth_failed">Échec de la connexion : Non autorisé (401). Vérifiez les identifiants.</string>
+    <string name="toastmessage_webdav_connection_failed">Échec de la connexion. Veuillez vérifier l\'URL WebDAV.</string>
 </resources>

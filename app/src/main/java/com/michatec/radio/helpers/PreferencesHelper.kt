@@ -460,4 +460,34 @@ object PreferencesHelper {
             ""
         }
     }
+
+    fun loadWebDavUrl(): String = sharedPreferences.getString(Keys.PREF_WEBDAV_URL, "") ?: ""
+    fun saveWebDavUrl(url: String) { sharedPreferences.edit { putString(Keys.PREF_WEBDAV_URL, url) } }
+
+    fun loadWebDavUser(): String = sharedPreferences.getString(Keys.PREF_WEBDAV_USER, "") ?: ""
+    fun saveWebDavUser(user: String) { sharedPreferences.edit { putString(Keys.PREF_WEBDAV_USER, user) } }
+
+    fun loadWebDavPassword(): String {
+        val encrypted = sharedPreferences.getString(Keys.PREF_WEBDAV_PASSWORD, "") ?: ""
+        return CryptoHelper.decrypt(encrypted)
+    }
+
+    fun saveWebDavPassword(pass: String) {
+        val encrypted = CryptoHelper.encrypt(pass)
+        sharedPreferences.edit {
+            putString(Keys.PREF_WEBDAV_PASSWORD, encrypted)
+        }
+    }
+
+    fun clearWebDavCredentials() {
+        sharedPreferences.edit {
+            remove(Keys.PREF_WEBDAV_URL)
+            remove(Keys.PREF_WEBDAV_USER)
+            remove(Keys.PREF_WEBDAV_PASSWORD)
+        }
+    }
+
+    fun hasWebDavCredentials(): Boolean {
+        return loadWebDavUrl().isNotEmpty() || loadWebDavUser().isNotEmpty() || loadWebDavPassword().isNotEmpty()
+    }
 }

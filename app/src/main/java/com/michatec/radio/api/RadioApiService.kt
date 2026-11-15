@@ -2,6 +2,7 @@ package com.michatec.radio.api
 
 import android.app.Service
 import android.content.Intent
+import android.net.Uri
 import android.os.IBinder
 import androidx.annotation.OptIn
 import androidx.media3.common.util.UnstableApi
@@ -23,6 +24,8 @@ class RadioApiService : Service() {
         fun playStationByUuid(uuid: String)
         fun getSavedStationsJson(): String
         fun getFavoriteStationsJson(): String
+        fun getCurrentStationImageUri(): String
+        fun getStationImageUriByUuid(uuid: String): String
     }
 
     companion object {
@@ -121,6 +124,39 @@ class RadioApiService : Service() {
                     Gson().toJson(favorites)
                 } catch (_: Exception) {
                     "[]"
+                }
+            }
+        }
+
+        override fun getCurrentStationImageUri(): String {
+            return playbackController?.getCurrentStationImageUri() ?: run {
+                try {
+                    val currentUuid = PreferencesHelper.loadPlayerState().stationUuid
+                    if (currentUuid.isNotEmpty()) {
+                        getStationImageUriByUuid(currentUuid)
+                    } else {
+                        ""
+                    }
+                } catch (_: Exception) {
+                    ""
+                }
+            }
+        }
+
+        override fun getStationImageUriByUuid(uuid: String): String {
+            return playbackController?.getStationImageUriByUuid(uuid) ?: run {
+                try {
+                    if (uuid.isEmpty()) return ""
+                    val imageFile = FileHelper.getStationImageFile(applicationContext, uuid)
+                    if (imageFile.exists()) {
+                        Uri.fromFile(imageFile).toString()
+                    } else {
+                        val collection = FileHelper.readCollection(applicationContext)
+                        val station = collection.stations.find { it.uuid == uuid }
+                        station?.remoteImageLocation ?: ""
+                    }
+                } catch (_: Exception) {
+                    ""
                 }
             }
         }
