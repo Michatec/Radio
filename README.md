@@ -121,6 +121,7 @@ Starting with version **15.2**, Radio exposes an AIDL-based API (`com.michatec.r
 - Retrieve the current station name and track metadata
 - Switch stations by UUID using `playStationByUuid()`
 - Retrieve saved and favorite stations as JSON
+- Retrieve the current station cover image and station image by UUID
 
 For setup instructions, Kotlin integration examples and the complete method reference, see [AIDL_API.md](docs/AIDL_API.md).
 
