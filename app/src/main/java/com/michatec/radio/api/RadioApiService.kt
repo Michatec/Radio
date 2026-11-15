@@ -2,7 +2,6 @@ package com.michatec.radio.api
 
 import android.app.Service
 import android.content.Intent
-import android.net.Uri
 import android.os.IBinder
 import androidx.annotation.OptIn
 import androidx.media3.common.util.UnstableApi
