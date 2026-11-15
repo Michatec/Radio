@@ -27,26 +27,26 @@ interface IRadioApi {
     void playStationByUuid(String uuid);
     String getSavedStationsJson();
     String getFavoriteStationsJson();
-    String getCurrentStationImageUri();
-    String getStationImageUriByUuid(String uuid);
+    byte[] getCurrentStationImage();
+    byte[] getStationImageByUuid(String uuid);
 }
 ```
 
 ### Method Summary
 
-| Method                              | Return Type | Description                                                           |
-|:------------------------------------|:------------|:----------------------------------------------------------------------|
-| `play()`                            | `void`      | Resumes or starts audio playback.                                     |
-| `pause()`                           | `void`      | Pauses audio playback.                                                |
-| `stop()`                            | `void`      | Stops audio playback and releases player resources.                   |
-| `isPlaying()`                       | `boolean`   | Returns `true` if audio is currently playing, `false` otherwise.      |
-| `getCurrentStationName()`           | `String`    | Returns the display name of the currently active radio station.       |
-| `getCurrentMetadata()`              | `String`    | Returns current track metadata/artist info (if available).            |
-| `playStationByUuid(String uuid)`    | `void`      | Switches to and plays the radio station matching the specified UUID.  |
-| `getSavedStationsJson()`            | `String`    | Returns a JSON array string containing all saved radio stations.      |
-| `getFavoriteStationsJson()`         | `String`    | Returns a JSON array string containing all starred/favorite stations. |
-| `getCurrentStationImageUri()`       | `String`    | Returns local `file://` URI or remote image URL of active station.    |
-| `getStationImageUriByUuid(String)`  | `String`    | Returns local `file://` URI or remote image URL for specified UUID.   |
+| Method                           | Return Type | Description                                                           |
+|:---------------------------------|:------------|:----------------------------------------------------------------------|
+| `play()`                         | `void`      | Resumes or starts audio playback.                                     |
+| `pause()`                        | `void`      | Pauses audio playback.                                                |
+| `stop()`                         | `void`      | Stops audio playback and releases player resources.                   |
+| `isPlaying()`                    | `boolean`   | Returns `true` if audio is currently playing, `false` otherwise.      |
+| `getCurrentStationName()`        | `String`    | Returns the display name of the currently active radio station.       |
+| `getCurrentMetadata()`           | `String`    | Returns current track metadata/artist info (if available).            |
+| `playStationByUuid(String uuid)` | `void`      | Switches to and plays the radio station matching the specified UUID.  |
+| `getSavedStationsJson()`         | `String`    | Returns a JSON array string containing all saved radio stations.      |
+| `getFavoriteStationsJson()`      | `String`    | Returns a JSON array string containing all starred/favorite stations. |
+| `getCurrentStationImage()`       | `byte[]`    | Returns raw image bytes of the currently active station cover art.    |
+| `getStationImageByUuid(String)`  | `byte[]`    | Returns raw image bytes for the station cover art matching the UUID.  |
 
 ---
 
@@ -179,19 +179,19 @@ class RadioRemoteController(private val context: Context) {
         }
     }
 
-    fun getCurrentStationImageUri(): String {
+    fun getCurrentStationImage(): ByteArray {
         return try {
-            radioApi?.getCurrentStationImageUri() ?: ""
+            radioApi?.getCurrentStationImage() ?: ByteArray(0)
         } catch (e: Exception) {
-            ""
+            ByteArray(0)
         }
     }
 
-    fun getStationImageUriByUuid(uuid: String): String {
+    fun getStationImageByUuid(uuid: String): ByteArray {
         return try {
-            radioApi?.getStationImageUriByUuid(uuid) ?: ""
+            radioApi?.getStationImageByUuid(uuid) ?: ByteArray(0)
         } catch (e: Exception) {
-            ""
+            ByteArray(0)
         }
     }
 
@@ -259,10 +259,10 @@ class MyActivity : AppCompatActivity() {
         findViewById<Button>(id.btnFetchStations).setOnClickListener {
             val savedStations = radioController.getSavedStations()
             val favoriteStations = radioController.getFavoriteStations()
-            val currentImageUri = radioController.getCurrentStationImageUri()
+            val currentImageBytes = radioController.getCurrentStationImage()
             Log.d("RadioApp", "Saved stations count: ${savedStations.size}")
             Log.d("RadioApp", "Favorites count: ${favoriteStations.size}")
-            Log.d("RadioApp", "Current Station Cover URI: $currentImageUri")
+            Log.d("RadioApp", "Current Station Cover Image bytes: ${currentImageBytes.size}")
         }
     }
 
