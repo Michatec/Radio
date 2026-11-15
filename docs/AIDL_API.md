@@ -9,7 +9,6 @@ This documentation describes the Android Interface Definition Language (AIDL) AP
 - **Package Name:** `com.michatec.radio`
 - **Service Class:** `com.michatec.radio.api.RadioApiService`
 - **AIDL Interface:** `com.michatec.radio.api.IRadioApi`
-- **Required Permission:** `com.michatec.radio.permission.CONTROL_RADIO_API`
 
 ---
 
@@ -60,9 +59,6 @@ In your client application's `src/main/AndroidManifest.xml`, declare the custom 
 
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <!-- Permission required to access Radio API -->
-    <uses-permission android:name="com.michatec.radio.permission.CONTROL_RADIO_API" />
 
     <!-- Package visibility for Android 11+ (API 30+) -->
     <queries>
