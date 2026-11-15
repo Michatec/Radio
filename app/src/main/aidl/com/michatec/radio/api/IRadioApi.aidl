@@ -10,6 +10,6 @@ interface IRadioApi {
     void playStationByUuid(String uuid);
     String getSavedStationsJson();
     String getFavoriteStationsJson();
-    String getCurrentStationImageUri();
-    String getStationImageUriByUuid(String uuid);
+    byte[] getCurrentStationImage();
+    byte[] getStationImageByUuid(String uuid);
 }

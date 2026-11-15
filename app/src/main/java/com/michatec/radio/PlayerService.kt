@@ -57,6 +57,7 @@ import com.michatec.radio.helpers.AppEventBus
 import com.michatec.radio.helpers.AudioHelper
 import com.michatec.radio.helpers.CollectionHelper
 import com.michatec.radio.helpers.FileHelper
+import com.michatec.radio.helpers.ImageHelper
 import com.michatec.radio.helpers.NativeAudioProcessor
 import com.michatec.radio.helpers.PreferencesHelper
 import com.michatec.radio.helpers.RemoteControlServer
@@ -278,24 +279,29 @@ class PlayerService : MediaLibraryService(), SharedPreferences.OnSharedPreferenc
                 return Gson().toJson(favorites)
             }
 
-            override fun getStationImageUriByUuid(uuid: String): String {
-                if (uuid.isEmpty()) return ""
-                val imageFile = FileHelper.getStationImageFile(this@PlayerService, uuid)
-                return if (imageFile.exists()) {
-                    Uri.fromFile(imageFile).toString()
-                } else {
-                    val station = collection.stations.find { it.uuid == uuid }
-                    station?.remoteImageLocation ?: ""
+            override fun getCurrentStationImage(): ByteArray {
+                return runBlocking(Main) {
+                    val currentUuid = if (::player.isInitialized) {
+                        player.currentMediaItem?.mediaId ?: PreferencesHelper.loadPlayerState().stationUuid
+                    } else {
+                        PreferencesHelper.loadPlayerState().stationUuid
+                    }
+                    getStationImageByUuid(currentUuid)
                 }
             }
 
-            override fun getCurrentStationImageUri(): String {
-                val currentUuid = if (::player.isInitialized) {
-                    player.currentMediaItem?.mediaId ?: PreferencesHelper.loadPlayerState().stationUuid
-                } else {
-                    PreferencesHelper.loadPlayerState().stationUuid
+            override fun getStationImageByUuid(uuid: String): ByteArray {
+                if (uuid.isEmpty()) return byteArrayOf()
+                val imageUri = runBlocking(Main) {
+                    val imageFile = FileHelper.getStationImageFile(this@PlayerService, uuid)
+                    if (imageFile.exists()) {
+                        Uri.fromFile(imageFile).toString()
+                    } else {
+                        val station = collection.stations.find { it.uuid == uuid }
+                        station?.remoteImageLocation ?: ""
+                    }
                 }
-                return getStationImageUriByUuid(currentUuid)
+                return ImageHelper.getStationImageAsByteArray(this@PlayerService, imageUri)
             }
         }
     }
