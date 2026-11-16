@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Permissions -->
+    <string name="permission_control_radio_label">Styr Radio-afspilning</string>
+    <string name="permission_control_radio_description">Tillader programmer at styre Radio-afspilning, læse stationslister og modtage afspilningsstatus via IPC.</string>
     <!-- Appnavn -->
     <!-- Tilgængelighedsbeskrivelser -->
     <string name="descr_app_icon">App-ikon i form af en gammel radio</string>

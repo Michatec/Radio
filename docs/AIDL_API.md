@@ -9,6 +9,7 @@ This documentation describes the Android Interface Definition Language (AIDL) AP
 - **Package Name:** `com.michatec.radio`
 - **Service Class:** `com.michatec.radio.api.RadioApiService`
 - **AIDL Interface:** `com.michatec.radio.api.IRadioApi`
+- **Permission:** `com.michatec.radio.permission.CONTROL_RADIO`
 
 ---
 
@@ -34,19 +35,19 @@ interface IRadioApi {
 
 ### Method Summary
 
-| Method                           | Return Type | Description                                                           |
-|:---------------------------------|:------------|:----------------------------------------------------------------------|
-| `play()`                         | `void`      | Resumes or starts audio playback.                                     |
-| `pause()`                        | `void`      | Pauses audio playback.                                                |
-| `stop()`                         | `void`      | Stops audio playback and releases player resources.                   |
-| `isPlaying()`                    | `boolean`   | Returns `true` if audio is currently playing, `false` otherwise.      |
-| `getCurrentStationName()`        | `String`    | Returns the display name of the currently active radio station.       |
-| `getCurrentMetadata()`           | `String`    | Returns current track metadata/artist info (if available).            |
-| `playStationByUuid(String uuid)` | `void`      | Switches to and plays the radio station matching the specified UUID.  |
-| `getSavedStationsJson()`         | `String`    | Returns a JSON array string containing all saved radio stations.      |
-| `getFavoriteStationsJson()`      | `String`    | Returns a JSON array string containing all starred/favorite stations. |
-| `getCurrentStationImage()`       | `byte[]`    | Returns raw image bytes of the currently active station cover art.    |
-| `getStationImageByUuid(String)`  | `byte[]`    | Returns raw image bytes for the station cover art matching the UUID.  |
+| Method                               | Return Type | Description                                                           |
+|:-------------------------------------|:------------|:----------------------------------------------------------------------|
+| `play()`                             | `void`      | Resumes or starts audio playback.                                     |
+| `pause()`                            | `void`      | Pauses audio playback.                                                |
+| `stop()`                             | `void`      | Stops audio playback and releases player resources.                   |
+| `isPlaying()`                        | `boolean`   | Returns `true` if audio is currently playing, `false` otherwise.      |
+| `getCurrentStationName()`            | `String`    | Returns the display name of the currently active radio station.       |
+| `getCurrentMetadata()`               | `String`    | Returns current track metadata/artist info (if available).            |
+| `playStationByUuid(String uuid)`     | `void`      | Switches to and plays the radio station matching the specified UUID.  |
+| `getSavedStationsJson()`             | `String`    | Returns a JSON array string containing all saved radio stations.      |
+| `getFavoriteStationsJson()`          | `String`    | Returns a JSON array string containing all starred/favorite stations. |
+| `getCurrentStationImage()`           | `byte[]`    | Returns raw image bytes of the currently active station cover art.    |
+| `getStationImageByUuid(String uuid)` | `byte[]`    | Returns raw image bytes for the station cover art matching the UUID.  |
 
 ---
 
@@ -55,16 +56,19 @@ interface IRadioApi {
 To control the Radio app from another Android application, follow these steps:
 
 ### 1. Declare Required Permission & Queries in `AndroidManifest.xml`
-In your client application's `src/main/AndroidManifest.xml`, declare the custom permission required to bind to `RadioApiService`. If targeting Android 11 (API 30) or higher, also include a `<queries>` declaration to ensure package visibility:
+In your client application's `src/main/AndroidManifest.xml`, declare the custom permission `com.michatec.radio.permission.CONTROL_RADIO`. If targeting Android 11 (API 30) or higher, also include a `<queries>` declaration to ensure package visibility:
 
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Custom permission required to interact with RadioApiService via IPC -->
+    <uses-permission android:name="com.michatec.radio.permission.CONTROL_RADIO" />
 
     <!-- Package visibility for Android 11+ (API 30+) -->
     <queries>
         <package android:name="com.michatec.radio" />
         <intent>
-            <action android:name="com.michatec.radio.api.IRadioApi" />
+            <action android:name="com.michatec.radio.api.RadioApiService" />
         </intent>
     </queries>
 
@@ -251,12 +255,12 @@ class MyActivity : AppCompatActivity() {
         radioController.connect()
 
         // Example: Play button click
-        findViewById<Button>(id.btnPlay).setOnClickListener {
+        findViewById<Button>(R.id.btnPlay).setOnClickListener {
             radioController.play()
         }
 
         // Example: Fetch and log all saved stations & cover image
-        findViewById<Button>(id.btnFetchStations).setOnClickListener {
+        findViewById<Button>(R.id.btnFetchStations).setOnClickListener {
             val savedStations = radioController.getSavedStations()
             val favoriteStations = radioController.getFavoriteStations()
             val currentImageBytes = radioController.getCurrentStationImage()

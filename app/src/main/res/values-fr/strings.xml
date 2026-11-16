@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Permissions -->
+    <string name="permission_control_radio_label">Contrôler la lecture Radio</string>
+    <string name="permission_control_radio_description">Permet aux applications de contrôler la lecture Radio, de lire la liste des stations et de recevoir l\état de lecture via IPC.</string>
     <!-- Nom de l'application -->
     <!-- Descriptions d'accessibilité -->
     <string name="descr_app_icon">Icône de lapplication en forme dancienne radio</string>

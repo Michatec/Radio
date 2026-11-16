@@ -15,7 +15,7 @@ Instead of typing the pairing code manually, the client can display a QR code th
 
 1. The client generates a random `clientId` and a random `pairKey` (32 bytes) and keeps both to itself.
 2. The client calls `POST /api/pair/start?clientId=YOUR_CLIENT_ID` with the header `X-Pair-Key: YOUR_PAIR_KEY` to open a short-lived pairing session.
-3. The client calls `GET /api/qr?clientId=YOUR_CLIENT_ID` with the same header to obtain a PNG QR code containing `radio-pair:PAIRING_CODE`. The pairing code is a one time value of the session – it is **not** the secret of your Radio app.
+3. The client calls `GET /api/qr?clientId=YOUR_CLIENT_ID` with the same header to obtain a PNG QR code containing `radio-pair:YOUR_CLIENT_ID:PAIRING_CODE`. The pairing code is a one-time value of the session – it is **not** the secret of your Radio app.
 4. Open **Settings → Remote Control → Verify with QR Code** in the Radio app and scan the displayed code. The app approves that single session.
 5. The client polls `GET /api/pair/status?clientId=YOUR_CLIENT_ID` with the same header until it returns `paired: true`, then stores the returned token and sends it as `X-Remote-Key` on all further requests.
 
@@ -45,6 +45,18 @@ const poll = setInterval(async () => {
 
 ## API Reference
 
+### `POST /api/pair/start?clientId=YOUR_CLIENT_ID`
+Starts a pairing session for the given client ID. Must include header `X-Pair-Key: YOUR_PAIR_KEY`.
+
+**Response Example:**
+
+```json
+{
+  "code": "123456",
+  "expiresInSeconds": 900
+}
+```
+
 ### `GET /api/status`
 Returns current playback status. Recommended for initial state only; use WebSockets for real-time updates.
 
@@ -62,21 +74,41 @@ Returns current playback status. Recommended for initial state only; use WebSock
 ```
 
 ### `WS /api/updates`
-WebSocket endpoint for real-time status updates. Pushes status objects whenever state or metadata changes.
+WebSocket endpoint for real-time status and collection updates. Pushes wrapper objects (`{ "type": "status" | "stations", "data": ... }`) whenever playback state, metadata, or stations change.
+
+**Response Example (Status Update):**
+
+```json
+{
+  "type": "status",
+  "data": {
+    "isPlaying": true,
+    "playWhenReady": true,
+    "playbackState": 3,
+    "currentStationUuid": "fc080549-...",
+    "metadata": "Artist - Title",
+    "starred": true
+  }
+}
+```
 
 **Example Usage (JavaScript):**
 
 ```js
-const token = '123456'; // From app settings
+const token = '123456'; // From app settings or QR pairing
 const socket = new WebSocket('ws://' + location.host + '/api/updates?token=' + encodeURIComponent(token));
 socket.onmessage = (event) => {
-  const status = JSON.parse(event.data);
-  console.log('Update received:', status);
+  const message = JSON.parse(event.data);
+  if (message.type === 'status') {
+    console.log('Status update:', message.data);
+  } else if (message.type === 'stations') {
+    console.log('Stations update:', message.data);
+  }
 };
 ```
 
 ### `GET /api/stations`
-Returns all stations in collection.
+Returns all stations in the collection.
 
 **Response Example:**
 
@@ -86,7 +118,8 @@ Returns all stations in collection.
     "uuid": "fc080549-...",
     "name": "Station Name",
     "hasImage": true,
-    "starred": true
+    "starred": true,
+    "lastModified": 1700000000000
   }
 ]
 ```

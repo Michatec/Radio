@@ -36,6 +36,7 @@ Starting with version **15.2**, Radio provides an AIDL interface that allows ext
 - **Package:** `com.michatec.radio`
 - **Service:** `com.michatec.radio.api.RadioApiService`
 - **Interface:** `com.michatec.radio.api.IRadioApi`
+- **Permission:** `com.michatec.radio.permission.CONTROL_RADIO`
 
 **Features:**
 - Play, pause and stop playback
@@ -44,6 +45,7 @@ Starting with version **15.2**, Radio provides an AIDL interface that allows ext
 - Access track metadata
 - Switch stations using their UUID
 - Retrieve saved and favorite stations as JSON
+- Retrieve current station cover image and station image by UUID
 
 **Documentation:** [AIDL API Documentation](AIDL_API.md)
 

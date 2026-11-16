@@ -9,8 +9,8 @@
 ### ℹ️ About Radio
 **Radio is an application with a minimalist approach to listening to radio over the Internet.** <br>
 **Radio only offers a basic search option, and it imports audio streaming links when you tap them in a web browser.** <br>
-**Radio 15.1+  features support for Android TV and Google Cast, along with a Web Control interface and a developer API.** <br>
-**Pull request are welcome at any time.**<br>
+**Radio 15.1+ features support for Android TV and Google Cast, along with a Web Control interface and a developer API.** <br>
+**Pull requests are welcome at any time.**<br>
 
 **Radio is free software. It is released under the [GPLv3 open source license](https://opensource.org/licenses/GPL-3.0).**
 </div>
@@ -49,8 +49,8 @@ Since the developers of this app do not agree to this requirement, this app will
 <details>
 <summary>💡 Frequent Questions</summary>
 <br>
-Q: How can I add a radio station  
-A: There are three ways to add a radio station to Radio: Use Search, add playlist file address (M3U, PLS), enter a raw stream address. The last way will not support the update feature.
+Q: How can I add a radio station?  
+A: There are three ways to add a radio station to Radio: Use Search, add a playlist file address (M3U, PLS), or enter a raw stream address. The last way will not support the update feature.
 
 -------------------------------------------------------------------------
 
@@ -60,8 +60,8 @@ A: The update feature will try to fetch the current stream address of a station 
 -------------------------------------------------------------------------
 
 Q: Where do the radio station search results come from?  
-A: Radio searches the [radio-browser.info](http://www.radio-browser.info/) online database.  
-You can help out the radio-browser.info community by [adding the missing station](http://www.radio-browser.info/gui/#!/add) to their database.
+A: Radio searches the [radio-browser.info](https://www.radio-browser.info/) online database.  
+You can help out the radio-browser.info community by [adding the missing station](https://www.radio-browser.info/add) to their database.
 </details>
 
 ----------------------------------------
@@ -115,6 +115,7 @@ Starting with version **15.2**, Radio exposes an AIDL-based API (`com.michatec.r
 - **Package:** `com.michatec.radio`
 - **Service:** `com.michatec.radio.api.RadioApiService`
 - **AIDL Interface:** `com.michatec.radio.api.IRadioApi`
+- **Permission:** `com.michatec.radio.permission.CONTROL_RADIO`
 
 **Available features:**
 - Play, pause, stop and check playback state
@@ -157,7 +158,7 @@ When **Edit Stations** is enabled:
 
 **General TV** Controls:
 - Press **0** or **DEL** to remove the selected radio station
-- Press **1** or **SPACE** to make the selected radio station favourite
+- Press **1** or **SPACE** to make the selected radio station favorite
 - Press **2** or **PLUS** to reorder the selected radio station
 
 </details>
@@ -167,7 +168,7 @@ When **Edit Stations** is enabled:
 <details>
 <summary>📜️ Credit</summary>
 
-- [Radio Browser](http://www.radio-browser.info/) for providing the radio station database
+- [Radio Browser](https://www.radio-browser.info/) for providing the radio station database
 - [AndroidX Leanback](https://developer.android.com/jetpack/androidx/releases/leanback) for providing the Android TV UI components
 
 - Michatec for developing the app and maintaining the project

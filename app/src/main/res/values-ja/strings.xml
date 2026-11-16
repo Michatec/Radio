@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Permissions -->
+    <string name="permission_control_radio_label">Radioの再生を制御</string>
+    <string name="permission_control_radio_description">アプリがIPCを介してRadioの再生を制御し、局リストを読み取り、再生状態を受信できるようにします。</string>
     <!-- アプリ名 -->
     <!-- アクセシビリティの説明 -->
     <string name="descr_app_icon">昔のラジオの形をしたアプリアイコン</string>

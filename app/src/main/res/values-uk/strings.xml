@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Permissions -->
+    <string name="permission_control_radio_label">Керування відтворенням Radio</string>
+    <string name="permission_control_radio_description">Дозволяє програмам керувати відтворенням Radio, читати списки станцій та отримувати статус відтворення через IPC.</string>
     <!-- App Name -->
     <!-- Accessibility Descriptions -->
     <string name="descr_app_icon">Значок застосунку із зображенням старого радіо</string>

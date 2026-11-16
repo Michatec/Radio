@@ -4,6 +4,10 @@
     <string name="app_version_name" translatable="false">\"Blue\"</string>
     <string name="app_name" translatable="false">Radio</string>
 
+    <!-- Permissions -->
+    <string name="permission_control_radio_label">Control Radio playback</string>
+    <string name="permission_control_radio_description">Allows applications to control Radio playback, read station lists, and receive playback status via IPC.</string>
+
     <!-- Accessibility Descriptions -->
     <string name="descr_app_icon">App icon depicting an old radio</string>
     <string name="descr_card_small_play_button">Play/stop</string>

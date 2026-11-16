@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Permissions -->
+    <string name="permission_control_radio_label">Radio-afspelen bedienen</string>
+    <string name="permission_control_radio_description">Stelt apps in staat om het afspelen van Radio te bedienen, zenderlijsten te lezen en de afspeelstatus via IPC te ontvangen.</string>
     <!-- App Name -->
     <!-- Accessibility Descriptions -->
     <string name="descr_app_icon">App icoon die een oude radio afbeeld</string>

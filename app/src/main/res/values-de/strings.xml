@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- App Name -->
+    <!-- Permissions -->
+    <string name="permission_control_radio_label">Radio-Wiedergabe steuern</string>
+    <string name="permission_control_radio_description">Ermöglicht Apps die Steuerung der Radio-Wiedergabe, das Auslesen von Senderlisten und den Empfang des Wiedergabestatus über IPC.</string>
+
     <!-- Accessibility Descriptions -->
     <string name="descr_app_icon">App-Symbol in der Form eines alten Radios</string>
     <string name="descr_card_small_play_button">Start/Stopp</string>

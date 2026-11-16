@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Permissions -->
+    <string name="permission_control_radio_label">Sterowanie odtwarzaniem Radio</string>
+    <string name="permission_control_radio_description">Zezwala aplikacjom na sterowanie odtwarzaniem Radio, odczytywanie list stacji i odbieranie stanu odtwarzania przez IPC.</string>
     <!-- App Name -->
     <!-- Accessibility Descriptions -->
     <string name="descr_app_icon">Ikona aplikacji przedstawiająca stare radio</string>
