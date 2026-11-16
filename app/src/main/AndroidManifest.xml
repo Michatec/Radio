@@ -25,7 +25,7 @@
 
     <!-- CUSTOM IPC PERMISSION FOR AIDL API -->
     <permission
-        android:name="com.michatec.radio.permission.CONTROL_RADIO"
+        android:name="${applicationId}.permission.CONTROL_RADIO"
         android:label="@string/permission_control_radio_label"
         android:description="@string/permission_control_radio_description"
         android:protectionLevel="normal" />
@@ -175,7 +175,7 @@
             android:name=".api.RadioApiService"
             android:enabled="true"
             android:exported="true"
-            android:permission="com.michatec.radio.permission.CONTROL_RADIO">
+            android:permission="${applicationId}.permission.CONTROL_RADIO">
             <intent-filter>
                 <action android:name="com.michatec.radio.api.RadioApiService" />
             </intent-filter>
