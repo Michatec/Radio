@@ -42,6 +42,9 @@ Since the developers of this app do not agree to this requirement, this app will
 <summary>⚙️ Install Radio</summary>
 <br>
 <a href="https://github.com/michatec/Radio/releases/latest"><img src="https://user-images.githubusercontent.com/15986930/229208526-e5a63be5-0d0b-48ab-a222-9f2f2faf0ee4.png" alt="Preview" height="80px"></a>
+<br>
+
+Nightly builds are available under [GitHub Actions](https://github.com/Michatec/Radio/actions).
 </details>
 
 ----------------------------------------
