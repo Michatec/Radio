@@ -26,7 +26,7 @@ zxingEmbedded = "4.3.0"
 shizuku = "13.1.5"
 securityCrypto = "1.1.0"
 ksp = "2.3.14"
-appfunctions = "1.0.0-rc01"
+appfunctions = "1.0.0"
 
 [libraries]
 appfunctions = { group = "androidx.appfunctions", name = "appfunctions", version.ref = "appfunctions" }
