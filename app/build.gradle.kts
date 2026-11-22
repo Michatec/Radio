@@ -9,12 +9,16 @@ plugins {
 
 android {
     namespace = "com.michatec.radio"
-    compileSdk = 372
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 2
+        }
+    }
 
     defaultConfig {
         applicationId = "com.michatec.radio"
         minSdk = 28
-        targetSdk = 372
+        targetSdk = 37
         versionCode = 152
         versionName = "15.2"
     }
